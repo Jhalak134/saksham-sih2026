@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react';
+import { setAuthUser } from '@/lib/auth';
 
 const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
@@ -44,6 +45,7 @@ function LoginFormContent(): React.JSX.Element {
   const searchParams = useSearchParams();
 
   const initialMode = searchParams.get('mode') || searchParams.get('tab');
+  const destination = searchParams.get('redirect') || '/discover';
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>(
     initialMode === 'signup' ? 'signup' : 'login'
   );
@@ -133,20 +135,15 @@ function LoginFormContent(): React.JSX.Element {
       console.warn('Backend sync note:', syncErr);
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(
-        'saksham_user',
-        JSON.stringify({
-          email: userProfile.email,
-          name: userProfile.name,
-          picture: userProfile.picture,
-          authProvider: 'google',
-          token: userProfile.token,
-        })
-      );
-    }
+    setAuthUser({
+      email: userProfile.email,
+      name: userProfile.name,
+      picture: userProfile.picture,
+      authProvider: 'google',
+      token: userProfile.token,
+    });
 
-    router.push('/discover');
+    router.push(destination);
   };
 
   const initGoogleOneTap = () => {
@@ -219,10 +216,16 @@ function LoginFormContent(): React.JSX.Element {
       return;
     }
 
+    setAuthUser({
+      phone: cleanAccount,
+      name: name.trim() || 'Entrepreneur',
+      authProvider: 'phone',
+    });
+
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push('/discover');
+      router.push(destination);
     }, 600);
   };
 
@@ -288,9 +291,13 @@ function LoginFormContent(): React.JSX.Element {
     }
 
     // 3. Fallback for test / offline environments (matches vitest mocks)
+    setAuthUser({
+      name: 'Guest Entrepreneur',
+      authProvider: 'google',
+    });
     setTimeout(() => {
       setLoading(false);
-      router.push('/discover');
+      router.push(destination);
     }, 600);
   };
 
