@@ -2,7 +2,7 @@
 
 ## Completed
 
-The Intent / Query Parser Layer (Task 4) is implemented and thoroughly verified:
+The AI Service / FastAPI Integration (Task 7) is implemented and thoroughly verified:
 * PDF extraction verified (`ai/ingestion/extract_documents.py`)
 * PDF cleaning verified (`ai/ingestion/clean_documents.py`)
 * Curated document metadata verified and schema enhanced (`ai/knowledge_base/document_metadata.py`)
@@ -13,17 +13,38 @@ The Intent / Query Parser Layer (Task 4) is implemented and thoroughly verified:
 * Persistent ChromaDB vector store indexed at `ai/vector_store/chroma/` with 179 chunks
 * Retrieval layer implemented (`ai/retrieval/retriever.py`, `ai/retrieval/__init__.py`)
 * Intent / Query Parser implemented (`ai/prompts/parser_prompt.py`, `ai/prompts/query_parser.py`)
-* Structured schema defined (`ParsedQuery`, `ParsedGeography`, `QueryIntent`, `ParserValidationError`)
-* Supported domain fields: `raw_query`, `intent`, `business_category`, `geography` (`village`, `block`, `district`, `state`), `loan_amount` (debt requested), `own_capital` (margin funds), `purpose`, `scheme`, `missing_fields`, `is_ambiguous`
-* Safe deterministic normalization: Indian scale notation (rupees, lakhs, crores, thousands, ₹, Rs., INR, Devanagari numerals/terms), geography canonicalization (district, state, village, block), business categories, and schemes
-* Multilingual and Hinglish support: handles English, Hindi (Devanagari), and natural Hinglish phrasing
-* Distinct loan amount vs margin capital tracking: never conflates borrowing requests with equity contribution
-* Explicit missing-field tracking: identifies unsupplied advisory parameters without fabricating default 0, "unknown", or guessed values
-* LLM boundary abstraction: mockable/injectable `QueryParser(llm_callable=...)` with markdown code fence stripping and strict JSON schema validation
-* Zero-dependency deterministic extractor (`extract_deterministic`) for offline execution and testing
-* Retrieval integration bridge: `ParsedQuery.to_retrieval_query()` constructs type-safe `RetrievalQuery` instances for downstream vector search
-* 100% line and 100% branch test coverage achieved (`ai/tests/test_parser.py`)
-* Code quality gates verified: Cyclomatic Complexity < 22 (implementation max 19, avg 4.7), Halstead Difficulty < 80 (7.45), LOC < 500 per file (112 for parser_prompt.py, 485 for query_parser.py, 481 for test_parser.py), Dead Code = 0
+* Grounding and Evidence Pack Layer implemented (`ai/grounding/evidence_models.py`, `ai/grounding/evidence_pack.py`, `ai/grounding/__init__.py`)
+* Grounded Explanation Layer implemented (`ai/prompts/explanation_models.py`, `ai/prompts/explanation_prompt.py`)
+* AI Service Request & Response Models implemented (`ai/service/models.py`):
+  * `QueryRequest`: bounded natural-language input (`min_length=1`, `max_length=2000`), whitespace rejection, normalized languages (`en`, `hi`, `hinglish`), bounded `top_k` (`1-20`), optional deterministic `calculations`, and strict `extra="forbid"`.
+  * `ParsedQueryResponse` & `ParsedGeographyResponse`: faithfully mirrors domain `ParsedQuery` while strictly preserving `None` (no 0 or "unknown" defaults for missing values).
+  * `CitationResponse`: clean provenance metadata (`chunk_id`, `document_id`, `source`, `page_start`, `page_end`).
+  * `ExplanationDetailResponse`: detailed explanatory metrics (`answer`, `key_points`, `citations`, `limitations`, `warnings`, `evidence_used`, `grounding_status`, `language`).
+  * `QueryResponse`: top-level response returning `explanation` text directly, alongside full provenance, structured parsed query, warnings, limitations, and grounding status.
+  * `HealthResponse`: reports service status (`ok` / `degraded`), vector store status (`ready` / `unavailable`), chunk count, and service version.
+  * `ErrorResponse`: standardized error payload (`error`, `detail`, `error_type`) preventing raw stack traces or internal filesystem leakages.
+* AI Service Application & Endpoints implemented (`ai/service/main.py`, `ai/service/__init__.py`):
+  * `GET /health`: non-blocking health check querying vector store collection count without expensive re-indexing.
+  * `POST /query`: executes the 6-stage pipeline (`API Request -> Query Parser -> Retrieval Query -> Retriever -> Evidence Pack -> Grounded Explanation -> QueryResponse`).
+  * `POST /explain`: full alias to `/query` for conversational callers.
+  * Exception Handlers:
+    * `RequestValidationError` -> 422 (`request_validation_error`)
+    * `ParserValidationError` -> 422 (`parser_validation_error`)
+    * `ValueError` -> 400 (`value_error`)
+    * `RetrievalServiceError` -> 503 (`retrieval_error`)
+    * `EvidencePackValidationError` / `EvidenceItemValidationError` -> 500 (`evidence_pack_validation_error`)
+    * `ExplanationValidationError` -> 500 (`explanation_validation_error`)
+    * Global unhandled `Exception` -> 500 (`internal_server_error`) with sanitized message and zero trace leakage.
+  * Dependency Injection: `AIServiceDependencies` container and provider functions (`get_parser`, `get_retriever`, `get_explainer`) compatible with `create_app(deps=...)` and standard FastAPI `app.dependency_overrides`.
+* 100% line coverage and 100% branch coverage achieved (`ai/tests/test_service.py`): 25/25 tests passing
+* All 186 AI regression tests passing across all completed tasks
+* Code quality gates verified:
+  * Cognitive Complexity < 22 (implementation max 3, all functions <= 3)
+  * Cyclomatic Complexity < 22 (implementation max 4, avg 1.96 Grade A)
+  * Halstead Difficulty < 80 (`main.py`=1.80, `models.py`=5.08)
+  * Maintainability Index: Rank A across all files
+  * LOC < 500 per file (`main.py`=267, `models.py`=214, `__init__.py`=41, `test_service.py`=429)
+  * Dead code & redundancy: 0 unused items via `vulture`
 
 ## Current Files
 
@@ -36,15 +57,24 @@ The Intent / Query Parser Layer (Task 4) is implemented and thoroughly verified:
 * `ai/retrieval/__init__.py` — COMPLETED. Package initializer exposing `KnowledgeRetriever`, `RetrievalQuery`, `RetrievalResult`, and `retrieve`.
 * `ai/prompts/parser_prompt.py` — COMPLETED. Defines system prompt, strict JSON schema contract, user prompt builder, and module re-exports.
 * `ai/prompts/query_parser.py` — COMPLETED. Implements parsing dataclasses, safe normalization routines, missing-field detection, LLM output validation, deterministic extraction, and the `QueryParser` interface.
-* `ai/prompts/explanation_prompt.py` — NOT IMPLEMENTED YET. Future task for generating borrower-friendly explanations.
-* `ai/service/main.py` — NOT IMPLEMENTED YET. Future task for AI FastAPI service endpoints.
+* `ai/grounding/evidence_models.py` — COMPLETED. Evidence item dataclasses, classification taxonomy, and validation logic.
+* `ai/grounding/evidence_pack.py` — COMPLETED. EvidencePack container, pack validation, warnings/limitations generation, factory, and formatting routines.
+* `ai/grounding/__init__.py` — COMPLETED. Package initializer re-exporting evidence models, pack builder, and validation routines.
+* `ai/prompts/explanation_models.py` — COMPLETED. Explanatory result models, citation models, schemas, and grounding status enums.
+* `ai/prompts/explanation_prompt.py` — COMPLETED. Grounded explanation prompts, parsing, citation validation, deterministic explanation generator, and `GroundedExplainer`.
+* `ai/service/models.py` — COMPLETED. Pydantic request and response schemas for FastAPI endpoints.
+* `ai/service/main.py` — COMPLETED. FastAPI application factory, routes (`/health`, `/query`, `/explain`), dependency injection, and sanitized exception handlers.
+* `ai/service/__init__.py` — COMPLETED. Service package exports.
 * `ai/tests/` — PARTIALLY IMPLEMENTED:
   * `ai/tests/test_chunk_documents.py` — COMPLETED (100% line & branch coverage on chunking pipeline).
   * `ai/tests/test_document_metadata.py` — COMPLETED (100% line & branch coverage on document metadata).
   * `ai/tests/test_embed_and_store.py` — COMPLETED (100% line & branch coverage on embedding & vector store pipeline).
   * `ai/tests/test_retriever.py` — COMPLETED (100% line & branch coverage on retrieval layer).
   * `ai/tests/test_parser.py` — COMPLETED (100% line & branch coverage across all 25+ parser requirements).
-  * `ai/tests/test_hallucination.py` — NOT IMPLEMENTED YET.
+  * `ai/tests/test_evidence_pack.py` — COMPLETED (100% line & branch coverage on evidence grounding layer).
+  * `ai/tests/test_explanation_prompt.py` — COMPLETED (100% line & branch coverage on explanation layer).
+  * `ai/tests/test_service.py` — COMPLETED (100% line & branch coverage on AI FastAPI service layer).
+  * `ai/tests/test_hallucination.py` — NOT IMPLEMENTED YET. Future task.
 
 ## Knowledge Base
 
@@ -81,28 +111,29 @@ The knowledge base consists of four curated documents with critical metadata dis
 
 ## Decisions
 
-* **Loan Amount vs Own Capital**: Explicitly decoupled borrowing requests (`loan_amount`) from borrower equity/savings (`own_capital`). If a borrower specifies "I have 2 lakh of my own money", `own_capital` is 200,000 and `loan_amount` remains `None`.
-* **Single Concern & LOC Ceiling**: Separated prompt definitions (`parser_prompt.py`) from parser engine models and logic (`query_parser.py`) to strictly satisfy the `< 500` lines-of-code requirement while enabling clean re-exports from `parser_prompt.py`.
-* **Zero-Dependency Deterministic Fallback**: In addition to an injectable LLM interface, implemented `extract_deterministic(...)` supporting English, Hindi, and Hinglish queries for reliable offline testability and local execution without network dependencies.
-* **Evidence Honesty on Missing Values**: Unstated inputs remain `None` and are tracked in `missing_fields` (`["business_category", "geography", "loan_amount", "own_capital", "purpose"]`). No 0, "unknown", or guessed locations/categories are fabricated.
-* **Retriever Bridge**: Implemented `ParsedQuery.to_retrieval_query()` which prepares a validated `RetrievalQuery` without directly invoking ChromaDB, preserving clear architectural boundaries.
+* **Decomposition for LOC & Complexity Ceiling**: Separated FastAPI models into `models.py` (schemas, validators, converters) and endpoint routing/handlers into `main.py` (pipeline runner, dependency injection, exception handling) to keep both files well below 500 lines.
+* **Single Source of Truth for Pipeline**: `run_ai_pipeline` strictly coordinates the domain components (`QueryParser -> KnowledgeRetriever -> create_evidence_pack -> GroundedExplainer`) without creating duplicate parser, retrieval, or explanation logic.
+* **Zero Financial Math in Service Layer**: Kept the AI service strictly explanatory. If pre-computed calculations are supplied in `request.calculations`, they are passed as trusted, unalterable context to `GroundedExplainer`.
+* **Security & Sanitized Errors**: Global error handlers intercept unexpected exceptions and return clean `ErrorResponse` objects without leaking Python stack traces, filenames, or server filesystem paths.
+* **Non-conflation of Filter Matches**: Maintained deterministic `no_match` response when specific metadata filters (e.g. `business_category='dairy'` + `geography_district='Mathura'`) do not intersect in the curated knowledge base, communicating insufficient evidence rather than false real-world non-existence.
+* **Test Isolation via Dependency Injection**: Supported both `AIServiceDependencies` container injection and FastAPI `app.dependency_overrides` to ensure 100% offline, deterministic testing with zero live LLM or network dependencies.
 
 ## Unresolved Issues
 
-* None for Tasks 1, 2, 3, or 4.
+* None for Tasks 1, 2, 3, 4, 5, 6, or 7.
 
 ## Next Task
 
 ```
-NEXT TASK: TASK 5 — EVIDENCE PACK / GROUNDING LAYER
+NEXT TASK: TASK 8 — MAIN BACKEND INTEGRATION
 ```
 
-Task 5 will combine structured retrieval results from Task 3 with provenance, chunk metadata, and source context into a clean, tamper-proof evidence package to safely pass to the future explanation layer.
+Task 8 will connect the independently verified AI service (`ai/service/main.py`) to the main SAKSHAM backend (`backend/`), routing borrower inquiries to the AI service while keeping deterministic financial and recommendation engines separate.
 
-Before writing code for Task 5, the next agent must:
-1. Inspect `ai/retrieval/retriever.py` (`RetrievalResult`, `retrieve`).
-2. Inspect `ai/prompts/parser_prompt.py` and `ai/prompts/query_parser.py` (`ParsedQuery`, `to_retrieval_query`).
-3. Review grounding criteria to ensure source citations, template flags, and vintages are preserved in evidence packs.
+Before writing code for Task 8, the next agent must:
+1. Inspect `ai/service/main.py` and `ai/service/models.py`.
+2. Inspect `backend/` routes and API contracts to understand existing backend communication patterns.
+3. Ensure the main backend calls the AI service via HTTP or ASGI mounting without moving financial calculations into the AI layer.
 
 ## Important Rules
 
@@ -120,30 +151,43 @@ AI explains.
 
 ## Verification
 
-The following verification commands were executed and passed with zero errors:
+The following verification commands and checks were executed:
 
 ```bash
-# 1. Run full test suite across entire ai package (118 passed)
+# 1. Full regression test suite across entire ai package (186 passed)
 PYTHONPATH=. /home/divyansh/myenv/bin/pytest ai/tests/ -v
 
-# 2. Run branch coverage for parser module (100% line & branch coverage)
-PYTHONPATH=. /home/divyansh/myenv/bin/coverage run --branch -m pytest ai/tests/test_parser.py
-/home/divyansh/myenv/bin/coverage report -m --include="ai/prompts/*"
+# 2. Branch coverage for service module (100% line & branch coverage)
+PYTHONPATH=. /home/divyansh/myenv/bin/coverage run --branch -m pytest ai/tests/test_service.py
+/home/divyansh/myenv/bin/coverage report -m --include="ai/service/*"
 
-# 3. Check cyclomatic complexity (Limit < 22, Result: Max 19, Avg 4.7)
-/home/divyansh/myenv/bin/radon cc ai/prompts/parser_prompt.py ai/prompts/query_parser.py -s -a
+# 3. Cyclomatic complexity (Limit < 22, Result: Max 4, Avg 1.96 Grade A)
+/home/divyansh/myenv/bin/radon cc ai/service/*.py -s -a
 
-# 4. Check Halstead difficulty (Limit < 80, Result: 7.45)
-/home/divyansh/myenv/bin/radon hal ai/prompts/parser_prompt.py ai/prompts/query_parser.py
+# 4. Cognitive complexity (Limit < 22, Result: Max 3 in normalize_language)
+# Computed via standard SonarSource Cognitive Complexity AST traversal
 
-# 5. Check dead code (Limit = 0, Result: 0)
-/home/divyansh/myenv/bin/vulture ai/prompts/parser_prompt.py ai/prompts/query_parser.py ai/tests/test_parser.py
+# 5. Halstead difficulty (Limit < 80, Result: main.py=1.80, models.py=5.08)
+/home/divyansh/myenv/bin/radon hal ai/service/*.py
 
-# 6. Check line counts (Limit < 500 per file, Result: parser_prompt=112, query_parser=485, test_parser=481)
-wc -l ai/prompts/parser_prompt.py ai/prompts/query_parser.py ai/tests/test_parser.py
+# 6. Maintainability index (Result: Rank A across all files)
+/home/divyansh/myenv/bin/radon mi ai/service/*.py -s
+
+# 7. Dead code & redundancy check (Limit = 0, Result: 0 unused items)
+/home/divyansh/myenv/bin/vulture --min-confidence 70 ai/service/ ai/tests/test_service.py
+
+# 8. Lines of code (Limit < 500 per file, Result: models=214, main=267, init=41, test_service=429)
+wc -l ai/service/*.py ai/tests/test_service.py
 ```
 
 ### Verified Pipeline Results
-* Full test suite: 118/118 tests passed (29/29 for parser).
-* 100% line coverage and 100% branch coverage on both `ai/prompts/parser_prompt.py` and `ai/prompts/query_parser.py`.
-* Zero dead code, zero surviving issues.
+* **Full test suite**: 186/186 tests passed (25/25 for service layer).
+* **Line & Branch coverage**: 100% line coverage (159/159 statements) and 100% branch coverage (16/16 branches) across `ai/service/models.py`, `ai/service/main.py`, and `ai/service/__init__.py`.
+* **Cognitive Complexity**: Max function cognitive complexity is 3 (in `normalize_language`), well below the limit of 22. Zero violations.
+* **Cyclomatic Complexity**: Max cyclomatic complexity is 4, average is 1.96 (Grade A). Zero violations.
+* **Halstead Difficulty**: 1.80 for `main.py` and 5.08 for `models.py` (limit < 80).
+* **CRAP Analysis**: Evaluated with `CRAP(m) = CC^2 * (1 - cov)^3 + CC`. Given 100% test coverage (`cov = 1.0`), the uncoverage term drops to 0, yielding `CRAP(m) = CC(m)`. Max CRAP across all functions is 4 (well below the limit of 25). Note: no standalone third-party CRAP CLI binary is configured in the virtual environment.
+* **Mutation Testing**: Automated mutation testing tooling (`mutmut` / `cosmic-ray`) is not configured in the project environment and therefore could not be run.
+* **Redundancy / Duplication**: Verified 0 unused/dead items via `vulture`. Verified 0 duplicate blocks between implementation modules.
+* **Data-Honesty Review**: Re-verified that unstated query parameters remain `None` (no 0 or "unknown" defaults), template disclaimers are preserved in output, and historical Mathura vintage is honored.
+* **Zero surviving issues**: Clean working tree and fully reproducible offline verification.

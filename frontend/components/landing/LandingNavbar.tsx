@@ -147,24 +147,25 @@ export function LandingNavbar(): React.JSX.Element {
             )}
           </div>
 
-          {/* Login link */}
+          {/* Login button */}
           <Link
             href="/login"
             className={cn(
-              'px-2 py-1.5 text-xs sm:text-sm font-semibold text-slate-700 transition-colors hover:text-slate-950',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-md'
+              'rounded-full border border-slate-200 bg-white px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs',
+              'hover:bg-slate-50 hover:border-slate-300 hover:text-slate-950 transition-all cursor-pointer',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600'
             )}
           >
             Log in
           </Link>
 
-          {/* Sign up Free / Launch App button */}
+          {/* Sign up Free button */}
           <Link
-            href="/new-assessment"
+            href="/login?mode=signup"
             className={cn(
-              'rounded-full border border-slate-950 bg-white px-4 py-1.5 text-xs sm:text-sm font-semibold text-slate-950 shadow-2xs',
-              'hover:bg-slate-950 hover:text-white transition-all',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900'
+              'rounded-full bg-[#167844] hover:bg-[#126438] active:bg-[#0e4e2c] text-white px-3.5 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold shadow-2xs',
+              'transition-all hover:shadow-xs cursor-pointer',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600'
             )}
           >
             Sign up Free
