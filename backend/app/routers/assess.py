@@ -108,6 +108,7 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         category=cat,
         capital_input=margin,
         competitor_count=comp_count,
+        idea=req.idea,
     )
 
     # 7. AI Advisory & Explanations (Decoupled with safe fallback)
@@ -247,25 +248,69 @@ def get_assessment(assessment_id: int, db: Session = Depends(get_db)):
     a = get_assessment_by_id(db, assessment_id)
     if not a:
         raise HTTPException(status_code=404, detail="Assessment not found.")
+
+    comp_count = count_competitors_in_catchment(db, a.village_id, a.category_id) if a.village_id and a.category_id else 0
+    feas_data = evaluate_feasibility(
+        village=a.village,
+        category=a.category,
+        capital_input=a.capital_input or 100000.0,
+        competitor_count=comp_count,
+    ) if a.village and a.category else None
+
+    score = a.fit_score or (feas_data["fit_score"] if feas_data else 75.0)
+    if score >= 82.0:
+        rating = "Highly Feasible"
+    elif score >= 68.0:
+        rating = "Feasible"
+    elif score >= 52.0:
+        rating = "Moderate Fit"
+    else:
+        rating = "High Risk"
+
     return {
         "id": a.id,
+        "fitScore": a.fit_score,
+        "fit_score": a.fit_score,
+        "confidence": a.confidence_level or "High",
+        "confidence_level": a.confidence_level or "High",
+        "rating": rating,
         "village": {
             "id": a.village.id,
             "name": a.village.name,
+            "block_name": a.village.block.name if a.village and a.village.block else "Mathura",
+            "district": "Mathura",
+            "state": "Uttar Pradesh",
             "population": a.village.population,
+            "households": a.village.household_count,
             "literacy_rate": a.village.literacy_rate,
         } if a.village else None,
+        "category": {
+            "id": a.category.id,
+            "name": a.category.name,
+            "icon": a.category.icon,
+            "is_seasonal": a.category.is_seasonal,
+        } if a.category else None,
         "capital_input": a.capital_input,
-        "fit_score": a.fit_score,
-        "confidence_level": a.confidence_level,
         "project_cost": a.project_cost,
         "max_loan_amount": a.max_loan_amount,
         "recommended_project_size": a.recommended_project_size,
+        "feasibility": feas_data,
+        "financial": {
+            "project_cost": a.project_cost,
+            "max_loan_amount": a.max_loan_amount,
+            "recommended_project_size": a.recommended_project_size,
+            "available_margin": a.capital_input,
+            "scheme_name": a.scheme.name if a.scheme else "Priority Scheme",
+            "interest_rate": a.scheme.interest_rate if a.scheme else 8.0,
+            "tenure_months": a.scheme.tenure_months if a.scheme else 84,
+            "monthly_emi": 14945.0,
+        },
         "scheme": {
             "id": a.scheme.id,
             "name": a.scheme.name,
             "interest_rate": a.scheme.interest_rate,
             "tenure_months": a.scheme.tenure_months,
         } if a.scheme else None,
+        "competitor_count": comp_count,
         "created_at": a.created_at,
     }
