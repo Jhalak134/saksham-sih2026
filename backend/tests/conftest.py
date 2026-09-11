@@ -7,8 +7,10 @@ Uses SQLite for hermetic offline testing without external database dependencies.
 import os
 import pytest
 
-# Ensure test DATABASE_URL is set before importing app modules
-os.environ.setdefault("DATABASE_URL", "sqlite:////tmp/test_saksham.db")
+import tempfile
+
+test_db = os.path.join(tempfile.gettempdir(), "test_saksham.db").replace("\\", "/")
+os.environ.setdefault("DATABASE_URL", f"sqlite:///{test_db}")
 os.environ.setdefault("AI_SERVICE_URL", "http://localhost:8001")
 os.environ.setdefault("AI_REQUEST_TIMEOUT", "5.0")
 os.environ.setdefault("AI_DEFAULT_TOP_K", "5")

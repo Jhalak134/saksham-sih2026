@@ -53,3 +53,34 @@ def get_profile(identifier: str, db: Session = Depends(get_db)):
         "default_capital": user.default_capital,
         "preferred_language": user.preferred_language,
     }
+
+
+class GoogleAuthIn(BaseModel):
+    email: str
+    name: Optional[str] = None
+    picture: Optional[str] = None
+    google_id: Optional[str] = None
+    credential: Optional[str] = None
+
+
+@router.post("/google")
+def google_auth(req: GoogleAuthIn, db: Session = Depends(get_db)):
+    if not req.email or not req.email.strip():
+        raise HTTPException(status_code=400, detail="Email is required.")
+    
+    clean_email = req.email.strip().lower()
+    user = get_or_create_user(db, clean_email, None)
+    db.commit()
+    db.refresh(user)
+    
+    return {
+        "id": user.id,
+        "phone_or_email": user.phone_or_email,
+        "name": req.name or clean_email.split("@")[0],
+        "picture": req.picture,
+        "home_location": user.home_location,
+        "default_capital": user.default_capital,
+        "preferred_language": user.preferred_language,
+        "auth_provider": "google",
+    }
+

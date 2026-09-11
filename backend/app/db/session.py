@@ -22,10 +22,23 @@ if not DATABASE_URL:
         "with: DATABASE_URL=postgresql://..."
     )
 
+# Fallback to psycopg v3 if psycopg2 DLL is blocked or unavailable on Windows
+if DATABASE_URL.startswith("postgresql://") and "+psycopg" not in DATABASE_URL:
+    try:
+        import psycopg2
+    except (ImportError, Exception):
+        DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
+
+is_sqlite = DATABASE_URL.startswith("sqlite")
+connect_args = {"check_same_thread": False} if is_sqlite else {}
+engine_kwargs = {"pool_pre_ping": True}
+if not is_sqlite:
+    engine_kwargs["pool_recycle"] = 280
+
 engine = create_engine(
     DATABASE_URL,
-    pool_pre_ping=True,   # test each connection before using it, reconnect if it's gone stale
-    pool_recycle=280,     # recycle connections before Neon's own timeout can kill them
+    connect_args=connect_args,
+    **engine_kwargs
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
