@@ -57,6 +57,28 @@ export async function signup(
   });
 }
 
+export interface ReportSummary {
+  id: string;
+  category: string;
+  location: string;
+  date: string;
+  fitScore: number;
+  estimatedProfit: number;
+  status: string;
+}
+
+export interface MyReportsResponse {
+  reports: ReportSummary[];
+}
+
+export async function fetchMyReports(token: string): Promise<MyReportsResponse> {
+  return fetchJson<MyReportsResponse>(`${API_BASE}/assess/my-reports`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
 export interface InsightsResponse {
   location: string;
   categories: ReadonlyArray<{

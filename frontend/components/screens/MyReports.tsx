@@ -3,10 +3,13 @@
 
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, MapPin, Bookmark, Sparkles } from 'lucide-react';
-import { MOCK_REPORTS, type ReportSummary, type AssessmentStatus } from '@/data/reportsData';
+import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
+import { type AssessmentStatus } from '@/data/reportsData';
+import { fetchMyReports, type ReportSummary } from '@/lib/api-client';
+import { getStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
 import { ReportCard } from '@/components/reports/ReportCard';
 import {
   ReportFilters,
@@ -54,29 +57,67 @@ function groupReportsByLocation(
 }
 
 export function MyReportsScreen(): React.JSX.Element {
+  const [reports, setReports] = useState<ReportSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [selectedStatus, setSelectedStatus] = useState<AssessmentStatus | 'All'>('All');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
   const [fitFilter, setFitFilter] = useState<FitFilterOption>('all');
 
-  const statusCounts = useMemo(() => {
-    return {
-      All: MOCK_REPORTS.length,
-      Completed: MOCK_REPORTS.filter((r) => r.status === 'Completed').length,
-      'In Progress': MOCK_REPORTS.filter((r) => r.status === 'In Progress').length,
-      Saved: MOCK_REPORTS.filter((r) => r.status === 'Saved').length,
-    };
+  useEffect(() => {
+    async function loadReports() {
+      try {
+        setLoading(true);
+        const token = getStorageItem(STORAGE_KEYS.authToken);
+        if (!token) throw new Error("Not authenticated");
+        
+        const data = await fetchMyReports(token);
+        setReports(data.reports);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load reports');
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadReports();
   }, []);
 
+  const statusCounts = useMemo(() => {
+    return {
+      All: reports.length,
+      Completed: reports.filter((r) => r.status === 'Completed').length,
+      'In Progress': reports.filter((r) => r.status === 'In Progress').length,
+      Saved: reports.filter((r) => r.status === 'Saved').length,
+    };
+  }, [reports]);
+
   const displayedReports = useMemo(() => {
-    const filtered = filterReports(MOCK_REPORTS, selectedStatus, fitFilter);
+    const filtered = filterReports(reports, selectedStatus, fitFilter);
     return sortReports(filtered, sortOption);
-  }, [selectedStatus, fitFilter, sortOption]);
+  }, [reports, selectedStatus, fitFilter, sortOption]);
 
   const groupedReports = useMemo(() => {
     return groupReportsByLocation(displayedReports);
   }, [displayedReports]);
 
   const locationKeys = Object.keys(groupedReports);
+
+  if (loading) {
+    return (
+      <div className="flex h-full min-h-[50vh] w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#167844]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-full min-h-[50vh] w-full items-center justify-center">
+        <div className="text-center text-red-600 font-medium">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-6 md:px-8 md:py-7">
