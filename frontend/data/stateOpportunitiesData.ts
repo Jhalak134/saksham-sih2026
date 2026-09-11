@@ -1,6 +1,13 @@
 // data/stateOpportunitiesData.ts
 // Comprehensive opportunities and trend profiles across Indian States and UTs.
 
+import {
+  type Census2011Metrics,
+  type ODOPMetrics,
+  getStateRealData,
+  STATE_REAL_DATA,
+} from './stateCensusODOPData';
+
 export type OpportunityLevel = 'High' | 'Medium' | 'Emerging' | 'Lower';
 
 export interface StateMoverStat {
@@ -23,6 +30,8 @@ export interface StateOpportunityProfile {
   readonly recommendedCapital: string;
   readonly demandLevel: 'High' | 'Medium' | 'Emerging';
   readonly nearbyHubsCount: number;
+  readonly census?: Census2011Metrics;
+  readonly odop?: ODOPMetrics;
   readonly featuredArticle: {
     readonly badge: string;
     readonly title: string;
@@ -53,6 +62,8 @@ export const STATE_OPPORTUNITY_PROFILES: Record<string, StateOpportunityProfile>
     recommendedCapital: '₹50,000 – ₹2,00,000',
     demandLevel: 'High',
     nearbyHubsCount: 8,
+    census: STATE_REAL_DATA.up.census_2011,
+    odop: STATE_REAL_DATA.up.odop,
     featuredArticle: {
       badge: 'Rising in Uttar Pradesh',
       title: 'Dairy registrations are up 34% this year',
@@ -596,50 +607,57 @@ export const STATE_OPPORTUNITY_PROFILES: Record<string, StateOpportunityProfile>
 
 // Fallback profile generator for all other states/UTs
 export function getStateOpportunityProfile(stateNameOrId: string | null): StateOpportunityProfile {
-  if (!stateNameOrId) {
-    return STATE_OPPORTUNITY_PROFILES.up;
-  }
-
-  const clean = stateNameOrId.trim().toLowerCase();
+  const clean = stateNameOrId ? stateNameOrId.trim().toLowerCase() : 'up';
+  const realData = getStateRealData(clean);
 
   // Look up by ID directly
+  let profile: StateOpportunityProfile | null = null;
   if (STATE_OPPORTUNITY_PROFILES[clean]) {
-    return STATE_OPPORTUNITY_PROFILES[clean];
+    profile = STATE_OPPORTUNITY_PROFILES[clean];
+  } else {
+    // Look up by name match
+    const matchedKey = Object.keys(STATE_OPPORTUNITY_PROFILES).find((k) => {
+      const p = STATE_OPPORTUNITY_PROFILES[k];
+      return p.name.toLowerCase() === clean || p.name.toLowerCase().includes(clean) || clean.includes(p.name.toLowerCase());
+    });
+    if (matchedKey && STATE_OPPORTUNITY_PROFILES[matchedKey]) {
+      profile = STATE_OPPORTUNITY_PROFILES[matchedKey];
+    }
   }
 
-  // Look up by name match
-  const matchedKey = Object.keys(STATE_OPPORTUNITY_PROFILES).find((k) => {
-    const p = STATE_OPPORTUNITY_PROFILES[k];
-    return p.name.toLowerCase() === clean || p.name.toLowerCase().includes(clean) || clean.includes(p.name.toLowerCase());
-  });
-
-  if (matchedKey && STATE_OPPORTUNITY_PROFILES[matchedKey]) {
-    return STATE_OPPORTUNITY_PROFILES[matchedKey];
+  if (profile) {
+    return {
+      ...profile,
+      census: profile.census ?? realData.census_2011,
+      odop: profile.odop ?? realData.odop,
+    };
   }
 
   // Default baseline for other regions
-  const displayName = stateNameOrId.length <= 3 ? stateNameOrId.toUpperCase() : stateNameOrId;
+  const displayName = realData.state_name || (stateNameOrId && stateNameOrId.length <= 3 ? stateNameOrId.toUpperCase() : stateNameOrId || 'Uttar Pradesh');
   return {
-    id: clean.slice(0, 2),
+    id: realData.state_code || clean.slice(0, 2),
     name: displayName,
     opportunityLevel: 'Emerging',
     headline: `Growing rural enterprises and micro services in ${displayName}`,
-    description: `Active government schemes and local retail demand present viable business startup opportunities across ${displayName}.`,
+    description: `Official Census records show a population of ${realData.census_2011.population ? (realData.census_2011.population / 10000000).toFixed(1) + ' Cr' : 'high density'} and ${realData.odop.districts_captured_in_odop_list} ODOP mapped districts led by ${realData.odop.leading_odop_sector}.`,
     topMovers: [
-      { title: 'Agri Processing', percent: 22, direction: 'up', subtitle: 'Local harvest packaging' },
-      { title: 'Retail & Kirana', percent: 17, direction: 'up', subtitle: 'Consumer goods supply' },
-      { title: 'Services & Repairs', percent: 12, direction: 'up', subtitle: 'Equipment maintenance' },
+      { title: `${realData.odop.leading_odop_sector} ODOP Units`, percent: Math.round((realData.odop.leading_sector_district_count / Math.max(realData.odop.districts_captured_in_odop_list, 1)) * 100), direction: 'up', subtitle: `${realData.odop.leading_sector_district_count} districts in ${displayName}` },
+      { title: 'Demographic Growth', percent: Math.round(realData.census_2011.growth_rate_percent ?? 18), direction: 'up', subtitle: 'Census 2011 decadal rate' },
+      { title: 'Literacy Rate', percent: Math.round(realData.census_2011.literacy_percent ?? 70), direction: 'up', subtitle: 'Workforce literacy' },
     ],
-    topCategory: 'Agri Processing',
+    topCategory: realData.odop.leading_odop_sector || 'Agri Processing',
     activeSchemes: [
       'PMFME Capital Subsidy (35%)',
       'PMEGP Credit Linked Capital Subsidy',
       'State Rural Livelihood Scheme',
     ],
-    feasibleUnitsCount: 420,
+    feasibleUnitsCount: realData.odop.districts_captured_in_odop_list * 20,
     recommendedCapital: '₹50,000 – ₹1,80,000',
     demandLevel: 'Emerging',
     nearbyHubsCount: 4,
+    census: realData.census_2011,
+    odop: realData.odop,
     featuredArticle: {
       badge: `Rising in ${displayName}`,
       title: `Micro-enterprise registrations growing in ${displayName}`,
