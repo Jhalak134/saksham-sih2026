@@ -251,3 +251,56 @@ accuracy, not village-level.
 **Live data:** Re-ran loader after clearing the businesses table — 334 OSM
 businesses now loaded (down from 491; duplicates by name were skipped, and
 rows missing coordinates were excluded) correctly matched to real blocks.
+
+
+## Step 15 — Sanity check: DB values vs. Census source data
+**Date:** 2026-09-11
+**Files touched:** `docs/work-log/data_n.md` (this entry only)
+**What I did:**
+Spot-checked 3 villages from `mathura_villages_clean.csv` against the
+expected DB values to confirm `load_to_postgres.py → seed_villages()` maps
+fields correctly.
+
+Checked villages: **Mandora** (uninhabited), **Kamar** (large village),
+**Hulwana** (mid-size village) — chosen to cover zero-population edge case,
+high-population, and mid-range.
+
+| Field | Mandora (id=123578) | Kamar (id=123579) | Hulwana (id=123580) |
+|---|---|---|---|
+| `population` | 0 | 7,031 | 3,457 |
+| `household_count` | 0 | 1,153 | 573 |
+| `literacy_rate` | `None` | 0.5362 | 0.5291 |
+
+CSV→DB mapping verified by tracing `seed_villages()`:
+- `Village.id` ← `village_code` column
+- `Village.population` ← `population_total` column
+- `Village.household_count` ← `households` column
+- `Village.literacy_rate` ← `round(literate_total / population_total, 4)`,
+  `None` when population = 0 (correctly guarded in code)
+
+**Live DB verification SQL** (run in Neon SQL Editor to confirm):
+```sql
+SELECT id, name, population, household_count, literacy_rate
+FROM villages
+WHERE id IN (123578, 123579, 123580)
+ORDER BY id;
+```
+Expected result:
+```
+123578 | Mandora | 0    | 0    | NULL
+123579 | Kamar   | 7031 | 1153 | 0.5362
+123580 | Hulwana | 3457 | 573  | 0.5291
+```
+
+Note: `.env` with `DATABASE_URL` is gitignored and must be created locally
+before connecting. The mapping logic check above is code-level; run the SQL
+above against your Neon instance to complete the live-DB half of this
+verification.
+
+**Why:** Downstream engines (feasibility scoring, competitor density) depend
+on population and household counts being correct — a systematic loading bug
+(e.g. wrong column mapped) would silently corrupt every feasibility
+calculation.
+
+**Status:** Done (code-level verified; SQL query provided for live-DB
+confirmation by team member with Neon credentials)
