@@ -1,0 +1,24 @@
+{
+  "reports": [
+    {
+      "id": "assess_001",
+      "location": "Kheragarh, Agra",
+      "category": "Dairy",
+      "createdAt": "2026-09-01T10:30:00Z",
+      "fitScore": 78,
+      "estimatedProfit": 42000,
+      "breakEvenMonths": 8,
+      "status": "In Progress"
+    },
+    {
+      "id": "assess_002",
+      "location": "Kheragarh, Agra",
+      "category": "Textiles",
+      "createdAt": "2026-08-20T14:00:00Z",
+      "fitScore": 65,
+      "estimatedProfit": 30000,
+      "breakEvenMonths": 11,
+      "status": "Draft"
+    }
+  ]
+}

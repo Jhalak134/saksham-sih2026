@@ -1,0 +1,26 @@
+{
+  "location": {
+    "village": "Kheragarh",
+    "district": "Agra",
+    "state": "Uttar Pradesh"
+  },
+  "topMovers": [
+    { "category": "Dairy", "trendPercent": 34, "direction": "up", "sparkline": [10, 14, 18, 22, 28, 34] },
+    { "category": "Textiles", "trendPercent": 21, "direction": "up", "sparkline": [5, 8, 12, 15, 18, 21] },
+    { "category": "Retail", "trendPercent": -8, "direction": "down", "sparkline": [10, 8, 6, 4, -2, -8] }
+  ],
+  "stateSelected": "Uttar Pradesh",
+  "insights": {
+    "population": 12480,
+    "populationGrowthPercent": 2.3,
+    "keyDemand": { "category": "Dairy products", "level": "High" },
+    "nearbyMarkets": 3
+  },
+  "categories": [
+    { "category": "Dairy", "trendPercent": 34, "direction": "up", "tag": "Seasonal", "withinBudget": true, "bookmarked": false },
+    { "category": "Textiles", "trendPercent": 21, "direction": "up", "tag": "Demand", "withinBudget": true, "bookmarked": false },
+    { "category": "Retail", "trendPercent": -8, "direction": "down", "tag": "Above your budget", "withinBudget": false, "bookmarked": false },
+    { "category": "Food Processing", "trendPercent": 15, "direction": "up", "tag": null, "withinBudget": true, "bookmarked": false },
+    { "category": "Logistics", "trendPercent": 0, "direction": "flat", "tag": "Above your budget", "withinBudget": false, "bookmarked": false }
+  ]
+}

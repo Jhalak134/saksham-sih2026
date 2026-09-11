@@ -1,0 +1,89 @@
+{
+  "id": "assess_001",
+  "createdAt": "2026-09-01T10:30:00Z",
+  "idea": "Dairy processing unit",
+  "category": "Dairy",
+  "location": {
+    "village": "Kheragarh",
+    "block": "Kheragarh",
+    "district": "Agra",
+    "state": "Uttar Pradesh"
+  },
+  "capital": 100000,
+  "fitScore": {
+    "score": 78,
+    "maxScore": 100,
+    "confidenceLabel": "Medium confidence"
+  },
+  "breakdown": [
+    { "label": "Market Opportunity", "score": 82, "maxScore": 100 },
+    { "label": "Competition", "score": 65, "maxScore": 100 },
+    { "label": "Capital Fit", "score": 88, "maxScore": 100 },
+    { "label": "Supply Risk", "score": 70, "maxScore": 100 }
+  ],
+  "finalRecommendation": "Proceed with a phased dairy processing setup, starting with a small-batch pasteurization unit.",
+  "supportingFactors": [
+    "High local demand for dairy products (34% YoY growth)",
+    "Only 2 direct competitors within 50km",
+    "Capital requirement fits PMEGP eligibility band"
+  ],
+  "keyInsights": [
+    "Dairy demand is seasonal — peak in winter months",
+    "Nearest cold storage facility is 12km away"
+  ],
+  "market": {
+    "snapshot": {
+      "demand": "High",
+      "marketSize": "₹2.4 Cr annually (block level)",
+      "growthTrend": 34
+    },
+    "localSummary": {
+      "households": 12480,
+      "competitors": 2,
+      "nearbyMarkets": 3
+    },
+    "topCustomerSegments": [
+      { "segment": "Local households", "sharePercent": 55 },
+      { "segment": "Tea stalls & small retailers", "sharePercent": 30 },
+      { "segment": "Sweet shops", "sharePercent": 15 }
+    ],
+    "keyRisks": [
+      "Milk price volatility during monsoon",
+      "Cold chain logistics gap"
+    ]
+  },
+  "financials": {
+    "financialStructure": {
+      "maxEligibility": 250000,
+      "schemeName": "PMEGP"
+    },
+    "recommendedStructure": {
+      "loanAmount": 100000,
+      "subsidyPercent": 25,
+      "tenureMonths": 36,
+      "suitability": "High"
+    },
+    "projectedFinancials": [
+      { "month": 1, "revenue": 15000, "expenses": 12000 },
+      { "month": 6, "revenue": 28000, "expenses": 18000 },
+      { "month": 12, "revenue": 42000, "expenses": 22000 }
+    ],
+    "breakEven": {
+      "months": 8,
+      "note": "Break-even expected by month 8 assuming steady demand"
+    }
+  },
+  "nextSteps": {
+    "progress": {
+      "completed": 1,
+      "total": 4
+    },
+    "steps": [
+      { "id": "step1", "label": "Apply for PMEGP scheme", "done": true },
+      { "id": "step2", "label": "Visit nearest bank branch for loan pre-approval", "done": false },
+      { "id": "step3", "label": "Arrange for cold storage partnership", "done": false },
+      { "id": "step4", "label": "Finalize equipment vendor quotes", "done": false }
+    ],
+    "personalNotes": ""
+  }
+}
