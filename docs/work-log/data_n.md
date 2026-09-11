@@ -304,3 +304,11 @@ calculation.
 
 **Status:** Done (code-level verified; SQL query provided for live-DB
 confirmation by team member with Neon credentials)
+
+queries.py is live on main. Functions ready for your engines:
+
+get_village_by_name(db, name), search_villages(db, query)
+get_scheme_for_cost(db, project_cost) — auto-picks Micro/Term Loan
+count_competitors_in_catchment(db, village_id, category_id)
+save_assessment(...), list_business_categories(db)
+Import from backend.app.db.queries. Need the Neon DB URL from me — ask and I'll send it separately.
