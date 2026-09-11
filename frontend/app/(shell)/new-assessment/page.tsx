@@ -62,8 +62,27 @@ function NewAssessmentContent(): React.JSX.Element {
   const { capital: shellCapital } = useShell();
   const searchParams = useSearchParams();
   const initialIdea = searchParams ? searchParams.get('idea') ?? '' : '';
+  const paramDistrict = searchParams ? searchParams.get('district') ?? '' : '';
+  const paramState = searchParams ? searchParams.get('state') ?? '' : '';
+  const paramLoc = searchParams ? searchParams.get('location') ?? '' : '';
+
+  let initialLocationId = '';
+  let initialLocationDisplay = '';
+  if (paramLoc) {
+    initialLocationId = 'loc_param';
+    initialLocationDisplay = paramLoc;
+  } else if (paramDistrict) {
+    initialLocationId = paramDistrict.toLowerCase() === 'mathura' ? 'loc_07' : 'loc_param';
+    initialLocationDisplay = `${paramDistrict}, ${paramState || 'Uttar Pradesh'}`;
+  }
+
   const router = useRouter();
-  const flow = useAssessmentFlow(shellCapital, initialIdea);
+  const flow = useAssessmentFlow(
+    shellCapital,
+    initialIdea,
+    initialLocationId,
+    initialLocationDisplay
+  );
   const { currentStep, stepIndex, session, next, back, updateSession, isComplete } = flow;
   const suggestedCategory = inferCategory(session.idea);
 
@@ -108,7 +127,7 @@ function NewAssessmentContent(): React.JSX.Element {
             New Assessment
           </h1>
           <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm">
-            Tell us about your business idea. You can describe it in plain language — no technical terms needed.
+            Select your location and describe your business idea in plain language — no technical terms needed.
           </p>
         </div>
 
@@ -119,6 +138,17 @@ function NewAssessmentContent(): React.JSX.Element {
 
         {/* Step-specific view */}
         <div className="mt-6 sm:mt-8">
+          {currentStep === 'location' && (
+            <StepLocation
+              locationId={session.locationId}
+              locationDisplay={session.locationDisplay}
+              onSelect={(id, display) =>
+                updateSession({ locationId: id, locationDisplay: display })
+              }
+              onContinue={next}
+            />
+          )}
+
           {currentStep === 'idea' && (
             <StepIdea
               value={session.idea}
@@ -135,17 +165,6 @@ function NewAssessmentContent(): React.JSX.Element {
               suggestedCategory={suggestedCategory}
               onCategoryChange={(c) => updateSession({ category: c })}
               onCapitalChange={(v) => updateSession({ capital: v })}
-              onContinue={next}
-            />
-          )}
-
-          {currentStep === 'location' && (
-            <StepLocation
-              locationId={session.locationId}
-              locationDisplay={session.locationDisplay}
-              onSelect={(id, display) =>
-                updateSession({ locationId: id, locationDisplay: display })
-              }
               onContinue={next}
             />
           )}

@@ -1,8 +1,0 @@
-state,district,market,commodity,variety,grade,arrival_date,min_price,max_price,modal_price,source,is_snapshot
-Uttar Pradesh,Mathura,Mathura APMC,Tomato,Other,FAQ,2026-09-10,2200,2800,2661.54,Agmarknet via data.gov.in,True
-Uttar Pradesh,Mathura,Mathura APMC,Green Chilli,Other,FAQ,2026-09-10,4000,4000,4000.0,Agmarknet via data.gov.in,True
-Uttar Pradesh,Mathura,Kosikalan APMC,Paddy(Common),Basmati,FAQ,2026-09-10,3676,3676,3676.0,Agmarknet via data.gov.in,True
-Uttar Pradesh,Mathura,Mathura APMC,Onion,Other,FAQ,2026-09-10,3000,3000,3000.0,Agmarknet via data.gov.in,True
-Uttar Pradesh,Mathura,Kosikalan APMC,Potato,Other,FAQ,2026-09-10,600,600,600.0,Agmarknet via data.gov.in,True
-Uttar Pradesh,Mathura,Mathura APMC,Potato,Other,FAQ,2026-09-10,600,600,600.0,Agmarknet via data.gov.in,True
-Uttar Pradesh,Mathura,Mathura APMC,Wheat,Medium,FAQ,2026-09-10,2600,2600,2600.0,Agmarknet via data.gov.in,True

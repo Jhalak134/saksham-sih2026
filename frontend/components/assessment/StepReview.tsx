@@ -1,10 +1,11 @@
-﻿// components/assessment/StepReview.tsx
+// components/assessment/StepReview.tsx
 'use client';
 
 import React from 'react';
 import { ArrowRight, Pencil } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import type { AssessmentSession } from '@/lib/assessment-session';
+import { isMathuraLocation } from '@/data/mockLocations';
 
 // ─── Review row ───────────────────────────────────────────────────────────────
 
@@ -30,7 +31,7 @@ function ReviewRow({ label, value, onEdit }: ReviewRowProps): React.JSX.Element 
         className={cn(
           'flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium',
           'text-[var(--color-text-muted)] hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-dark)]',
-          'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]'
+          'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] cursor-pointer'
         )}
       >
         <Pencil size={12} strokeWidth={2} aria-hidden="true" />
@@ -54,11 +55,15 @@ export function StepReview({
   goToStep,
   onSubmit,
 }: StepReviewProps): React.JSX.Element {
+  const isLocationValid =
+    session.locationId.length > 0 &&
+    isMathuraLocation(session.locationDisplay || session.locationId);
+
   const allFilled =
+    isLocationValid &&
     session.idea.trim().length >= 10 &&
     session.category.length > 0 &&
-    session.capital > 0 &&
-    session.locationId.length > 0;
+    session.capital > 0;
 
   const capitalDisplay = `\u20B9${session.capital.toLocaleString('en-IN')}`;
 
@@ -70,23 +75,23 @@ export function StepReview({
         </p>
 
         <ReviewRow
+          label="Location"
+          value={session.locationDisplay || '—'}
+          onEdit={() => goToStep(0)}
+        />
+        <ReviewRow
           label="Business Idea"
           value={session.idea.trim() || '—'}
-          onEdit={() => goToStep(0)}
+          onEdit={() => goToStep(1)}
         />
         <ReviewRow
           label="Category"
           value={session.category || '—'}
-          onEdit={() => goToStep(1)}
+          onEdit={() => goToStep(2)}
         />
         <ReviewRow
           label="Available Capital"
           value={session.capital > 0 ? capitalDisplay : '—'}
-          onEdit={() => goToStep(1)}
-        />
-        <ReviewRow
-          label="Location"
-          value={session.locationDisplay || '—'}
           onEdit={() => goToStep(2)}
         />
       </div>
