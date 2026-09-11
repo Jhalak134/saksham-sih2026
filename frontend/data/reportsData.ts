@@ -124,6 +124,37 @@ export interface DetailedReport {
     }[];
     readonly initialNotes: string;
   };
+  readonly aiInsights?: {
+    readonly explanation: string;
+    readonly recommendation: string;
+    readonly key_points?: readonly string[];
+    readonly keyPoints?: readonly string[];
+    readonly citations: readonly {
+      readonly source: string;
+      readonly title: string;
+      readonly page_start?: number;
+      readonly pageStart?: number;
+      readonly page_end?: number;
+      readonly pageEnd?: number;
+      readonly chunk_id?: string;
+      readonly chunkId?: string;
+      readonly text?: string;
+      readonly excerpt?: string;
+      readonly is_template_data?: boolean;
+      readonly document_id?: string;
+    }[];
+    readonly limitations: readonly string[];
+    readonly warnings: readonly string[];
+    readonly grounding_status?: string;
+    readonly groundingStatus?: string;
+    readonly retrieval_status?: string;
+    readonly retrievalStatus?: string;
+    readonly evidence_available?: boolean;
+    readonly evidenceAvailable?: boolean;
+    readonly source?: string;
+  };
+  readonly repaymentBurdenCategory?: string;
+  readonly isLiveBackend?: boolean;
 }
 
 export const MOCK_REPORTS: readonly ReportSummary[] = [
