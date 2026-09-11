@@ -20,6 +20,13 @@ interface BreakdownBarProps {
 }
 
 function BreakdownBar({ label, value }: BreakdownBarProps): React.JSX.Element {
+  const barColor =
+    value >= 7.5
+      ? 'bg-emerald-600'
+      : value >= 5.0
+      ? 'bg-amber-500'
+      : 'bg-rose-500';
+
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
@@ -28,8 +35,8 @@ function BreakdownBar({ label, value }: BreakdownBarProps): React.JSX.Element {
       </div>
       <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
         <div
-          className="h-full rounded-full bg-sky-600 transition-all duration-500"
-          style={{ width: `${(value / 10) * 100}%` }}
+          className={cn('h-full rounded-full transition-all duration-500', barColor)}
+          style={{ width: `${Math.min(100, Math.max(0, (value / 10) * 100))}%` }}
         />
       </div>
     </div>
@@ -40,6 +47,15 @@ export function DashboardTab({
   report,
   onNavigateFinancials,
 }: DashboardTabProps): React.JSX.Element {
+  const viabilityBadgeStyle =
+    report.viabilityLabel === 'Highly Feasible'
+      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+      : report.viabilityLabel === 'Feasible'
+      ? 'bg-teal-50 text-teal-800 border-teal-200'
+      : report.viabilityLabel === 'Moderate Fit'
+      ? 'bg-amber-50 text-amber-900 border-amber-300'
+      : 'bg-rose-50 text-rose-800 border-rose-200';
+
   return (
     <div className="space-y-6">
       {/* 1. Score Section: stacked on mobile, side-by-side on desktop (md:flex-row) */}
@@ -47,7 +63,7 @@ export function DashboardTab({
         {/* Ring & Verdict side */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 justify-between">
           <div>
-            <div className="inline-flex items-center gap-1.5 rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 border border-emerald-200">
+            <div className={cn('inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold border', viabilityBadgeStyle)}>
               <ShieldCheck size={14} />
               <span>{report.viabilityLabel}</span>
             </div>

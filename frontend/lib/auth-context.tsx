@@ -101,7 +101,7 @@ export function AuthProvider({
       setUser(profile);
       setStorageItem(STORAGE_KEYS.authUser, profile.phone_or_email);
       return profile;
-    } catch (err: unknown) {
+    } catch (err) {
       const msg = err instanceof Error ? err.message : 'Authentication failed';
       setError(msg);
       throw err;
@@ -129,7 +129,7 @@ export function AuthProvider({
       setUser(profile);
       setStorageItem(STORAGE_KEYS.authUser, profile.phone_or_email);
       return profile;
-    } catch (err: unknown) {
+    } catch (err) {
       const msg = err instanceof Error ? err.message : 'Failed to create profile';
       setError(msg);
       throw err;
@@ -140,6 +140,7 @@ export function AuthProvider({
 
   const logout = useCallback((): void => {
     removeStorageItem(STORAGE_KEYS.authUser);
+    removeStorageItem(STORAGE_KEYS.authToken);
     setUser(null);
     setError(null);
   }, []);

@@ -66,16 +66,14 @@ def setup_test_database():
         if not db.query(models.Block).first():
             db.add(models.Block(id=1, district_id=1, name="Chhata"))
             db.commit()
-        if not db.query(models.Village).first():
-            db.add(models.Village(
-                id=123579,
-                block_id=1,
-                name="Kamar",
-                population=7031,
-                household_count=1153,
-                literacy_rate=53.6,
-            ))
-            db.commit()
+        for v_data in [
+            {"id": 123579, "block_id": 1, "name": "Kamar", "population": 7031, "household_count": 1153, "literacy_rate": 53.6},
+            {"id": 123580, "block_id": 1, "name": "Barsana Rural", "population": 5200, "household_count": 850, "literacy_rate": 61.2},
+            {"id": 123581, "block_id": 1, "name": "Farah Dehat", "population": 6100, "household_count": 920, "literacy_rate": 64.5},
+        ]:
+            if not db.query(models.Village).filter(models.Village.id == v_data["id"]).first():
+                db.add(models.Village(**v_data))
+        db.commit()
     finally:
         db.close()
     yield

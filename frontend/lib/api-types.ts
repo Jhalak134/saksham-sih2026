@@ -6,9 +6,10 @@ export interface AssessmentRequest {
   category: string;
   capital: number;
   idea?: string;
+  village_id?: number;
+  location_query?: string;
   language?: string;
   phone_or_email?: string;
-  village_id?: number;
 }
 
 export interface VillageLocation {
@@ -26,7 +27,7 @@ export interface AIQueryRequest {
   query: string;
   language?: string;
   top_k?: number;
-  calculations?: Record<string, unknown>;
+  calculations?: Record<string, string | number | boolean | null>;
 }
 
 export interface AIQueryResponse {
