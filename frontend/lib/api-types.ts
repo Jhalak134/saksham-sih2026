@@ -6,6 +6,8 @@ export interface AssessmentRequest {
   category: string;
   capital: number;
   idea?: string;
+  village_id?: number;
+  location_query?: string;
   language?: string;
   phone_or_email?: string;
 }
