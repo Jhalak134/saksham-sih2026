@@ -305,10 +305,14 @@ calculation.
 **Status:** Done (code-level verified; SQL query provided for live-DB
 confirmation by team member with Neon credentials)
 
-queries.py is live on main. Functions ready for your engines:
-
-get_village_by_name(db, name), search_villages(db, query)
-get_scheme_for_cost(db, project_cost) — auto-picks Micro/Term Loan
-count_competitors_in_catchment(db, village_id, category_id)
-save_assessment(...), list_business_categories(db)
-Import from backend.app.db.queries. Need the Neon DB URL from me — ask and I'll send it separately.
+## Step 16 — Handed off queries.py to backend_s
+**Date:** 2026-09-11
+**Files touched:** `backend/app/db/queries.py` (already written), `docs/work-log/data_n.md`
+**What I did:** Messaged backend_s teammate that `queries.py` is live on
+main and ready to use. Shared the key function signatures: `get_village_by_name`,
+`search_villages`, `get_scheme_for_cost`, `count_competitors_in_catchment`,
+`save_assessment`, `list_business_categories`. Noted they need the Neon
+`DATABASE_URL` separately (not in repo).
+**Why:** backend_s can't build engine logic against real data until they
+know what query functions exist — this unblocks their feasibility engine work.
+**Status:** Done
