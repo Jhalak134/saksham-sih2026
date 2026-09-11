@@ -28,17 +28,15 @@ export function StateInsightsBar({
   const activeStateName = selectedState ?? 'Uttar Pradesh';
   const profile = getStateOpportunityProfile(activeStateName);
 
-  // Check if active region is Uttar Pradesh / Mathura (Active Pilot)
+  // Check if active region is Uttar Pradesh (Active Pilot)
   const isUP =
     activeStateName.toLowerCase().includes('uttar pradesh') ||
-    activeStateName.toLowerCase() === 'up' ||
-    (selectedDistrict && selectedDistrict.toLowerCase().includes('mathura'));
+    activeStateName.toLowerCase() === 'up';
 
   const handleStartAssessment = () => {
     if (isUP) {
       setComingSoonMessage(null);
-      const districtParam = selectedDistrict ? `&district=${encodeURIComponent(selectedDistrict)}` : '';
-      router.push(`/new-assessment?state=${encodeURIComponent(activeStateName)}${districtParam}`);
+      router.push(`/new-assessment?state=${encodeURIComponent(activeStateName)}`);
     } else {
       setComingSoonMessage(
         `Sorry, assessments are currently active only in Uttar Pradesh (Pilot Region). Expansion to ${activeStateName} is coming soon!`
@@ -61,10 +59,10 @@ export function StateInsightsBar({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 leading-tight">
-                {selectedDistrict ? `${selectedDistrict}, ${activeStateName}` : activeStateName}
+                {activeStateName}
               </h3>
               <p className="text-[11px] text-slate-500">
-                {selectedDistrict ? 'District Level Focus' : 'State Opportunities & Pilot Insights'}
+                State Opportunities & Pilot Insights
               </p>
             </div>
           </div>
