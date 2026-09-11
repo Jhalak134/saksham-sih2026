@@ -7,7 +7,7 @@ Operates on models defined in backend.app.db.models.
 
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, func
+from sqlalchemy import or_, func, String
 
 from backend.app.db.models import (
     State,
@@ -39,7 +39,7 @@ def search_villages(db: Session, query: str, limit: int = 10) -> List[Village]:
         .filter(
             or_(
                 Village.name.ilike(q),
-                func.cast(Village.id, str).ilike(q),
+                func.cast(Village.id, String).ilike(q),
             )
         )
         .limit(limit)

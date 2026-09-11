@@ -126,9 +126,9 @@ function NewAssessmentContent(): React.JSX.Element {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-4 sm:px-6 sm:py-8">
+    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
       {/* Centered White Card Container */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5 sm:p-8 md:p-10 shadow-xs">
+      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-6 sm:p-10 lg:p-12 shadow-xs">
         {/* Back navigation */}
         <button
           type="button"
@@ -144,14 +144,14 @@ function NewAssessmentContent(): React.JSX.Element {
         </button>
 
         {/* Card header */}
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-xl font-bold tracking-tight text-[var(--color-text-dark)] sm:text-2xl">
             New Assessment
           </h1>
         </div>
 
         {/* Stepper */}
-        <div className="my-6 sm:my-8">
+        <div className="my-5 sm:my-7">
           <StepIndicator activeStepIndex={stepIndex} isComplete={isComplete} />
         </div>
 
@@ -189,7 +189,7 @@ function NewAssessmentContent(): React.JSX.Element {
           )}
 
           {currentStep === 'review' && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4">
               {submitError && (
                 <div
                   className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
