@@ -89,7 +89,7 @@ export function DiscoverScreen(): React.JSX.Element {
           </div>
         </div>
 
-        {/* 2. BOTTOM HALF: Space for Featured Article / Category Details (Left) + 4 Categories with "See all" scroll (Right) */}
+        {/* 2. BOTTOM HALF: Space for Live News Carousel / Category Details (Left) + 4 Categories with "See all" scroll (Right) */}
         <ArticleCategorySection
           stateName={selectedState ?? 'Uttar Pradesh'}
           availableCapital={formattedCapital}
