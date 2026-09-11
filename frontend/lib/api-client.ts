@@ -1,7 +1,61 @@
 // lib/api-client.ts
-// HTTP client stubs — real endpoints wired in Part 13.
-// Each function returns the documented response shape with fake data so
-// Parts 3–7 can be built against the correct contract.
+// HTTP client for backend integration.
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+export interface UserResponse {
+  id: number;
+  phone_or_email: string;
+  home_location: string | null;
+  default_capital: number | null;
+  preferred_language: string | null;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in_hours: number;
+  user: UserResponse;
+}
+
+/** Helper to handle JSON fetch with standard error unwrapping. */
+async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options?.headers,
+    },
+  });
+  if (!res.ok) {
+    let msg = `HTTP ${res.status}`;
+    try {
+      const data = await res.json();
+      if (data.detail) msg = typeof data.detail === 'string' ? data.detail : data.detail[0]?.msg || msg;
+    } catch {}
+    throw new Error(msg);
+  }
+  return res.json() as Promise<T>;
+}
+
+export async function login(phone_or_email: string, password: string): Promise<TokenResponse> {
+  return fetchJson<TokenResponse>(`${API_BASE}/auth/login`, {
+    method: 'POST',
+    body: JSON.stringify({ phone_or_email, password }),
+  });
+}
+
+export async function signup(
+  phone_or_email: string,
+  password: string,
+  home_location: string = '',
+  preferred_language: string = 'en'
+): Promise<TokenResponse> {
+  return fetchJson<TokenResponse>(`${API_BASE}/auth/signup`, {
+    method: 'POST',
+    body: JSON.stringify({ phone_or_email, password, home_location, preferred_language }),
+  });
+}
 
 export interface InsightsResponse {
   location: string;
