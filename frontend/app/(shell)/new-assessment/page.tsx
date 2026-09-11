@@ -67,6 +67,7 @@ function NewAssessmentContent(): React.JSX.Element {
   const paramDistrict = searchParams ? searchParams.get('district') ?? '' : '';
   const paramState = searchParams ? searchParams.get('state') ?? '' : '';
   const paramLoc = searchParams ? searchParams.get('location') ?? '' : '';
+  const paramCategory = searchParams ? searchParams.get('category') ?? '' : '';
 
   let initialLocationId = '';
   let initialLocationDisplay = '';
@@ -92,6 +93,13 @@ function NewAssessmentContent(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
   const hasHydratedRef = React.useRef(false);
+
+  // Auto-select category if provided via query params or inferred from idea
+  React.useEffect(() => {
+    if (paramCategory && !session.category) {
+      updateSession({ category: paramCategory });
+    }
+  }, [paramCategory, session.category, updateSession]);
 
   // Hydrate saved user location on client after initial render to avoid SSR mismatch
   React.useEffect(() => {
@@ -129,12 +137,25 @@ function NewAssessmentContent(): React.JSX.Element {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const isNumericId = /^\d+$/.test(session.locationId);
-      const locationValue = session.locationDisplay || session.locationId;
+      let parsedVillageId: number | undefined = undefined;
+      if (session.locationId) {
+        if (/^\d+$/.test(session.locationId)) {
+          parsedVillageId = Number(session.locationId);
+        } else if (session.locationId.startsWith('loc_v_')) {
+          const idNum = parseInt(session.locationId.replace('loc_v_', ''), 10);
+          if (Number.isFinite(idNum)) {
+            parsedVillageId = idNum;
+          }
+        }
+      }
+
+      const chosenCategory = session.category || suggestedCategory || paramCategory || 'Dairy';
+      const locationValue = session.locationDisplay || session.locationId || 'Bera';
+
       const res = await createAssessment({
         location: locationValue,
-        village_id: isNumericId ? Number(session.locationId) : undefined,
-        category: session.category,
+        village_id: parsedVillageId,
+        category: chosenCategory,
         capital: session.capital,
         idea: session.idea.trim() || undefined,
         language: 'en',

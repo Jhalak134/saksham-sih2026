@@ -3,6 +3,14 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+const mockPush = vi.fn();
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockPush,
+  }),
+  usePathname: () => '/',
+}));
+
 vi.mock('next/link', () => ({
   default: ({ href, children, className, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) => (
     <a href={href} className={className} {...rest}>{children}</a>
@@ -37,7 +45,7 @@ describe('Header — Global AI Search Component', () => {
 
   it('renders search input with placeholder and prompt in header', () => {
     renderHeader();
-    const searchInputs = screen.getAllByRole('searchbox');
+    const searchInputs = screen.getAllByRole('combobox');
     expect(searchInputs.length).toBeGreaterThanOrEqual(1);
     expect(searchInputs[0]).toHaveAttribute(
       'placeholder',
@@ -81,7 +89,7 @@ describe('Header — Global AI Search Component', () => {
     });
 
     renderHeader();
-    const searchInput = screen.getAllByRole('searchbox')[0];
+    const searchInput = screen.getAllByRole('combobox')[0];
     await userEvent.type(searchInput, 'What dairy opportunities exist in Bera?');
 
     const form = screen.getAllByRole('search')[0];
@@ -112,7 +120,7 @@ describe('Header — Global AI Search Component', () => {
     );
 
     renderHeader();
-    const searchInput = screen.getAllByRole('searchbox')[0];
+    const searchInput = screen.getAllByRole('combobox')[0];
     await userEvent.type(searchInput, 'Failing query');
     const form = screen.getAllByRole('search')[0];
     fireEvent.submit(form);
@@ -165,7 +173,7 @@ describe('Header — Global AI Search Component', () => {
     });
 
     renderHeader();
-    const searchInput = screen.getAllByRole('searchbox')[0];
+    const searchInput = screen.getAllByRole('combobox')[0];
     await userEvent.type(searchInput, 'General query');
     fireEvent.submit(screen.getAllByRole('search')[0]);
 

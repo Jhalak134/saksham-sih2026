@@ -10,6 +10,7 @@ providing the complete analytical report.
 
 from typing import Optional, List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 
@@ -42,7 +43,7 @@ class AssessmentRequest(BaseModel):
     location: Optional[str] = Field(None, description="Village name, code, or search string")
     location_query: Optional[str] = None
     village_id: Optional[int] = None
-    category: Optional[str] = Field("Dairy", description="Business category name")
+    category: Optional[str] = Field(None, description="Business category name")
     category_id: Optional[int] = None
     capital: Optional[float] = Field(None, description="Available margin capital in INR")
     available_capital: Optional[float] = None
@@ -52,8 +53,65 @@ class AssessmentRequest(BaseModel):
     phone_or_email: Optional[str] = "guest_entrepreneur@saksham.gov.in"
 
 
+CATEGORY_ALIASES = {
+    "dairy": "Dairy",
+    "milk": "Dairy",
+    "ghee": "Dairy",
+    "paneer": "Dairy",
+    "retail": "Retail",
+    "kirana": "Retail",
+    "store": "Retail",
+    "shop": "Retail",
+    "grocery": "Grocery/Retail",
+    "grocery/retail": "Grocery/Retail",
+    "textiles": "Textiles",
+    "textile": "Textiles",
+    "tailoring": "Tailoring",
+    "stitching": "Tailoring",
+    "boutique": "Tailoring",
+    "garment": "Textiles",
+    "garments": "Textiles",
+    "clothes": "Textiles",
+    "clothing": "Textiles",
+    "food": "Food Processing",
+    "food processing": "Food Processing",
+    "processing": "Food Processing",
+    "flour mill": "Flour Mill",
+    "atta chakki": "Flour Mill",
+    "oil mill": "Food Processing",
+    "agriculture": "Agriculture",
+    "agri": "Agriculture",
+    "farm": "Agriculture",
+    "farming": "Agriculture",
+    "agri-input": "Agri-input Store",
+    "poultry": "Poultry",
+    "vegetable": "Vegetable Trading",
+    "restaurant": "Restaurant",
+    "repair": "Mobile Repair",
+    "mobile": "Mobile Repair",
+    "logistics": "Logistics",
+    "transport": "Logistics",
+    "delivery": "Logistics",
+    "handicrafts": "Handicrafts",
+    "handicraft": "Handicrafts",
+    "craft": "Handicrafts",
+    "pottery": "Handicrafts",
+    "education": "Education",
+    "coaching": "Education",
+    "school": "Education",
+    "tuition": "Education",
+}
+
+
 def _resolve_assessment_village(db: Session, req: AssessmentRequest) -> Village:
-    loc_str = str(req.village_id) if req.village_id else (req.location or req.location_query or "Kamar")
+    # 1. Prioritize explicit numeric village_id
+    if req.village_id:
+        v_by_id = db.query(Village).filter(Village.id == req.village_id).first()
+        if v_by_id:
+            return v_by_id
+
+    # 2. Resolve via search string
+    loc_str = req.location or req.location_query or "Kamar"
     resolved = resolve_location(db, loc_str)
     village = resolved.get("village")
     if not village:
@@ -67,8 +125,42 @@ def _resolve_assessment_category(db: Session, req: AssessmentRequest) -> Busines
     cat: Optional[BusinessCategory] = None
     if req.category_id is not None:
         cat = get_category_by_id(db, req.category_id)
-    if not cat and req.category:
-        cat = get_category_by_name(db, req.category)
+        if cat:
+            return cat
+
+    cat_str = (req.category or "").strip()
+
+    # If category wasn't explicitly provided, infer from idea keywords
+    if not cat_str:
+        if req.idea and req.idea.strip():
+            idea_lower = req.idea.lower()
+            for k in sorted(CATEGORY_ALIASES.keys(), key=len, reverse=True):
+                if k in idea_lower:
+                    cat_str = CATEGORY_ALIASES[k]
+                    break
+
+    clean_c = cat_str.strip().lower()
+
+    # 1. Exact match
+    if clean_c:
+        cat = db.query(BusinessCategory).filter(func.lower(BusinessCategory.name) == clean_c).first()
+
+    # 2. Alias keyword matching (longest keyword first)
+    if not cat and clean_c:
+        for k in sorted(CATEGORY_ALIASES.keys(), key=len, reverse=True):
+            if k in clean_c:
+                target_name = CATEGORY_ALIASES[k]
+                cat = db.query(BusinessCategory).filter(func.lower(BusinessCategory.name) == target_name.lower()).first()
+                if cat:
+                    break
+
+    # 3. Substring match
+    if not cat and clean_c:
+        cat = db.query(BusinessCategory).filter(BusinessCategory.name.ilike(f"%{clean_c}%")).first()
+
+    # 4. Fallback to Dairy if nothing matched
+    if not cat:
+        cat = db.query(BusinessCategory).filter(func.lower(BusinessCategory.name) == "dairy").first()
     if not cat:
         cat = db.query(BusinessCategory).first()
     if not cat:
@@ -100,6 +192,8 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         available_margin=margin,
         category_name=cat.name,
         scheme=selected_scheme,
+        village=village,
+        competitor_count=comp_count,
     )
 
     # 6. Explainable Feasibility Evaluation
@@ -108,6 +202,7 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         category=cat,
         capital_input=margin,
         competitor_count=comp_count,
+        idea=req.idea,
     )
 
     # 7. AI Advisory & Explanations (Decoupled with safe fallback)
@@ -175,7 +270,7 @@ def _build_village_dict(v: Optional[Village]) -> Optional[Dict[str, Any]]:
         "state": "Uttar Pradesh",
         "population": v.population or 0,
         "households": v.household_count or 0,
-        "literacy_rate": v.literacy_rate or 0.0,
+        "literacy_rate": round(v.literacy_rate * 100.0, 1) if (v.literacy_rate is not None and v.literacy_rate <= 1.0) else (v.literacy_rate or 0.0),
     }
 
 
