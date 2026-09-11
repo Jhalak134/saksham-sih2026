@@ -73,14 +73,14 @@ function SelectedChip({ display, isPilot, onClear }: SelectedChipProps): React.J
   return (
     <div
       className={cn(
-        'flex items-center gap-2 rounded-lg border px-3 py-2.5 transition-colors',
+        'flex items-center gap-2 rounded-xl border px-3.5 py-3 transition-colors shadow-2xs',
         isPilot
-          ? 'border-emerald-300 bg-emerald-50/60'
-          : 'border-amber-300 bg-amber-50/60'
+          ? 'border-emerald-300 bg-emerald-50/70'
+          : 'border-amber-300 bg-amber-50/70'
       )}
     >
       <MapPin
-        size={16}
+        size={18}
         strokeWidth={2}
         className={cn('shrink-0', isPilot ? 'text-emerald-700' : 'text-amber-700')}
         aria-hidden="true"
@@ -89,14 +89,24 @@ function SelectedChip({ display, isPilot, onClear }: SelectedChipProps): React.J
         <span className="text-sm font-semibold text-[var(--color-text-dark)] block truncate">
           {display}
         </span>
+        <span className="text-[11px] text-slate-500 block">
+          {isPilot ? 'Selected pilot location' : 'Saved location'}
+        </span>
       </div>
       <button
         type="button"
         onClick={onClear}
-        aria-label={`Remove ${display}`}
-        className="rounded p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-800 transition-colors"
+        className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 px-2 py-1 rounded-md hover:bg-emerald-100/60 transition-colors cursor-pointer mr-1"
       >
-        <X size={15} strokeWidth={2.5} aria-hidden="true" />
+        Change
+      </button>
+      <button
+        type="button"
+        onClick={onClear}
+        aria-label={`Remove ${display}`}
+        className="rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-800 transition-colors cursor-pointer"
+      >
+        <X size={16} strokeWidth={2.5} aria-hidden="true" />
       </button>
     </div>
   );

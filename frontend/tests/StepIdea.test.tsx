@@ -143,5 +143,26 @@ describe('StepIdea — interactions', () => {
     await userEvent.type(textarea, '{Control>}{Enter}{/Control}');
     expect(onContinue).toHaveBeenCalled();
   });
+
+  it('renders the voice input mic button and language toggles', async () => {
+    render(<StepIdea value="" onChange={vi.fn()} onContinue={vi.fn()} />);
+    expect(screen.getByRole('button', { name: /start voice input/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /हिन्दी/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /english/i })).toBeInTheDocument();
+  });
+
+  it('allows toggling between Hindi and English speech language', async () => {
+    const user = userEvent.setup();
+    render(<StepIdea value="" onChange={vi.fn()} onContinue={vi.fn()} />);
+    const englishBtn = screen.getByRole('button', { name: /english/i });
+    const hindiBtn = screen.getByRole('button', { name: /हिन्दी/i });
+
+    await user.click(englishBtn);
+    expect(screen.getByText('Speak')).toBeInTheDocument();
+
+    await user.click(hindiBtn);
+    expect(screen.getByText('बोलकर लिखें')).toBeInTheDocument();
+  });
 });
+
 
