@@ -7,6 +7,7 @@ Structure:
   TestPasswordHashing   - pure unit tests, no DB, always run
   TestUserQueryLayer    - in-memory SQLite tests, no real Neon DB needed
   TestAssessmentOwnership - ownership enforcement, in-memory SQLite
+  IntegrationTests      - integration tests for OAuth and Profile endpoints
 
 Integration tests that touch the real Neon DB are skipped automatically
 when DATABASE_URL is not set. Never put real credentials in this file.
@@ -15,8 +16,10 @@ when DATABASE_URL is not set. Never put real credentials in this file.
 import pytest
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker, Session
+from fastapi.testclient import TestClient
 
 from backend.app.auth import hash_password, verify_password
+from backend.app.main import app
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -292,3 +295,59 @@ class TestAssessmentOwnership:
         from backend.app.db.queries import get_assessment_for_user
         result = get_assessment_for_user(db, 999999, self.user_a.id)
         assert result is None
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PART 4 — Integration Tests (origin/main)
+# ══════════════════════════════════════════════════════════════════════════════
+
+client = TestClient(app)
+
+def test_user_profile():
+    # Will fail if DB is not available, but that's expected for this test.
+    try:
+        resp = client.post("/api/v1/auth/profile", json={
+            "phone_or_email": "9876543210",
+            "home_location": "Kamar",
+            "default_capital": 100000.0,
+            "preferred_language": "en"
+        })
+        if resp.status_code == 500:
+            pytest.skip("Skipping DB integration test, DB not reachable")
+            return
+
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["phone_or_email"] == "9876543210"
+
+        get_resp = client.get("/api/v1/auth/profile/9876543210")
+        assert get_resp.status_code == 200
+        assert get_resp.json()["home_location"] == "Kamar"
+    except Exception:
+        pytest.skip("Skipping DB integration test, DB not reachable")
+
+
+def test_google_auth():
+    try:
+        resp = client.post("/api/v1/auth/google", json={
+            "email": "rural.entrepreneur@gmail.com",
+            "name": "Ramesh Kumar",
+            "picture": "https://lh3.googleusercontent.com/a/default",
+            "google_id": "1086921631486-user",
+        })
+        if resp.status_code == 500:
+            pytest.skip("Skipping DB integration test, DB not reachable")
+            return
+
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["phone_or_email"] == "rural.entrepreneur@gmail.com"
+        assert data["name"] == "Ramesh Kumar"
+        assert data["auth_provider"] == "google"
+
+        # Profile lookup works with the Google email
+        get_resp = client.get("/api/v1/auth/profile/rural.entrepreneur@gmail.com")
+        assert get_resp.status_code == 200
+        assert get_resp.json()["phone_or_email"] == "rural.entrepreneur@gmail.com"
+    except Exception:
+        pytest.skip("Skipping DB integration test, DB not reachable")

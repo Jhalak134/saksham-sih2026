@@ -56,6 +56,14 @@ function groupReportsByLocation(
   return grouped;
 }
 
+function resolveCategoryIcon(category: string): 'dairy' | 'mobile' | 'solar' | 'tailoring' {
+  const c = category.toLowerCase();
+  if (c.includes('dairy') || c.includes('milk')) return 'dairy';
+  if (c.includes('solar') || c.includes('energy')) return 'solar';
+  if (c.includes('tailor') || c.includes('textile') || c.includes('garment')) return 'tailoring';
+  return 'mobile';
+}
+
 export function MyReportsScreen(): React.JSX.Element {
   const [reports, setReports] = useState<ReportSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +72,6 @@ export function MyReportsScreen(): React.JSX.Element {
   const [selectedStatus, setSelectedStatus] = useState<AssessmentStatus | 'All'>('All');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
   const [fitFilter, setFitFilter] = useState<FitFilterOption>('all');
-
   useEffect(() => {
     async function loadReports() {
       try {

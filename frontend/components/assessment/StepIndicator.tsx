@@ -64,7 +64,7 @@ export function StepIndicator({
   isComplete,
 }: StepIndicatorProps): React.JSX.Element {
   return (
-    <div className="flex items-center w-full max-w-lg mx-auto" role="list" aria-label="Assessment steps">
+    <div className="flex items-center w-full max-w-2xl mx-auto" role="list" aria-label="Assessment steps">
       {ASSESSMENT_STEPS.map((step, idx) => {
         const state = resolveState(step, activeStepIndex, isComplete);
         const isLast = idx === ASSESSMENT_STEPS.length - 1;

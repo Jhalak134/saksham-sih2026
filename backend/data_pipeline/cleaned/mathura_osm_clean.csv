@@ -1,0 +1,492 @@
+osm_id,name,category,subcategory,latitude,longitude,source,collection_date
+way/99418393,निधिवन,amenity,place_of_worship,27.5843536,77.6983001,OpenStreetMap,2026-09-10
+way/99418402,Swami Bon Maharaj College,amenity,school,27.5707977,77.6790701,OpenStreetMap,2026-09-10
+way/99418412,सेवा कुंज,amenity,place_of_worship,27.582402,77.695084,OpenStreetMap,2026-09-10
+way/99418417,श्री रंगनाथ मंदिर,amenity,place_of_worship,27.5823375,77.7027746,OpenStreetMap,2026-09-10
+way/99427126,Govinda Kund,amenity,place_of_worship,27.5742188,77.6993779,OpenStreetMap,2026-09-10
+way/99427138,Govind Dev Temple,amenity,place_of_worship,27.5814379,77.6994134,OpenStreetMap,2026-09-10
+way/120531775,"Shri Krishna Janmasthan Temple, Mathura",amenity,place_of_worship,27.5047707,77.669705,OpenStreetMap,2026-09-10
+way/169830344,Shahi Mosque Eidgah,amenity,place_of_worship,27.5054261,77.6696934,OpenStreetMap,2026-09-10
+way/229134115,Shri Krishna Garbh Gruha,amenity,place_of_worship,27.5054273,77.6693341,OpenStreetMap,2026-09-10
+way/334201981,Unnamed,amenity,parking,27.5721016,77.6783032,OpenStreetMap,2026-09-10
+way/334201989,Bhaktivedanta Gurukul,amenity,school,27.5723514,77.677877,OpenStreetMap,2026-09-10
+way/334202001,श्री श्री कृष्ण-बलराम मंदिर,amenity,place_of_worship,27.5724629,77.6777276,OpenStreetMap,2026-09-10
+way/334202007,Unnamed,amenity,post_office,27.5722102,77.6781096,OpenStreetMap,2026-09-10
+way/334669314,Sripad Prabodhananda Sarasvati Samadhi,amenity,place_of_worship,27.5780658,77.6847832,OpenStreetMap,2026-09-10
+way/334669919,Kaliya Ghata,amenity,place_of_worship,27.578328,77.6846537,OpenStreetMap,2026-09-10
+way/334671983,मदन मोहन मंदिर,amenity,place_of_worship,27.5802525,77.6876099,OpenStreetMap,2026-09-10
+way/334671985,Unnamed,amenity,place_of_worship,27.5800186,77.6871515,OpenStreetMap,2026-09-10
+way/334674939,Sri Radha Damodara Mandir,amenity,place_of_worship,27.5837612,77.6956061,OpenStreetMap,2026-09-10
+way/335527342,Sri Gopal Bhatta Samadhi Mandir,amenity,place_of_worship,27.5857061,77.6986598,OpenStreetMap,2026-09-10
+way/335527344,Sri Radha Raman Mandir,amenity,place_of_worship,27.5853793,77.6987246,OpenStreetMap,2026-09-10
+way/335534876,Sri Giriraja Govardhan (Govardhan Parvat),amenity,place_of_worship,27.4771542,77.4467821,OpenStreetMap,2026-09-10
+way/335565194,Harideva Mandir,amenity,place_of_worship,27.496892,77.4642869,OpenStreetMap,2026-09-10
+way/335565195,Madhavendra Puri Bhadjan Kutir,amenity,place_of_worship,27.4687933,77.4397895,OpenStreetMap,2026-09-10
+way/335565200,Manasi Ganga,amenity,place_of_worship,27.4989529,77.463881,OpenStreetMap,2026-09-10
+way/335565202,Sanatana Goswami Bhajan Kutir,amenity,place_of_worship,27.4983911,77.4640212,OpenStreetMap,2026-09-10
+way/335568945,GIRIRAJJI MUKHARVIND,amenity,place_of_worship,27.4733685,77.4426153,OpenStreetMap,2026-09-10
+way/335568946,Radha Uddhava Bihari Temple,amenity,place_of_worship,27.5139516,77.4765091,OpenStreetMap,2026-09-10
+way/335568949,Unnamed,amenity,place_of_worship,27.5241322,77.486216,OpenStreetMap,2026-09-10
+way/335571304,Samadhi Raghunath das goswami,amenity,place_of_worship,27.5257026,77.4914164,OpenStreetMap,2026-09-10
+way/335852213,श्री राधा गोकुलानंद मंदिर,amenity,place_of_worship,27.5861973,77.6987825,OpenStreetMap,2026-09-10
+way/430061161,Kusum Sarovar,amenity,place_of_worship,27.5119788,77.4783952,OpenStreetMap,2026-09-10
+way/491803653,Prem Mandir,amenity,place_of_worship,27.5720921,77.6720373,OpenStreetMap,2026-09-10
+way/491875572,Dwarikadeesh Temple,amenity,place_of_worship,27.5051686,77.6848965,OpenStreetMap,2026-09-10
+way/558620803,Baba Jai Guru Dev Mandir,amenity,place_of_worship,27.4759293,77.6573136,OpenStreetMap,2026-09-10
+way/558621084,Sainik,amenity,restaurant,27.4439767,77.6892218,OpenStreetMap,2026-09-10
+node/617763098,Indian Oil,amenity,fuel,27.5621729,77.6259754,OpenStreetMap,2026-09-10
+way/628041544,Unnamed,amenity,parking,27.4944963,77.6789039,OpenStreetMap,2026-09-10
+way/628054452,Unnamed,amenity,parking,27.4946738,77.6764649,OpenStreetMap,2026-09-10
+way/628167715,Unnamed,amenity,parking,27.4916476,77.6856724,OpenStreetMap,2026-09-10
+way/671039232,Unnamed,amenity,place_of_worship,27.5634485,77.6382821,OpenStreetMap,2026-09-10
+way/671638009,District Combined Hospital Mathura,amenity,hospital,27.5591684,77.6817633,OpenStreetMap,2026-09-10
+way/671678178,Unnamed,amenity,parking,27.5809784,77.6865256,OpenStreetMap,2026-09-10
+way/671678180,Brahma Kund,amenity,place_of_worship,27.5833192,77.701392,OpenStreetMap,2026-09-10
+way/671782676,Unnamed,amenity,place_of_worship,27.4612529,77.6479527,OpenStreetMap,2026-09-10
+way/671782752,Sri Dauji Temple,amenity,place_of_worship,27.429447,77.6360679,OpenStreetMap,2026-09-10
+way/671782849,Unnamed,amenity,college,27.4947937,77.5739881,OpenStreetMap,2026-09-10
+way/671814600,Unnamed,amenity,place_of_worship,27.4979176,77.69395,OpenStreetMap,2026-09-10
+way/671911756,Unnamed,amenity,school,27.463145,77.6247329,OpenStreetMap,2026-09-10
+way/671911757,Unnamed,amenity,school,27.4611744,77.622225,OpenStreetMap,2026-09-10
+way/671911788,Shantanu Bihari Temple,amenity,place_of_worship,27.4984753,77.6261287,OpenStreetMap,2026-09-10
+way/672270937,Unnamed,amenity,place_of_worship,27.391979,77.7283868,OpenStreetMap,2026-09-10
+way/672348231,Unnamed,amenity,place_of_worship,27.413365,77.5058144,OpenStreetMap,2026-09-10
+way/672362606,Unnamed,amenity,school,27.391882,77.6224302,OpenStreetMap,2026-09-10
+way/672362644,Unnamed,amenity,place_of_worship,27.4284185,77.6000023,OpenStreetMap,2026-09-10
+way/672362645,Unnamed,amenity,place_of_worship,27.4504746,77.6002603,OpenStreetMap,2026-09-10
+way/672374329,Unnamed,amenity,place_of_worship,27.3387192,77.7315136,OpenStreetMap,2026-09-10
+way/672374330,Unnamed,amenity,school,27.3348962,77.7328621,OpenStreetMap,2026-09-10
+way/672374332,Unnamed,amenity,place_of_worship,27.3452558,77.7032156,OpenStreetMap,2026-09-10
+way/672453107,Eshan College of Engineering & Management,amenity,college,27.2909958,77.7875965,OpenStreetMap,2026-09-10
+way/672474706,Unnamed,amenity,place_of_worship,27.4793429,77.5213182,OpenStreetMap,2026-09-10
+way/672474749,Unnamed,amenity,place_of_worship,27.4849039,77.5260564,OpenStreetMap,2026-09-10
+way/672474884,Baluni Boarding School - Hardayal Technical Campus,amenity,college,27.2744425,77.8002029,OpenStreetMap,2026-09-10
+way/672496398,Unnamed,amenity,place_of_worship,27.5408959,77.6018912,OpenStreetMap,2026-09-10
+way/672547435,Unnamed,amenity,fuel,27.4884695,77.5434633,OpenStreetMap,2026-09-10
+way/672553888,Unnamed,amenity,place_of_worship,27.5818365,77.5335954,OpenStreetMap,2026-09-10
+way/672553909,Unnamed,amenity,place_of_worship,27.5542978,77.509831,OpenStreetMap,2026-09-10
+way/672553922,Unnamed,amenity,place_of_worship,27.5419004,77.5285461,OpenStreetMap,2026-09-10
+way/672628075,Unnamed,amenity,place_of_worship,27.2888789,77.6397604,OpenStreetMap,2026-09-10
+way/672628134,Unnamed,amenity,place_of_worship,27.2579766,77.6434278,OpenStreetMap,2026-09-10
+way/672715802,Unnamed,amenity,place_of_worship,27.3415333,77.5635511,OpenStreetMap,2026-09-10
+way/672715806,Unnamed,amenity,fuel,27.3440753,77.5713475,OpenStreetMap,2026-09-10
+way/672715823,Unnamed,amenity,place_of_worship,27.2993833,77.63422,OpenStreetMap,2026-09-10
+way/672725156,Unnamed,amenity,fuel,27.349462,77.5733712,OpenStreetMap,2026-09-10
+way/672725229,Unnamed,amenity,place_of_worship,27.3541552,77.5928334,OpenStreetMap,2026-09-10
+way/672746496,Unnamed,amenity,place_of_worship,27.3963793,77.5496377,OpenStreetMap,2026-09-10
+way/672746610,Unnamed,amenity,place_of_worship,27.3653377,77.6465232,OpenStreetMap,2026-09-10
+way/672746628,Unnamed,amenity,place_of_worship,27.3764554,77.6475605,OpenStreetMap,2026-09-10
+way/672772239,Unnamed,amenity,place_of_worship,27.4470465,77.469679,OpenStreetMap,2026-09-10
+way/672772251,Unnamed,amenity,school,27.4451678,77.4770156,OpenStreetMap,2026-09-10
+way/672831407,Unnamed,amenity,place_of_worship,27.3890491,77.4836808,OpenStreetMap,2026-09-10
+way/672831573,Unnamed,amenity,school,27.4165656,77.4803616,OpenStreetMap,2026-09-10
+way/672831574,Unnamed,amenity,school,27.4191168,77.4797729,OpenStreetMap,2026-09-10
+way/672874288,Unnamed,amenity,place_of_worship,27.4953041,77.4108562,OpenStreetMap,2026-09-10
+way/672993454,Unnamed,amenity,school,27.5597355,77.4567407,OpenStreetMap,2026-09-10
+way/672993486,Unnamed,amenity,place_of_worship,27.5214751,77.4507983,OpenStreetMap,2026-09-10
+way/672993508,Unnamed,amenity,place_of_worship,27.5102203,77.4995689,OpenStreetMap,2026-09-10
+way/673308052,Dan Ghati Temple,amenity,place_of_worship,27.4953987,77.4628884,OpenStreetMap,2026-09-10
+way/673308125,Govardhan Bus Stand,amenity,bus_station,27.4934613,77.4677693,OpenStreetMap,2026-09-10
+way/673308143,Unnamed,amenity,place_of_worship,27.5110423,77.478466,OpenStreetMap,2026-09-10
+way/673308162,Unnamed,amenity,place_of_worship,27.5114687,77.4771443,OpenStreetMap,2026-09-10
+way/673321449,Shrinathji Mandir,amenity,place_of_worship,27.4737673,77.4437746,OpenStreetMap,2026-09-10
+way/673573044,Prem Mandir,amenity,place_of_worship,27.5720833,77.6719249,OpenStreetMap,2026-09-10
+way/673573094,Unnamed,amenity,place_of_worship,27.5666176,77.6992033,OpenStreetMap,2026-09-10
+way/673573126,Unnamed,amenity,place_of_worship,27.5725264,77.6857095,OpenStreetMap,2026-09-10
+way/673573127,Unnamed,amenity,place_of_worship,27.5739946,77.6869253,OpenStreetMap,2026-09-10
+way/673573128,Unnamed,amenity,place_of_worship,27.5757391,77.6883823,OpenStreetMap,2026-09-10
+way/673847073,Unnamed,amenity,school,27.5492986,77.6686198,OpenStreetMap,2026-09-10
+way/673975825,Храм Лал Бабу,amenity,place_of_worship,27.5836518,77.7032653,OpenStreetMap,2026-09-10
+way/675639907,Unnamed,amenity,place_of_worship,27.4709057,77.6216886,OpenStreetMap,2026-09-10
+way/677659418,Unnamed,amenity,school,27.5021966,77.4523004,OpenStreetMap,2026-09-10
+way/677851649,Unnamed,amenity,place_of_worship,27.3539885,77.5513503,OpenStreetMap,2026-09-10
+way/677919023,Unnamed,amenity,place_of_worship,27.4277222,77.4391495,OpenStreetMap,2026-09-10
+way/678150630,Unnamed,amenity,place_of_worship,27.559786,77.5649672,OpenStreetMap,2026-09-10
+way/678150634,Unnamed,amenity,place_of_worship,27.5615843,77.5604906,OpenStreetMap,2026-09-10
+way/678150672,Unnamed,amenity,place_of_worship,27.5328333,77.5422382,OpenStreetMap,2026-09-10
+way/679447890,Jaipur Mandir,amenity,place_of_worship,27.5722227,77.6903564,OpenStreetMap,2026-09-10
+way/679447944,Unnamed,amenity,place_of_worship,27.5734431,77.694687,OpenStreetMap,2026-09-10
+way/755170876,Army Public School,amenity,school,27.4788855,77.6795249,OpenStreetMap,2026-09-10
+way/755170897,Unnamed,amenity,parking,27.4823977,77.6743565,OpenStreetMap,2026-09-10
+way/768143156,Бхаджан кутир Санатаны Госвами,amenity,place_of_worship,27.5798935,77.6872893,OpenStreetMap,2026-09-10
+way/768144964,Адвайта ват,amenity,place_of_worship,27.5807012,77.6884994,OpenStreetMap,2026-09-10
+way/844941546,"Akshaya Patra Temple, Vrindavan",amenity,place_of_worship,27.5685581,77.6442258,OpenStreetMap,2026-09-10
+way/1180146722,old bus stand,amenity,bus_station,27.4936084,77.684385,OpenStreetMap,2026-09-10
+way/1232190978,Unnamed,shop,hairdresser,27.5875405,77.7003303,OpenStreetMap,2026-09-10
+way/1232208334,Unnamed,amenity,place_of_worship,27.5851513,77.7030538,OpenStreetMap,2026-09-10
+way/1265415759,Mathuragate Police Station,amenity,police,27.578994,77.6973888,OpenStreetMap,2026-09-10
+way/1265415761,Manuhaar,amenity,restaurant,27.5751347,77.6949972,OpenStreetMap,2026-09-10
+way/1265415762,11flowers,amenity,restaurant,27.5721305,77.6830059,OpenStreetMap,2026-09-10
+way/1356602441,Brijwasi Centrum,amenity,restaurant,27.4923372,77.6741989,OpenStreetMap,2026-09-10
+way/1360347800,Chamunda Maa temple,amenity,place_of_worship,27.2855463,77.7035981,OpenStreetMap,2026-09-10
+way/1360347801,Unnamed,amenity,place_of_worship,27.2878402,77.7089062,OpenStreetMap,2026-09-10
+way/1360347802,PARKHAM ADDAA,amenity,marketplace,27.2900227,77.7155426,OpenStreetMap,2026-09-10
+way/1360347805,Yaadav g home,amenity,social_facility,27.2884561,77.7145249,OpenStreetMap,2026-09-10
+way/1360347807,Sati Maa Temple,amenity,place_of_worship,27.2867977,77.7133275,OpenStreetMap,2026-09-10
+way/1360347808,Shiv Temple,amenity,place_of_worship,27.289189,77.7135654,OpenStreetMap,2026-09-10
+way/1410329366,New Bus Station,amenity,bus_station,27.4922199,77.6745973,OpenStreetMap,2026-09-10
+way/1446987495,Unnamed,amenity,parking,27.4790133,77.6791759,OpenStreetMap,2026-09-10
+way/1486287442,Amarnath Girls Degree College,amenity,college,27.4986004,77.6707655,OpenStreetMap,2026-09-10
+way/1500206498,Unnamed,amenity,fuel,27.4026671,77.6940116,OpenStreetMap,2026-09-10
+node/2548668314,Asian Paints Colourworld,shop,paint,27.5702475,77.6747601,OpenStreetMap,2026-09-10
+node/2548668317,Kishori,shop,musical_instrument,27.5702718,77.6751293,OpenStreetMap,2026-09-10
+node/2548668318,Shree Jee Diamond Tools,shop,hardware,27.5701552,77.6742652,OpenStreetMap,2026-09-10
+node/2548668319,Shubham Family Bazar,shop,convenience,27.5701086,77.6747895,OpenStreetMap,2026-09-10
+node/2548668321,Singhal Agencies,shop,electronics;furniture,27.570444,77.6750962,OpenStreetMap,2026-09-10
+node/2548668322,Sleepwell,shop,bed,27.5705172,77.6750786,OpenStreetMap,2026-09-10
+node/2548668323,Sudhir Studio,craft,photographic_laboratory,27.5704159,77.6751028,OpenStreetMap,2026-09-10
+node/2548668324,UCO Bank,amenity,bank,27.5700009,77.6745193,OpenStreetMap,2026-09-10
+node/2550078185,HDFC Bank,amenity,bank,27.5734458,77.6828095,OpenStreetMap,2026-09-10
+node/2550078186,ICICI Bank,amenity,bank,27.5734812,77.682916,OpenStreetMap,2026-09-10
+node/2564422068,Brij Honda,shop,motorcycle,27.5694401,77.6891107,OpenStreetMap,2026-09-10
+node/2564422072,Corporation Bank,amenity,bank,27.5689922,77.6899439,OpenStreetMap,2026-09-10
+node/2564422077,Himanshi Hospital,amenity,doctors,27.5688869,77.6898442,OpenStreetMap,2026-09-10
+node/2564422078,Munger Raj Mandir,amenity,place_of_worship,27.5747197,77.6946789,OpenStreetMap,2026-09-10
+node/2564422079,Oriental Bank of Commerce,amenity,bank,27.5693667,77.6897745,OpenStreetMap,2026-09-10
+node/2564422080,Pankaj Cycle Store,shop,bicycle,27.577266,77.6975997,OpenStreetMap,2026-09-10
+node/2564422081,Ramakrishna Math and Ramakrishna Mission Sevashrama,amenity,hospital,27.572907,77.693199,OpenStreetMap,2026-09-10
+node/2564422082,Siddhant Traders,shop,ups,27.5693761,77.6891428,OpenStreetMap,2026-09-10
+node/2564422084,Unnamed,amenity,atm,27.5693909,77.6897928,OpenStreetMap,2026-09-10
+node/2564422085,Unnamed,amenity,atm,27.5702087,77.6954835,OpenStreetMap,2026-09-10
+node/2565716470,Unnamed,amenity,atm,27.5699877,77.6744773,OpenStreetMap,2026-09-10
+node/2565716471,Unnamed,amenity,atm,27.5734356,77.6827821,OpenStreetMap,2026-09-10
+node/2565716472,Unnamed,amenity,atm,27.5734899,77.6829463,OpenStreetMap,2026-09-10
+node/2568373518,Allahabad Bank,amenity,bank,27.5716331,77.6780336,OpenStreetMap,2026-09-10
+node/3251594417,State Bank of India,amenity,atm,27.4894513,77.6779699,OpenStreetMap,2026-09-10
+node/3413008744,Govinda's Restaurant,amenity,restaurant,27.5728703,77.6773551,OpenStreetMap,2026-09-10
+node/3413008777,Unnamed,amenity,atm,27.5721792,77.6780055,OpenStreetMap,2026-09-10
+node/3417359576,Gangotri,shop,mall,27.5831797,77.6975586,OpenStreetMap,2026-09-10
+node/4415912491,Bhaskar Hospital,amenity,hospital,27.4904334,77.6551554,OpenStreetMap,2026-09-10
+node/4489880189,Sri Sri Anu Giriraj Mandir,amenity,place_of_worship,27.4958034,77.4664353,OpenStreetMap,2026-09-10
+node/4569639794,Sri Radha Shyamsundar Mandir,amenity,place_of_worship,27.5826874,77.6961268,OpenStreetMap,2026-09-10
+node/4569657292,Sri Radha Gopinath Mandir,amenity,place_of_worship,27.5860483,77.6996206,OpenStreetMap,2026-09-10
+node/4569657293,Unnamed,amenity,place_of_worship,27.5673577,77.6760228,OpenStreetMap,2026-09-10
+node/4569668889,Sri Caitanya Mahaprabhu's Sitting Place,amenity,place_of_worship,27.5674711,77.700294,OpenStreetMap,2026-09-10
+node/4648692290,Unnamed,amenity,place_of_worship,27.5248884,77.4942452,OpenStreetMap,2026-09-10
+node/4648692292,Vrinda Kunj,amenity,place_of_worship,27.5845022,77.7033788,OpenStreetMap,2026-09-10
+node/4648837990,Sri Radha Shyamsundar Temple,amenity,place_of_worship,27.5826272,77.6959324,OpenStreetMap,2026-09-10
+node/4648837991,Unnamed,amenity,place_of_worship,27.567489,77.6759712,OpenStreetMap,2026-09-10
+node/4649010790,Murari Gupta Jagannath Temple,amenity,place_of_worship,27.5675119,77.7004473,OpenStreetMap,2026-09-10
+node/4706937889,Pilot Baba Ashram,amenity,place_of_worship,27.572705,77.6969117,OpenStreetMap,2026-09-10
+node/4741056023,Oro-Care,amenity,dentist,27.4857605,77.6827535,OpenStreetMap,2026-09-10
+node/4795308422,Ramananda Ashram,amenity,place_of_worship,27.5691382,77.6851203,OpenStreetMap,2026-09-10
+node/5221244021,Unnamed,amenity,restaurant,27.5092315,77.6716977,OpenStreetMap,2026-09-10
+node/5453980521,Unnamed,amenity,place_of_worship,27.5834471,77.7054103,OpenStreetMap,2026-09-10
+node/5470829321,Druva tila,amenity,place_of_worship,27.4646102,77.6543272,OpenStreetMap,2026-09-10
+node/5483832723,Unnamed,amenity,restaurant,27.571356,77.6749731,OpenStreetMap,2026-09-10
+node/5808897855,Krishna-Balaram Temple,amenity,place_of_worship,27.5725271,77.6775721,OpenStreetMap,2026-09-10
+node/6094947292,Unnamed,amenity,place_of_worship,27.5586304,77.6791564,OpenStreetMap,2026-09-10
+node/6283363534,Indian Oil,amenity,fuel,27.3170793,77.7678233,OpenStreetMap,2026-09-10
+node/6313899527,Keshi Ghat,amenity,place_of_worship,27.5872629,77.6987417,OpenStreetMap,2026-09-10
+node/6326867396,Unnamed,amenity,fuel,27.5426326,77.672224,OpenStreetMap,2026-09-10
+node/6327725339,Indian Oil,amenity,fuel,27.4708201,77.6605698,OpenStreetMap,2026-09-10
+node/6897678122,"District Hospital Blood Bank, Mathura",amenity,blood_bank,27.4710676,77.6969165,OpenStreetMap,2026-09-10
+node/6898546134,Sadbhawna Charitable Blood Bank,amenity,blood_bank,27.5000553,77.6534928,OpenStreetMap,2026-09-10
+node/6902109738,Agrawal Life Line Hospital and Trauma Centre Blood Bank,amenity,blood_bank,27.4344772,77.70087,OpenStreetMap,2026-09-10
+node/6902109743,"Rotary Blood Bank, Rotary Point",amenity,blood_bank,27.5118826,77.6546676,OpenStreetMap,2026-09-10
+node/6902109748,Ramakrishna Mission Sevashrama,amenity,blood_bank,27.5718524,77.6944703,OpenStreetMap,2026-09-10
+node/6906512017,Nayati Blood Bank,amenity,blood_bank,27.534827,77.6591188,OpenStreetMap,2026-09-10
+node/7018026512,Saxena Hospital,amenity,hospital,27.4662204,77.6712303,OpenStreetMap,2026-09-10
+node/7018342687,Maa Saraswati Hospital,amenity,hospital,27.519359,77.6722463,OpenStreetMap,2026-09-10
+node/7018603358,"रामकृष्ण मिशन सेवाश्रम, मथुरा",amenity,hospital,27.5719404,77.6944113,OpenStreetMap,2026-09-10
+node/7018918779,Sunayan Eye Centre,amenity,hospital,27.5013454,77.6609822,OpenStreetMap,2026-09-10
+node/7019031513,"Asha Hospital, Mathura",amenity,hospital,27.4815167,77.6600803,OpenStreetMap,2026-09-10
+node/7020160135,"Shanti Nursing Home, Mathura",amenity,clinic,27.4994225,77.6535525,OpenStreetMap,2026-09-10
+node/7020365867,"Jyoti Nursing Home, Mathura",amenity,clinic,27.4632343,77.6711646,OpenStreetMap,2026-09-10
+node/7020390443,Vipin Nursing Home,amenity,clinic,27.5005431,77.6625131,OpenStreetMap,2026-09-10
+node/7020886881,"Maheshwari Hospital Pvt Ltd,",amenity,hospital,27.5059174,77.6790261,OpenStreetMap,2026-09-10
+node/7022371517,Dayalu Hospital,amenity,hospital,27.4629582,77.6702915,OpenStreetMap,2026-09-10
+node/7025269434,"Narula Nursing Home, Mathura",amenity,clinic,27.4333408,77.6994597,OpenStreetMap,2026-09-10
+node/7025938459,"Surendra Nursing Home, Mathura",amenity,clinic,27.4558322,77.6813265,OpenStreetMap,2026-09-10
+node/7027369574,Shri Krishna Hospital,amenity,hospital,27.4858854,77.6668596,OpenStreetMap,2026-09-10
+node/7027401110,Shri Om Hospital,amenity,hospital,27.498516,77.6698422,OpenStreetMap,2026-09-10
+node/7027409447,Shri Laxmi Life Line Hospital,amenity,hospital,27.5605594,77.6815581,OpenStreetMap,2026-09-10
+node/7027683506,Sushila Hospital,amenity,hospital,27.4934402,77.673057,OpenStreetMap,2026-09-10
+node/7028748791,Verman Nursing Home,amenity,clinic,27.491703,77.6938453,OpenStreetMap,2026-09-10
+node/7029267190,Swarn Jayanti Samudaik Hospital,amenity,hospital,27.4286304,77.6965275,OpenStreetMap,2026-09-10
+node/7030575124,Spandan Care,amenity,hospital,27.5233501,77.6734096,OpenStreetMap,2026-09-10
+node/7030758735,"Utkarsh Hospital, Mathura",amenity,hospital,27.5156917,77.6733152,OpenStreetMap,2026-09-10
+node/7030858343,Gopi Krishna Hospital,amenity,hospital,27.4969275,77.6902471,OpenStreetMap,2026-09-10
+node/7030993815,"Vatsalya Hospital, Mathura",amenity,hospital,27.5257079,77.6754172,OpenStreetMap,2026-09-10
+node/7031006679,Kulshreshtha Eye Centre And Laser Services,amenity,hospital,27.4943817,77.679857,OpenStreetMap,2026-09-10
+node/7031808379,Dr.Gopal Eye Laser and Phaco Centre,amenity,clinic,27.4985886,77.6780934,OpenStreetMap,2026-09-10
+node/7032198358,Mehta Nursing Home and Maternity Hospital and Ortho,amenity,hospital,27.5007078,77.6583832,OpenStreetMap,2026-09-10
+node/7033322187,Maurya Hospital and Taruma Centre,amenity,hospital,27.4545317,77.6820624,OpenStreetMap,2026-09-10
+node/7034753384,Prabhakar Hospital,amenity,hospital,27.4574108,77.6815678,OpenStreetMap,2026-09-10
+node/7035114992,Ashok Hospital,amenity,hospital,27.4890999,77.6796267,OpenStreetMap,2026-09-10
+node/7035159031,Madhu Bala Hospital and Ultrasound Clinic,amenity,hospital,27.5004295,77.6701929,OpenStreetMap,2026-09-10
+node/7035579184,Brij Health Care & Research Center,amenity,clinic,27.5667357,77.6863807,OpenStreetMap,2026-09-10
+node/7035597982,"Prayag Hospital, Mathura",amenity,hospital,27.500439,77.6668181,OpenStreetMap,2026-09-10
+node/7036244924,Vrindaban Arogya Deep (P) Ltd,amenity,hospital,27.5686497,77.6898703,OpenStreetMap,2026-09-10
+node/7036248656,Uppal Nursing Home,amenity,clinic,27.5030054,77.662835,OpenStreetMap,2026-09-10
+node/7037441911,Radhey Shyam Multispeciality Hospital,amenity,hospital,27.5164085,77.6734387,OpenStreetMap,2026-09-10
+node/7037498258,Chauhan Clinic,amenity,clinic,27.4999399,77.6436907,OpenStreetMap,2026-09-10
+node/7038345774,Brij Chikitsa Sansthan,amenity,clinic,27.5027378,77.674459,OpenStreetMap,2026-09-10
+node/7038942277,Chirayu Hospital and Research Centre,amenity,hospital,27.4618372,77.6724292,OpenStreetMap,2026-09-10
+node/7054369552,Comésum,amenity,cafe,27.4795362,77.673385,OpenStreetMap,2026-09-10
+node/7066505783,Deep Nursing Home,amenity,hospital,27.5011081,77.6614228,OpenStreetMap,2026-09-10
+node/7171716172,Ашрам Гаутамы риши,amenity,place_of_worship,27.57679,77.6754809,OpenStreetMap,2026-09-10
+node/7171760301,Unnamed,amenity,place_of_worship,27.5724032,77.6777866,OpenStreetMap,2026-09-10
+node/7171760302,Кришна-Баларам мандир,amenity,place_of_worship,27.5723219,77.6773956,OpenStreetMap,2026-09-10
+node/7171792398,Тарас мандир,amenity,place_of_worship,27.5701644,77.6929867,OpenStreetMap,2026-09-10
+node/7171865698,Khram Katyayani,amenity,place_of_worship,27.5788988,77.7037404,OpenStreetMap,2026-09-10
+node/7172072781,храм Ашта-сакхи,amenity,place_of_worship,27.5802569,77.6888572,OpenStreetMap,2026-09-10
+node/7172091726,Храм Банкебихари,amenity,place_of_worship,27.579978,77.6905025,OpenStreetMap,2026-09-10
+node/7172103529,Unnamed,amenity,place_of_worship,27.5810739,77.6917198,OpenStreetMap,2026-09-10
+node/7172126073,Unnamed,amenity,place_of_worship,27.5810397,77.6924374,OpenStreetMap,2026-09-10
+node/7178115902,District Women Hospital Mahura,amenity,hospital,27.4955694,77.6825613,OpenStreetMap,2026-09-10
+node/7188358316,District Male Hospital Mathura,amenity,hospital,27.4962665,77.683838,OpenStreetMap,2026-09-10
+node/7247292946,Unnamed,amenity,place_of_worship,27.5828566,77.6950567,OpenStreetMap,2026-09-10
+node/7247292949,Unnamed,amenity,place_of_worship,27.5857657,77.700049,OpenStreetMap,2026-09-10
+node/7247396549,Radha-Ramana,amenity,place_of_worship,27.585478,77.699009,OpenStreetMap,2026-09-10
+node/7287646376,Сурья гхат,amenity,place_of_worship,27.5811092,77.6880385,OpenStreetMap,2026-09-10
+node/7287657604,Unnamed,amenity,place_of_worship,27.5815504,77.668314,OpenStreetMap,2026-09-10
+node/7287711828,Пани-гхат,amenity,place_of_worship,27.5779027,77.7077571,OpenStreetMap,2026-09-10
+node/7287726154,Акрура-гхат,amenity,place_of_worship,27.5518014,77.6850479,OpenStreetMap,2026-09-10
+node/7287733294,Храм Батхаран Бихари,amenity,place_of_worship,27.5566428,77.6879977,OpenStreetMap,2026-09-10
+node/7287742611,Вараха-гхат,amenity,place_of_worship,27.5761598,77.6752188,OpenStreetMap,2026-09-10
+node/7287789485,Мохана тер-гхат,amenity,place_of_worship,27.5769074,77.6764355,OpenStreetMap,2026-09-10
+node/7287803086,Храм Калия Мардана,amenity,place_of_worship,27.5785391,77.6856482,OpenStreetMap,2026-09-10
+node/7287833608,Unnamed,amenity,place_of_worship,27.5808263,77.7020754,OpenStreetMap,2026-09-10
+node/7287891338,Samadhi Bilvamangala,amenity,place_of_worship,27.5838662,77.7001762,OpenStreetMap,2026-09-10
+node/7287918954,Khram Amiya Nimai,amenity,place_of_worship,27.5832308,77.7000786,OpenStreetMap,2026-09-10
+node/7287972516,Unnamed,amenity,place_of_worship,27.5840523,77.7075323,OpenStreetMap,2026-09-10
+node/7287986412,Unnamed,amenity,place_of_worship,27.5838574,77.7063522,OpenStreetMap,2026-09-10
+node/7288005900,Unnamed,amenity,place_of_worship,27.5827139,77.7060598,OpenStreetMap,2026-09-10
+node/7288011437,Unnamed,amenity,place_of_worship,27.5839942,77.7052082,OpenStreetMap,2026-09-10
+node/7288032404,Unnamed,amenity,place_of_worship,27.5835849,77.7054241,OpenStreetMap,2026-09-10
+node/7288046039,Храм Гопишвары Махадевы,amenity,place_of_worship,27.5851469,77.7029532,OpenStreetMap,2026-09-10
+node/7288063453,Храм Радха Гопала,amenity,place_of_worship,27.5845889,77.702471,OpenStreetMap,2026-09-10
+node/7288063975,Храм Югалы Кишора,amenity,place_of_worship,27.5869782,77.6986901,OpenStreetMap,2026-09-10
+node/7288064334,Unnamed,amenity,place_of_worship,27.5859002,77.7024438,OpenStreetMap,2026-09-10
+node/7288072404,Unnamed,amenity,place_of_worship,27.5862533,77.7035191,OpenStreetMap,2026-09-10
+node/7288077196,Unnamed,amenity,place_of_worship,27.5859146,77.7021043,OpenStreetMap,2026-09-10
+node/7292232952,Югала-гхат,amenity,place_of_worship,27.5815351,77.6910818,OpenStreetMap,2026-09-10
+node/7292258052,Unnamed,amenity,place_of_worship,27.5811524,77.6954146,OpenStreetMap,2026-09-10
+node/7292333038,Unnamed,amenity,place_of_worship,27.5825618,77.6964734,OpenStreetMap,2026-09-10
+node/7292341999,Unnamed,amenity,place_of_worship,27.5809789,77.6954974,OpenStreetMap,2026-09-10
+node/7292358445,Unnamed,amenity,place_of_worship,27.5835148,77.6941441,OpenStreetMap,2026-09-10
+node/7292385205,Unnamed,amenity,place_of_worship,27.5834988,77.6960683,OpenStreetMap,2026-09-10
+node/7292425230,Unnamed,amenity,place_of_worship,27.5847566,77.6969865,OpenStreetMap,2026-09-10
+node/7292475319,Джару Мандала,amenity,place_of_worship,27.5849563,77.6958144,OpenStreetMap,2026-09-10
+node/7292485103,Шрингара ват,amenity,place_of_worship,27.5846282,77.6959458,OpenStreetMap,2026-09-10
+node/7292485577,Unnamed,amenity,place_of_worship,27.5841408,77.6970509,OpenStreetMap,2026-09-10
+node/7301328132,Храм Вамши Гопала и Гададхарв Дант самадхи,amenity,place_of_worship,27.5863531,77.6982711,OpenStreetMap,2026-09-10
+node/7301331130,Unnamed,amenity,place_of_worship,27.5857591,77.698082,OpenStreetMap,2026-09-10
+node/7301340398,Чир-гхат,amenity,place_of_worship,27.5854985,77.6966316,OpenStreetMap,2026-09-10
+node/7301353522,Unnamed,amenity,place_of_worship,27.5868163,77.7024473,OpenStreetMap,2026-09-10
+node/7301363295,Unnamed,amenity,place_of_worship,27.5823146,77.6983143,OpenStreetMap,2026-09-10
+node/7301363993,Khram Sona Gaurangi,amenity,place_of_worship,27.5851321,77.6993599,OpenStreetMap,2026-09-10
+node/7498021849,Dr. K. Gopal Hospital,amenity,hospital,27.5783061,77.687444,OpenStreetMap,2026-09-10
+node/8910875401,Durga Mandir,amenity,place_of_worship,27.4962908,77.6548242,OpenStreetMap,2026-09-10
+node/8910877881,Krishna Nagar post office,amenity,post_office,27.4968299,77.6629484,OpenStreetMap,2026-09-10
+node/8916354087,Shobhit Hospital,amenity,hospital,27.4956813,77.6543553,OpenStreetMap,2026-09-10
+node/8916374944,Saral Health Care,amenity,hospital,27.494877,77.6545683,OpenStreetMap,2026-09-10
+node/8916386980,Devendra Hospital,amenity,hospital,27.4934081,77.6560003,OpenStreetMap,2026-09-10
+node/8916392654,Meenakshi Imaging services,amenity,hospital,27.4941012,77.6562544,OpenStreetMap,2026-09-10
+node/8916398625,Seema Hospital,amenity,hospital,27.4950237,77.6545234,OpenStreetMap,2026-09-10
+node/8916403646,Shishu Care Hospital,amenity,hospital,27.4967788,77.6607832,OpenStreetMap,2026-09-10
+node/8916403851,Ratan Vishvas hospital,amenity,hospital,27.4997453,77.6504448,OpenStreetMap,2026-09-10
+node/8916501276,Saroj Poly Clinic,amenity,hospital,27.5001521,77.6559342,OpenStreetMap,2026-09-10
+node/9904060117,श्री कृष्णा बलराम मंदिर,amenity,place_of_worship,27.5819358,77.6935671,OpenStreetMap,2026-09-10
+node/10770466288,One Bite Mathura A Famliy Restaurant,amenity,restaurant,27.4569974,77.681477,OpenStreetMap,2026-09-10
+node/10855713700,Unnamed,amenity,restaurant,27.352044,77.7239495,OpenStreetMap,2026-09-10
+node/10855713701,Unnamed,amenity,restaurant,27.3298696,77.7432707,OpenStreetMap,2026-09-10
+node/10855713702,Unnamed,amenity,restaurant,27.3308139,77.7435006,OpenStreetMap,2026-09-10
+node/10855713703,Unnamed,amenity,restaurant,27.3340951,77.7406958,OpenStreetMap,2026-09-10
+node/10855713704,Unnamed,amenity,restaurant,27.3347778,77.7401643,OpenStreetMap,2026-09-10
+node/10855713785,HP,amenity,fuel,27.5906618,77.600551,OpenStreetMap,2026-09-10
+node/10855713786,Sukhdev Dhaba,amenity,restaurant,27.5911281,77.6004795,OpenStreetMap,2026-09-10
+node/10855713787,Gulshan Dhaba,amenity,restaurant,27.5922994,77.5996166,OpenStreetMap,2026-09-10
+node/10855713788,ASM College,amenity,college,27.5967273,77.5957442,OpenStreetMap,2026-09-10
+node/10855740747,Bharat Petroleum,amenity,fuel,27.5316608,77.6574253,OpenStreetMap,2026-09-10
+node/10855740748,Torrent,amenity,fuel,27.5332349,77.6568362,OpenStreetMap,2026-09-10
+node/10855740749,HP,amenity,fuel,27.5328405,77.6560442,OpenStreetMap,2026-09-10
+node/10855740750,Indian Oil,amenity,fuel,27.5341344,77.6560052,OpenStreetMap,2026-09-10
+node/10855740751,Radha Rani Family Dhaba,amenity,restaurant,27.5356689,77.6532367,OpenStreetMap,2026-09-10
+node/10855740752,Shree Krishna Family Dhaba,amenity,restaurant,27.5372064,77.6513482,OpenStreetMap,2026-09-10
+node/10855740753,Laddu,amenity,restaurant,27.5374036,77.6511024,OpenStreetMap,2026-09-10
+node/10855740754,Unnamed,amenity,restaurant,27.5379225,77.6504704,OpenStreetMap,2026-09-10
+node/10855740755,K.D. Dental College & Hospital,amenity,hospital,27.5419395,77.6438829,OpenStreetMap,2026-09-10
+node/10855740756,Punjab National Bank,amenity,bank,27.5427455,77.6441677,OpenStreetMap,2026-09-10
+node/10855740757,Punjab National Bank,amenity,atm,27.5427592,77.6440973,OpenStreetMap,2026-09-10
+node/10855740758,Indian Oil,amenity,fuel,27.5465129,77.6405577,OpenStreetMap,2026-09-10
+node/10855740759,Unnamed,amenity,restaurant,27.5460656,77.6411525,OpenStreetMap,2026-09-10
+node/10855740760,Prakash Family Dhaba,amenity,restaurant,27.5549822,77.633117,OpenStreetMap,2026-09-10
+node/10855740761,Indian Oil,amenity,fuel,27.5692407,77.6208091,OpenStreetMap,2026-09-10
+node/10855741424,B.S. Laxmi,amenity,restaurant,27.3158292,77.7698302,OpenStreetMap,2026-09-10
+node/10855741425,Unnamed,amenity,restaurant,27.315223,77.7715759,OpenStreetMap,2026-09-10
+node/10855741426,Unnamed,amenity,restaurant,27.311876,77.7761372,OpenStreetMap,2026-09-10
+node/10855741435,Unnamed,amenity,restaurant,27.2987214,77.7881001,OpenStreetMap,2026-09-10
+node/10855741445,Unnamed,shop,motorcycle,27.3174123,77.7657769,OpenStreetMap,2026-09-10
+node/10855741446,BP,amenity,fuel,27.2841938,77.7971166,OpenStreetMap,2026-09-10
+node/10855741447,Unnamed,amenity,restaurant,27.2887367,77.7936502,OpenStreetMap,2026-09-10
+node/10855741448,Unnamed,amenity,restaurant,27.291963,77.7913842,OpenStreetMap,2026-09-10
+node/10855741449,Sachdeva Institute of Technology,amenity,college,27.2924983,77.7928455,OpenStreetMap,2026-09-10
+node/10855741450,Hindustan College of Science & Technology,amenity,college,27.2970272,77.7871102,OpenStreetMap,2026-09-10
+node/10855741451,KCL Academy,amenity,college,27.2950676,77.7877597,OpenStreetMap,2026-09-10
+node/10855759594,Indian Oil,amenity,fuel,27.4976261,77.6529283,OpenStreetMap,2026-09-10
+node/10855775508,Bharat Petroleum,amenity,fuel,27.4682736,77.6601952,OpenStreetMap,2026-09-10
+node/10855775509,Suzuki,shop,motorcycle,27.4695635,77.6598732,OpenStreetMap,2026-09-10
+node/10855775805,Aashlar Business School,amenity,college,27.3357986,77.7380168,OpenStreetMap,2026-09-10
+node/10855775806,Unnamed,amenity,restaurant,27.341107,77.7335637,OpenStreetMap,2026-09-10
+node/10855775807,Unnamed,amenity,restaurant,27.3428551,77.7319046,OpenStreetMap,2026-09-10
+node/10855775808,Apni Maa Ki Rasoi,amenity,restaurant,27.3433017,77.7314233,OpenStreetMap,2026-09-10
+node/10855775809,Unnamed,amenity,restaurant,27.3466383,77.7292112,OpenStreetMap,2026-09-10
+node/10855775810,Unnamed,amenity,restaurant,27.3498412,77.7261318,OpenStreetMap,2026-09-10
+node/10855775812,Indian Oil,amenity,fuel,27.3504701,77.7253438,OpenStreetMap,2026-09-10
+node/10855775813,Maa Ki Rasoi,amenity,restaurant,27.3506733,77.7240584,OpenStreetMap,2026-09-10
+node/10855775814,G P Palace,amenity,restaurant,27.3512022,77.7236517,OpenStreetMap,2026-09-10
+node/10855775815,Baluni 5 Days Boarding School,amenity,school,27.327145,77.744226,OpenStreetMap,2026-09-10
+node/10855775816,Unnamed,amenity,restaurant,27.3536178,77.7220577,OpenStreetMap,2026-09-10
+node/10855775817,ABS Senior Second School,amenity,school,27.3543145,77.723049,OpenStreetMap,2026-09-10
+node/10855775818,Unnamed,amenity,restaurant,27.3557657,77.721553,OpenStreetMap,2026-09-10
+node/10855775819,Unnamed,amenity,restaurant,27.3578749,77.7202421,OpenStreetMap,2026-09-10
+node/10855775820,Unnamed,amenity,restaurant,27.3580523,77.7200969,OpenStreetMap,2026-09-10
+node/10855775821,BP,amenity,fuel,27.3605065,77.7184847,OpenStreetMap,2026-09-10
+node/10855775822,Unnamed,amenity,restaurant,27.3614288,77.7174534,OpenStreetMap,2026-09-10
+node/10855775823,Unnamed,amenity,restaurant,27.3618093,77.7169632,OpenStreetMap,2026-09-10
+node/10855775824,Radhika Dhaba,amenity,restaurant,27.3620254,77.7161063,OpenStreetMap,2026-09-10
+node/10855775825,HP,amenity,fuel,27.3684393,77.7060079,OpenStreetMap,2026-09-10
+node/10855775826,Tata,shop,car_repair,27.3690355,77.7052699,OpenStreetMap,2026-09-10
+node/10855775828,Indian Oil,amenity,fuel,27.3738995,77.6985671,OpenStreetMap,2026-09-10
+node/10855775829,HP,amenity,fuel,27.3765505,77.6955308,OpenStreetMap,2026-09-10
+node/10855775830,McDonald's,amenity,fast_food,27.3780742,77.6928571,OpenStreetMap,2026-09-10
+node/10855775831,Honda,shop,car,27.4507479,77.684626,OpenStreetMap,2026-09-10
+node/10855775832,Smart Bazaar,shop,supermarket,27.3836659,77.6909774,OpenStreetMap,2026-09-10
+node/10855775833,Unnamed,amenity,police,27.3872891,77.6895725,OpenStreetMap,2026-09-10
+node/10855775834,Unnamed,amenity,restaurant,27.396211,77.6937765,OpenStreetMap,2026-09-10
+node/10855775835,Renault,shop,car,27.3977291,77.6945328,OpenStreetMap,2026-09-10
+node/10855775836,Ford,shop,car,27.3979569,77.6946061,OpenStreetMap,2026-09-10
+node/10855775837,Kia,shop,car,27.397846,77.6945461,OpenStreetMap,2026-09-10
+node/10855775838,Hyundai,shop,car,27.3994758,77.6949476,OpenStreetMap,2026-09-10
+node/10855775839,Tata,shop,car,27.4000866,77.6950509,OpenStreetMap,2026-09-10
+node/10855775840,Unnamed,amenity,restaurant,27.4019721,77.6941961,OpenStreetMap,2026-09-10
+node/10855775841,Suzuki,shop,car_repair,27.4126827,77.6930404,OpenStreetMap,2026-09-10
+node/10855775842,Meghmart,shop,supermarket,27.4144262,77.6931003,OpenStreetMap,2026-09-10
+node/10855775843,Unnamed,shop,fuel,27.4208001,77.6940869,OpenStreetMap,2026-09-10
+node/10855775844,HP,amenity,fuel,27.4347636,77.6953851,OpenStreetMap,2026-09-10
+node/10855775845,HP,amenity,fuel,27.4351894,77.6961147,OpenStreetMap,2026-09-10
+node/10855775846,Mahindra,shop,car,27.4505705,77.6847643,OpenStreetMap,2026-09-10
+node/10855775847,Indian Oil,amenity,fuel,27.381555,77.6911407,OpenStreetMap,2026-09-10
+node/10856032994,Flavours Restaurant,amenity,restaurant,27.5010845,77.6526126,OpenStreetMap,2026-09-10
+node/10904656766,cafe 1,amenity,cafe,27.581993,77.6059321,OpenStreetMap,2026-09-10
+node/10904656767,vishal supermarket,shop,supermarket,27.5816834,77.6061349,OpenStreetMap,2026-09-10
+node/10904656768,arihant hospital,amenity,hospital,27.5818407,77.6062701,OpenStreetMap,2026-09-10
+node/10904656769,State Bank of India,amenity,bank,27.581812,77.6069251,OpenStreetMap,2026-09-10
+node/10904656770,shri hanuman mandir,amenity,place_of_worship,27.5823151,77.6062138,OpenStreetMap,2026-09-10
+node/10904656771,garage motor,shop,car_repair,27.5823788,77.6067843,OpenStreetMap,2026-09-10
+node/10904656772,restaurant 1,amenity,restaurant,27.5823426,77.6068857,OpenStreetMap,2026-09-10
+node/10904656773,vishnu super market,shop,supermarket,27.5818956,77.6070617,OpenStreetMap,2026-09-10
+node/10904656775,cake shop,amenity,restaurant,27.5819992,77.6067983,OpenStreetMap,2026-09-10
+node/10904656776,shriji supermarket,shop,supermarket,27.5816429,77.6066134,OpenStreetMap,2026-09-10
+node/10904656777,temple,amenity,place_of_worship,27.5821124,77.6065598,OpenStreetMap,2026-09-10
+node/10904656778,balaji garage,shop,car_repair,27.5817277,77.6071278,OpenStreetMap,2026-09-10
+node/10904656779,garment shop,shop,supermarket,27.5815666,77.6065962,OpenStreetMap,2026-09-10
+node/10904656781,fresh fruits shop,shop,supermarket,27.5814954,77.6065063,OpenStreetMap,2026-09-10
+node/10904656782,Unnamed,amenity,restaurant,27.5816073,77.6070513,OpenStreetMap,2026-09-10
+node/10904656784,Bank of India,amenity,bank,27.5815937,77.6060894,OpenStreetMap,2026-09-10
+node/10904656785,hanuman temple,amenity,place_of_worship,27.5816537,77.6068816,OpenStreetMap,2026-09-10
+node/10904656786,steel shop,shop,yes,27.5816266,77.6067153,OpenStreetMap,2026-09-10
+node/10904656787,vishal stationary shop,shop,stationery,27.5813742,77.6064208,OpenStreetMap,2026-09-10
+node/10904656788,mehta nursing home,amenity,social_facility,27.5814031,77.6060784,OpenStreetMap,2026-09-10
+node/10904656789,drishti eye clinic,shop,optician,27.5811179,77.6058857,OpenStreetMap,2026-09-10
+node/10904656791,Pizza Hut,amenity,restaurant,27.582372,77.6073076,OpenStreetMap,2026-09-10
+node/10904656792,bansal restaurant,amenity,restaurant,27.5823626,77.6074695,OpenStreetMap,2026-09-10
+node/10904656793,family cafe,amenity,cafe,27.5823158,77.6075082,OpenStreetMap,2026-09-10
+node/10904656794,vishal mega mart,shop,supermarket,27.5820288,77.6075434,OpenStreetMap,2026-09-10
+node/10904656795,pantaloons,shop,supermarket,27.5828056,77.6071633,OpenStreetMap,2026-09-10
+node/10904656796,sikh temple,amenity,place_of_worship,27.5825872,77.6081452,OpenStreetMap,2026-09-10
+node/10904656797,laundry,shop,laundry,27.5827276,77.6079165,OpenStreetMap,2026-09-10
+node/10904656799,radhika sweets,shop,confectionery,27.5828274,77.6075082,OpenStreetMap,2026-09-10
+node/10904656800,shri ram mithaiwale,shop,confectionery,27.5826558,77.6072301,OpenStreetMap,2026-09-10
+node/10904656801,medical store,shop,medical_supply,27.5815733,77.6073076,OpenStreetMap,2026-09-10
+node/10904656802,Unnamed,amenity,cafe,27.581486,77.6073639,OpenStreetMap,2026-09-10
+node/10904656804,Unnamed,amenity,bar,27.582609,77.6069627,OpenStreetMap,2026-09-10
+node/10904676106,Unnamed,amenity,restaurant,27.5816326,77.6055055,OpenStreetMap,2026-09-10
+node/10904676107,candy citton,shop,confectionery,27.5821785,77.60729,OpenStreetMap,2026-09-10
+node/10904676108,laundry wash,shop,laundry,27.5821567,77.6071659,OpenStreetMap,2026-09-10
+node/10904676110,foodie corner,amenity,restaurant,27.582322,77.6070427,OpenStreetMap,2026-09-10
+node/10904676111,momos adda,amenity,fast_food,27.5813955,77.6069151,OpenStreetMap,2026-09-10
+node/10904676112,ccd,amenity,cafe,27.5818291,77.6077035,OpenStreetMap,2026-09-10
+node/10904676113,bar club,amenity,bar,27.5822565,77.6079077,OpenStreetMap,2026-09-10
+node/10904676114,kp cafe,amenity,cafe,27.5822655,77.6066156,OpenStreetMap,2026-09-10
+node/11240694138,Unnamed,amenity,bus_station,27.5780536,77.6992345,OpenStreetMap,2026-09-10
+node/11429010334,Rahul Hair Dressing Salon,shop,hairdresser,27.5875483,77.7003002,OpenStreetMap,2026-09-10
+node/11429160220,Mahar Hair Dressing Salon,shop,hairdresser,27.5840546,77.7026372,OpenStreetMap,2026-09-10
+node/11698384649,GOVIND NAGAR STATION,amenity,police,27.5096823,77.6707866,OpenStreetMap,2026-09-10
+node/11698427218,STAR WORLD CINEMA,amenity,cinema,27.509466,77.6727693,OpenStreetMap,2026-09-10
+node/11698469547,RELIANCE MART,shop,mall,27.5074879,77.6727881,OpenStreetMap,2026-09-10
+node/11698509050,JAWAR,amenity,school,27.511504,77.6707303,OpenStreetMap,2026-09-10
+node/11698509051,JAWAR,amenity,school,27.5114564,77.6696896,OpenStreetMap,2026-09-10
+node/11754683438,Unnamed,amenity,place_of_worship,27.5790459,77.6971569,OpenStreetMap,2026-09-10
+node/11754683444,Minti’s Cafe,amenity,cafe,27.5751227,77.6950476,OpenStreetMap,2026-09-10
+node/12555500493,Panch Mukhi Temple,amenity,place_of_worship,27.2890376,77.7128942,OpenStreetMap,2026-09-10
+node/12592913133,Shri Prachin Hanuman Mandir,amenity,place_of_worship,27.4861829,77.6675151,OpenStreetMap,2026-09-10
+node/12592918077,Baba Jai Guru Dev Shanti Sthal,amenity,place_of_worship,27.4748193,77.6565893,OpenStreetMap,2026-09-10
+node/12592922089,Dr Bhavna Diagnostic Center,amenity,doctors,27.48177,77.6606838,OpenStreetMap,2026-09-10
+node/12592926516,Shiv Temple,amenity,place_of_worship,27.4826941,77.6546613,OpenStreetMap,2026-09-10
+node/12592940378,Devi Temple,amenity,place_of_worship,27.4811588,77.6559929,OpenStreetMap,2026-09-10
+node/12592941503,Dr. C L Dullo Clinic,amenity,clinic,27.4818071,77.6565076,OpenStreetMap,2026-09-10
+node/12592949359,Pathkind,amenity,doctors,27.4815497,77.6605524,OpenStreetMap,2026-09-10
+node/12592949636,FCI godown,shop,model,27.4853287,77.6667133,OpenStreetMap,2026-09-10
+node/12593340166,DEVI MAA TEMPLE,amenity,place_of_worship,27.2867437,77.7181552,OpenStreetMap,2026-09-10
+node/12593340168,PARKHAM POST OFFICE,amenity,post_office,27.2877516,77.7181148,OpenStreetMap,2026-09-10
+node/12595596740,Shri Krishna Hospital,amenity,hospital,27.4814835,77.6574168,OpenStreetMap,2026-09-10
+node/12595612542,Bhaskar Hospital,amenity,hospital,27.4819732,77.657301,OpenStreetMap,2026-09-10
+node/12595617525,UCO Bank,amenity,bank,27.4809423,77.6567482,OpenStreetMap,2026-09-10
+node/12595621220,Anurag Trauma Centre,amenity,hospital,27.4895589,77.6556262,OpenStreetMap,2026-09-10
+node/12595622469,Mathura Neuro Super Specialist Hospital,amenity,hospital,27.4891466,77.6557901,OpenStreetMap,2026-09-10
+node/12595635574,Radha Nagar Gurudwara,amenity,place_of_worship,27.5011734,77.6586892,OpenStreetMap,2026-09-10
+node/12595638945,Hanuman Mandir,amenity,place_of_worship,27.5006437,77.6551091,OpenStreetMap,2026-09-10
+node/12595639087,Firstcry,shop,mall,27.4929408,77.6733017,OpenStreetMap,2026-09-10
+node/12595643010,The Gastro and Liver Care Hospital,amenity,hospital,27.4933641,77.6539583,OpenStreetMap,2026-09-10
+node/12595651182,Shri Bhuteshwar Mahadev Temple,amenity,place_of_worship,27.4998805,77.6684018,OpenStreetMap,2026-09-10
+node/12595654340,Rohit Kidney Stone and Hospital,amenity,hospital,27.4991246,77.6535856,OpenStreetMap,2026-09-10
+node/12595671926,V Mart,shop,mall,27.4930422,77.6731636,OpenStreetMap,2026-09-10
+node/12595677059,RK Hospital,amenity,hospital,27.4956821,77.6721673,OpenStreetMap,2026-09-10
+node/12595732299,Banmal Asharam,amenity,place_of_worship,27.4954882,77.6722478,OpenStreetMap,2026-09-10
+node/12595815327,Radha Krishna Mandir,amenity,place_of_worship,27.5308029,77.660396,OpenStreetMap,2026-09-10
+node/12595821724,Maheshwari Hospital,amenity,hospital,27.529647,77.6587635,OpenStreetMap,2026-09-10
+node/12595847155,Hotel Aryavilas,amenity,restaurant,27.4726542,77.6588803,OpenStreetMap,2026-09-10
+node/12595873837,Kiran Hospital,amenity,hospital,27.470206,77.6588638,OpenStreetMap,2026-09-10
+node/12595884330,Jai Gurudev Dhaba,amenity,restaurant,27.4704443,77.660534,OpenStreetMap,2026-09-10
+node/12595885976,Orthonova Hospital,amenity,hospital,27.473319,77.658659,OpenStreetMap,2026-09-10
+node/12595886109,Unnamed,amenity,place_of_worship,27.4777016,77.6596744,OpenStreetMap,2026-09-10
+node/12595888672,Jaigurudev Asharam,amenity,place_of_worship,27.476986,77.6586761,OpenStreetMap,2026-09-10
+node/12595903527,Vardan Heart Care,amenity,hospital,27.4829497,77.6635215,OpenStreetMap,2026-09-10
+node/12719261418,सांवरिया फूड्स,amenity,restaurant,27.5038607,77.6684314,OpenStreetMap,2026-09-10
+node/12719325186,Thakur ji food plaza,amenity,restaurant,27.5706891,77.6723494,OpenStreetMap,2026-09-10
+node/12719325187,Radha Rani hospital,amenity,hospital,27.5691036,77.6732,OpenStreetMap,2026-09-10
+node/12719325188,Balaji bhojnalaya and dhaba,amenity,restaurant,27.5695891,77.6741968,OpenStreetMap,2026-09-10
+node/12719325190,Kanha food court,amenity,restaurant,27.5705832,77.6735262,OpenStreetMap,2026-09-10
+node/12719325191,Vrindavan darbar,amenity,restaurant,27.5707155,77.6734826,OpenStreetMap,2026-09-10
+node/12719325192,Bikanerwala,amenity,restaurant,27.57121,77.6730523,OpenStreetMap,2026-09-10
+node/12719325193,Sri chintamani kunj,amenity,place_of_worship,27.5711878,77.6727511,OpenStreetMap,2026-09-10
+node/12719325194,Sant Vriddh Ashram,amenity,social_facility,27.5711184,77.672337,OpenStreetMap,2026-09-10
+node/12719325195,The royal food plaza,amenity,restaurant,27.5706715,77.6710374,OpenStreetMap,2026-09-10
+node/12719325196,Brijwasi restaurant and dhaba,amenity,restaurant,27.5706885,77.6713,OpenStreetMap,2026-09-10
+node/12719325197,Banke Bihari emporium,shop,craft,27.5707067,77.6716476,OpenStreetMap,2026-09-10
+node/12719337806,CRVS food court,amenity,restaurant,27.5705729,77.6717207,OpenStreetMap,2026-09-10
+node/12719337808,Radha Rani bhojnalaya,amenity,restaurant,27.5707046,77.6720604,OpenStreetMap,2026-09-10
+node/12719337809,Banke bhojnalaya,amenity,restaurant,27.5707306,77.6722147,OpenStreetMap,2026-09-10
+node/12719337811,Shri banke Bihari family dhaba,amenity,restaurant,27.5713069,77.6738911,OpenStreetMap,2026-09-10
+node/12719337812,Bansi Wala,amenity,restaurant,27.5713283,77.6739504,OpenStreetMap,2026-09-10
+node/12719337813,Radha Rani,amenity,restaurant,27.5713592,77.674033,OpenStreetMap,2026-09-10
+node/12719337814,Dakshin Mukhi Hanuman Mandir,amenity,place_of_worship,27.5713996,77.6744995,OpenStreetMap,2026-09-10
+node/12719337817,Unnamed,amenity,police,27.571634,77.6759541,OpenStreetMap,2026-09-10
+node/12719337821,Law college,amenity,college,27.5718603,77.6798054,OpenStreetMap,2026-09-10
+node/13086877198,Shivji Temple,amenity,place_of_worship,27.567352,77.6723142,OpenStreetMap,2026-09-10
+node/13086886805,Devfresco Supermarket India,shop,wholesale,27.567893,77.6735362,OpenStreetMap,2026-09-10
+node/13140732864,Unnamed,amenity,fuel,27.4829943,77.4149347,OpenStreetMap,2026-09-10
+node/13273674966,Temple,amenity,place_of_worship,27.4404942,77.6863591,OpenStreetMap,2026-09-10
+node/13276223242,Unnamed,amenity,place_of_worship,27.4369819,77.6833696,OpenStreetMap,2026-09-10
+node/13334394701,Vrindavan Ras Mahima,amenity,place_of_worship,27.5803998,77.6723538,OpenStreetMap,2026-09-10
+node/13626243701,City hospital,amenity,hospital,27.5230519,77.6564717,OpenStreetMap,2026-09-10
+node/13961344523,Bharat Petroleum,amenity,fuel,27.4988198,77.6693195,OpenStreetMap,2026-09-10
+node/13987804286,Hanuman Temple,amenity,place_of_worship,27.4374526,77.691351,OpenStreetMap,2026-09-10
+node/14051831021,chai tapri,shop,tea,27.5009274,77.6582627,OpenStreetMap,2026-09-10
+node/14059041796,Unnamed,amenity,fast_food,27.4833101,77.6734278,OpenStreetMap,2026-09-10
+node/14059047002,Unnamed,shop,water,27.4831372,77.6733905,OpenStreetMap,2026-09-10
+node/14059047015,Unnamed,amenity,fast_food,27.4828773,77.6733331,OpenStreetMap,2026-09-10
+node/14064475070,Unnamed,amenity,place_of_worship,27.4979825,77.671519,OpenStreetMap,2026-09-10

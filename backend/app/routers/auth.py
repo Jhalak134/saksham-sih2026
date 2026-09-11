@@ -1,27 +1,31 @@
 """
-backend/app/routers/auth.py
+auth.py
 
-Authentication endpoints for the SAKSHAM platform.
+Authentication, User Profile, and Session endpoints for the SAKSHAM platform.
 
 Endpoints:
-  POST /auth/signup   — create a new user account
-  POST /auth/login    — authenticate and receive a JWT
-  GET  /auth/me       — retrieve the current authenticated user
-  POST /auth/logout   — client-side logout hint (JWT is stateless)
+  POST /api/v1/auth/signup   — create a new user account (JWT)
+  POST /api/v1/auth/login    — authenticate and receive a JWT
+  GET  /api/v1/auth/me       — retrieve the current authenticated user
+  POST /api/v1/auth/logout   — client-side logout hint (JWT is stateless)
+  POST /api/v1/auth/profile  — save user profile
+  GET  /api/v1/auth/profile/{id} — get user profile
+  POST /api/v1/auth/google   — Google One Tap OAuth login
 
 Security rules enforced here:
   - Passwords are NEVER logged or stored in plaintext
   - password_hash is NEVER returned in any response
   - Duplicate identifiers return 409 Conflict
-  - Legacy users with NULL password_hash receive the same generic 401 "Invalid credentials." response as other invalid credentials to avoid revealing that an account exists.
+  - Legacy users with NULL password_hash receive the same generic 401 "Invalid credentials." response as other invalid credentials.
   - All protected endpoints require a valid, non-expired JWT
 """
 
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from backend.app.auth import (
     create_access_token,
@@ -29,10 +33,12 @@ from backend.app.auth import (
     hash_password,
     verify_password,
 )
+from backend.app.db.models import User
 from backend.app.db.queries import (
     create_user,
     get_user_by_id,
     get_user_by_identifier,
+    get_or_create_user,
 )
 from backend.app.db.session import get_db
 from backend.app.schemas.auth import (
@@ -43,7 +49,7 @@ from backend.app.schemas.auth import (
     UserResponse,
 )
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
 _bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -81,7 +87,7 @@ def get_current_user_id(
 def get_current_user(
     user_id: Annotated[int, Depends(get_current_user_id)],
     db: Annotated[Session, Depends(get_db)],
-) -> object:
+) -> User:
     """
     Dependency that returns the full User ORM object for the current request.
     Raises HTTP 401 if the user no longer exists in the DB.
@@ -96,7 +102,7 @@ def get_current_user(
     return user
 
 
-# ── Endpoints ──────────────────────────────────────────────────────────────────
+# ── JWT Auth Endpoints ────────────────────────────────────────────────────────
 
 @router.post(
     "/signup",
@@ -170,7 +176,6 @@ def login(
     # to avoid timing-based user enumeration
     stored_hash = user.password_hash if user else None
 
-
     if user is None or not verify_password(body.password, stored_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -191,7 +196,7 @@ def login(
     summary="Get the current authenticated user's profile",
 )
 def me(
-    current_user: Annotated[object, Depends(get_current_user)],
+    current_user: Annotated[User, Depends(get_current_user)],
 ) -> UserResponse:
     """
     Return the profile of the currently authenticated user.
@@ -212,9 +217,76 @@ def logout() -> MessageResponse:
 
     JWT tokens are stateless — the server cannot invalidate them directly.
     The client should discard the token from its storage on logout.
-
-    For production use, implement a token denylist (Redis) or use very
-    short-lived tokens with refresh tokens. This is appropriate for the
-    hackathon scope.
     """
     return MessageResponse(message="Logged out. Please discard your token.")
+
+
+# ── Profile & OAuth Endpoints (origin/main) ───────────────────────────────────
+
+class UserProfileIn(BaseModel):
+    phone_or_email: str
+    home_location: Optional[str] = None
+    default_capital: Optional[float] = 100000.0
+    preferred_language: Optional[str] = "en"
+
+
+@router.post("/profile")
+def save_profile(req: UserProfileIn, db: Session = Depends(get_db)):
+    user = get_or_create_user(db, req.phone_or_email, req.home_location)
+    if req.default_capital is not None:
+        user.default_capital = req.default_capital
+    if req.preferred_language is not None:
+        user.preferred_language = req.preferred_language
+    db.commit()
+    db.refresh(user)
+    return {
+        "id": user.id,
+        "phone_or_email": user.phone_or_email,
+        "home_location": user.home_location,
+        "default_capital": user.default_capital,
+        "preferred_language": user.preferred_language,
+    }
+
+
+@router.get("/profile/{identifier}")
+def get_profile(identifier: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.phone_or_email == identifier).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return {
+        "id": user.id,
+        "phone_or_email": user.phone_or_email,
+        "home_location": user.home_location,
+        "default_capital": user.default_capital,
+        "preferred_language": user.preferred_language,
+    }
+
+
+class GoogleAuthIn(BaseModel):
+    email: str
+    name: Optional[str] = None
+    picture: Optional[str] = None
+    google_id: Optional[str] = None
+    credential: Optional[str] = None
+
+
+@router.post("/google")
+def google_auth(req: GoogleAuthIn, db: Session = Depends(get_db)):
+    if not req.email or not req.email.strip():
+        raise HTTPException(status_code=400, detail="Email is required.")
+
+    clean_email = req.email.strip().lower()
+    user = get_or_create_user(db, clean_email, None)
+    db.commit()
+    db.refresh(user)
+
+    return {
+        "id": user.id,
+        "phone_or_email": user.phone_or_email,
+        "name": req.name or clean_email.split("@")[0],
+        "picture": req.picture,
+        "home_location": user.home_location,
+        "default_capital": user.default_capital,
+        "preferred_language": user.preferred_language,
+        "auth_provider": "google",
+    }

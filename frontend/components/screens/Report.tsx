@@ -3,10 +3,11 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Calendar } from 'lucide-react';
 import { getReportById, type DetailedReport, type AssessmentStatus } from '@/data/reportsData';
+import { getAssessmentById, mapBackendResponseToDetailedReport } from '@/lib/api-client';
 import { DashboardTab } from '@/components/dashboard/DashboardTab';
 import { MarketTab } from '@/components/dashboard/MarketTab';
 import { FinancialsTab } from '@/components/dashboard/FinancialsTab';
@@ -49,7 +50,95 @@ function StatusBadge({ status }: { status: AssessmentStatus }): React.JSX.Elemen
 
 export function ReportScreen({ reportId = 'assess_001' }: ReportScreenProps): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<DashboardSubTab>('Dashboard');
-  const report: DetailedReport = getReportById(reportId);
+  const isMockId = reportId.startsWith('assess_');
+  const [liveReport, setLiveReport] = useState<DetailedReport | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(!isMockId);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isMockId) {
+      setLiveReport(null);
+      setIsLoading(false);
+      setLoadError(null);
+      return;
+    }
+
+    let isMounted = true;
+    setIsLoading(true);
+    setLoadError(null);
+
+    getAssessmentById(reportId)
+      .then((backendData) => {
+        if (!isMounted) return;
+        const mapped = mapBackendResponseToDetailedReport(backendData);
+        setLiveReport(mapped);
+        setIsLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (!isMounted) return;
+        const msg = err instanceof Error ? err.message : 'Failed to load report from server.';
+        setLoadError(msg);
+        setIsLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [reportId, isMockId]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-16 flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-3 border-amber-500 border-t-transparent" />
+          <p className="text-sm font-medium text-slate-600">Loading assessment #{reportId}...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError && !liveReport) {
+    return (
+      <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-12">
+        <div className="mx-auto max-w-lg rounded-2xl border border-red-200 bg-white p-6 shadow-sm text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600 mb-3 text-lg font-bold">
+            !
+          </div>
+          <h2 className="text-base font-bold text-slate-900">Failed to load report</h2>
+          <p className="mt-1 text-xs text-slate-500">{loadError}</p>
+          <div className="mt-5 flex items-center justify-center gap-3">
+            <Link
+              href="/reports"
+              className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+            >
+              Back to Reports
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                setIsLoading(true);
+                setLoadError(null);
+                getAssessmentById(reportId)
+                  .then((backendData) => {
+                    setLiveReport(mapBackendResponseToDetailedReport(backendData));
+                    setIsLoading(false);
+                  })
+                  .catch((err: unknown) => {
+                    setLoadError(err instanceof Error ? err.message : 'Failed to reload report.');
+                    setIsLoading(false);
+                  });
+              }}
+              className="rounded-lg bg-amber-400 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-amber-500 transition-colors cursor-pointer"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const report: DetailedReport = liveReport || getReportById(reportId);
 
   return (
     <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-5 md:px-8 md:py-7">
@@ -84,6 +173,12 @@ export function ReportScreen({ reportId = 'assess_001' }: ReportScreenProps): Re
           </div>
 
           <div className="flex items-center gap-2">
+            {report.isLiveBackend && (
+              <span className="inline-flex items-center gap-1 rounded bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Live Backend
+              </span>
+            )}
             <StatusBadge status={report.status} />
             <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">
               Fit: {report.fitScore}/100

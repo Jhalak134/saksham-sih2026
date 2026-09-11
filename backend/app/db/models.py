@@ -101,6 +101,8 @@ class Business(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     source = Column(String)
+    osm_id = Column(String)
+    location_precision = Column(String)
 
     village = relationship("Village", back_populates="businesses")
     category = relationship("BusinessCategory", back_populates="businesses")
