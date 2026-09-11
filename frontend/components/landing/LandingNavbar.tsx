@@ -103,7 +103,7 @@ export function LandingNavbar(): React.JSX.Element {
 
           {/* Login button */}
           <Link
-            href="/discover"
+            href="/login"
             className={cn(
               'rounded-lg border border-slate-200 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs',
               'hover:bg-slate-50 hover:border-slate-300 transition-colors',
