@@ -356,3 +356,63 @@ Ran it; report generated successfully.
 makes it visible in 15 seconds — "here's the real data backbone" is a
 strong differentiator from teams that hardcoded demo numbers.
 **Status:** Done
+
+
+## Step 20 — Basic tests (24/24 passing)
+**Date:** 2026-09-11
+**Files touched:** `backend/tests/test_data_pipeline.py`, `backend/app/db/session.py`
+**What I did:**
+- Wrote `backend/tests/test_data_pipeline.py` — 24 tests across 4 test classes:
+  - `TestVillagesCSV` (8 tests): row count, required columns, no nulls, no duplicate
+    village codes, uninhabited count = 144, literacy rate computable
+  - `TestOSMCSV` (4 tests): row count range, required columns, coordinates within
+    Mathura bounding box, source field populated
+  - `TestMarketPricesCSV` (4 tests): has rows, required columns, prices positive,
+    modal price between min and max
+  - `TestConfidenceLogic` (5 tests): pure unit tests for `assign_confidence()` —
+    all four signal combinations + None population edge case
+  - `TestSchemeRouting` (3 tests): micro scheme at ≤₹1.4L, term loan above, exact
+    interest rates match SIH spec (6.5% and 8%)
+- Discovered and fixed two issues during this step:
+  1. The rebase had wiped `backend/app/db/session.py` to an empty file —
+     restored it with the original engine + session setup (pool_pre_ping,
+     pool_recycle=280)
+  2. The rebase had wiped the three cleaned CSVs to 0 bytes — restored from
+     git history (`git checkout 547a5c5 -- backend/data_pipeline/cleaned/*.csv`)
+- All 24 tests pass: `pytest backend/tests/test_data_pipeline.py -v` → 24 passed
+**Why:** Tests catch silent bugs (wrong column mapped, encoding issues, scheme
+threshold drift). Also demonstrates to judges that the data layer is verified,
+not just "it works on my machine."
+**Status:** Done
+
+
+## Step 21 — Data pipeline README
+**Date:** 2026-09-11
+**Files touched:** `backend/data_pipeline/README.md`
+**What I did:**
+Wrote `backend/data_pipeline/README.md` covering: quick-start commands to
+regenerate the DB from scratch, per-script descriptions with input/output,
+data sources with download notes, schema overview, known limitations table,
+test instructions, and environment setup. Any teammate or judge can understand
+the full data layer in under 2 minutes from this doc.
+**Why:** Without this, the data layer is a black box. This doc lets
+`backend_s` debug confidently, lets a new LLM session pick up context
+instantly, and gives judges evidence that the team thought through data
+quality — not just "it works on our laptop".
+**Status:** Done
+
+---
+
+## ALL STEPS COMPLETE — Part A, B, and C finished
+
+**Summary of data_n work (2026-09-09 to 2026-09-11):**
+
+- Pilot: Uttar Pradesh, Mathura district
+- 874 villages loaded (Census 2011), 334 OSM businesses, 7 market price records
+- Full schema live on Neon Postgres (10 tables)
+- Confidence levels: 565 High / 269 Medium / 40 Low (all 874 villages)
+- 24/24 tests passing
+- Coverage report: `docs/data_coverage_report.md`
+- Query functions in `queries.py` handed off to backend_s
+
+**Next action:** merge `data-n-track` into `main` when team lead approves.

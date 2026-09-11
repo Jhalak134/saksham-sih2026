@@ -88,6 +88,7 @@ class BusinessCategory(Base):
     is_seasonal = Column(Boolean, default=False)
 
     businesses = relationship("Business", back_populates="category")
+    assessments = relationship("Assessment", back_populates="category")
 
 
 class Business(Base):
@@ -100,6 +101,8 @@ class Business(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     source = Column(String)
+    osm_id = Column(String)
+    location_precision = Column(String)
 
     village = relationship("Village", back_populates="businesses")
     category = relationship("BusinessCategory", back_populates="businesses")
@@ -124,6 +127,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     phone_or_email = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=True)  # nullable=True: existing users predate password auth
     home_location = Column(String)
     default_capital = Column(Float)
     preferred_language = Column(String)
@@ -151,4 +155,5 @@ class Assessment(Base):
 
     user = relationship("User", back_populates="assessments")
     village = relationship("Village", back_populates="assessments")
+    category = relationship("BusinessCategory", back_populates="assessments")
     scheme = relationship("Scheme", back_populates="assessments")

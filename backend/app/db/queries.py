@@ -122,9 +122,76 @@ def get_scheme_for_cost(db: Session, project_cost: float) -> Optional[Scheme]:
 
 # ─── User Queries ─────────────────────────────────────────────────────────────
 
+def get_user_by_identifier(db: Session, phone_or_email: str) -> Optional[User]:
+    """
+    Look up a user by their login identifier (email or phone).
+    Returns None if no matching user exists.
+    Used by: login endpoint.
+    """
+    return (
+        db.query(User)
+        .filter(User.phone_or_email == phone_or_email.strip())
+        .first()
+    )
+
+
+def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
+    """
+    Retrieve a user by their primary key.
+    Returns None if the user does not exist.
+    Used by: /auth/me endpoint, token validation.
+    """
+    return db.query(User).filter(User.id == user_id).first()
+
+
+def create_user(
+    db: Session,
+    phone_or_email: str,
+    password_hash: str,
+    home_location: Optional[str] = None,
+    default_capital: float = 100000.0,
+    preferred_language: str = "en",
+) -> Optional[User]:
+    """
+    Create a new user with a hashed password.
+    Returns the created User, or None if the identifier already exists.
+
+    Callers must hash the password BEFORE calling this function.
+    Never pass plaintext passwords here.
+
+    Used by: signup endpoint.
+    """
+    identifier = phone_or_email.strip()
+    # Check for duplicate before attempting insert (gives cleaner error handling)
+    existing = get_user_by_identifier(db, identifier)
+    if existing:
+        return None  # caller should return HTTP 409
+
+    user = User(
+        phone_or_email=identifier,
+        password_hash=password_hash,
+        home_location=home_location,
+        default_capital=default_capital,
+        preferred_language=preferred_language,
+    )
+    db.add(user)
+    try:
+        db.commit()
+        db.refresh(user)
+    except Exception:
+        db.rollback()
+        raise
+    return user
+
+
 def get_or_create_user(
     db: Session, phone_or_email: str, home_location: Optional[str] = None
 ) -> User:
+    """
+    Legacy helper: find or create a user without a password.
+    Kept for compatibility with existing non-auth flows.
+    New auth-required code should use create_user() + get_user_by_identifier().
+    """
     identifier = phone_or_email.strip()
     user = db.query(User).filter(User.phone_or_email == identifier).first()
     if not user:
@@ -186,4 +253,43 @@ def list_assessments(db: Session, skip: int = 0, limit: int = 50) -> List[Assess
         .offset(skip)
         .limit(limit)
         .all()
+    )
+
+
+# ─── Ownership-enforced Queries (auth-required) ───────────────────────────────
+
+def get_assessments_for_user(
+    db: Session, user_id: int, skip: int = 0, limit: int = 50
+) -> List[Assessment]:
+    """
+    Return assessments belonging to a specific user only.
+    A user must never be able to retrieve another user's assessments
+    simply by changing an ID in the request.
+
+    Used by: authenticated My Reports endpoint.
+    """
+    return (
+        db.query(Assessment)
+        .filter(Assessment.user_id == user_id)
+        .order_by(Assessment.id.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+
+def get_assessment_for_user(
+    db: Session, assessment_id: int, user_id: int
+) -> Optional[Assessment]:
+    """
+    Retrieve a single assessment only if it belongs to the requesting user.
+    Returns None (not an exception) when ownership doesn't match —
+    callers should return HTTP 404 (not 403) to avoid leaking existence.
+
+    Used by: authenticated assessment detail endpoint.
+    """
+    return (
+        db.query(Assessment)
+        .filter(Assessment.id == assessment_id, Assessment.user_id == user_id)
+        .first()
     )

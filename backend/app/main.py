@@ -4,7 +4,12 @@ main.py
 Main FastAPI application for SAKSHAM platform.
 """
 
+import os
 from contextlib import asynccontextmanager
+from dotenv import load_dotenv
+
+load_dotenv()  # load backend/.env before anything else
+
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
@@ -32,14 +37,24 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# CORS setup
+# ── CORS ──────────────────────────────────────────────────────────────────────
+# Allow the Next.js dev server and production origin.
+# Extend ALLOWED_ORIGINS in .env for additional environments.
+
+_raw_origins = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000",
+)
+_allowed_origins = [o.strip() for o in _raw_origins.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Mount Routers
 app.include_router(location.router)
