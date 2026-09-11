@@ -2,6 +2,7 @@ import { Header } from '@/components/layout/Header';
 import { Sidebar } from '@/components/layout/Sidebar';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { Drawer } from '@/components/layout/Drawer';
+import { AuthGuard } from '@/components/layout/AuthGuard';
 
 export default function ShellLayout({
   children,
@@ -9,26 +10,28 @@ export default function ShellLayout({
   children: React.ReactNode;
 }): React.JSX.Element {
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC]">
-      {/* Desktop: fixed left sidebar */}
-      <Sidebar />
+    <AuthGuard>
+      <div className="flex min-h-screen bg-[#F8FAFC]">
+        {/* Desktop: fixed left sidebar */}
+        <Sidebar />
 
-      {/* Main area: offset from sidebar on md+, full width on mobile */}
-      <div
-        className="flex flex-1 flex-col min-h-screen md:pl-[var(--sidebar-width)]"
-      >
-        <Header />
-        {/* Content scrolls independently; Header is sticky inside this column */}
-        <main className="flex-1 flex flex-col overflow-y-auto bg-[#F8FAFC] pb-[var(--bottom-nav-height)] lg:pb-0">
-          {children}
-        </main>
+        {/* Main area: offset from sidebar on md+, full width on mobile */}
+        <div
+          className="flex flex-1 flex-col min-h-screen md:pl-[var(--sidebar-width)]"
+        >
+          <Header />
+          {/* Content scrolls independently; Header is sticky inside this column */}
+          <main className="flex-1 flex flex-col overflow-y-auto bg-[#F8FAFC] pb-[var(--bottom-nav-height)] lg:pb-0">
+            {children}
+          </main>
+        </div>
+
+        {/* Mobile: bottom tab bar (hidden on lg+) */}
+        <BottomNav />
+
+        {/* Mobile: slide-out drawer (hidden on lg+, toggled via ShellContext) */}
+        <Drawer />
       </div>
-
-      {/* Mobile: bottom tab bar (hidden on lg+) */}
-      <BottomNav />
-
-      {/* Mobile: slide-out drawer (hidden on lg+, toggled via ShellContext) */}
-      <Drawer />
-    </div>
+    </AuthGuard>
   );
 }

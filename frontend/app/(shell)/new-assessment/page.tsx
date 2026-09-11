@@ -14,6 +14,8 @@ import { StepLocation } from '@/components/assessment/StepLocation';
 import { StepReview } from '@/components/assessment/StepReview';
 import { createAssessment } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
+import { getSavedUserLocation } from '@/lib/geolocation';
+import { isMathuraLocation, searchLocations } from '@/data/mockLocations';
 
 // ─── Infer suggested category from idea text ──────────────────────────────────
 
@@ -55,12 +57,10 @@ function inferCategory(idea: string): string {
   return '';
 }
 
-
-
 // ─── Page Content ─────────────────────────────────────────────────────────────
 
 function NewAssessmentContent(): React.JSX.Element {
-  const { capital: shellCapital } = useShell();
+  const { capital: shellCapital, homeLocation } = useShell();
   const searchParams = useSearchParams();
   const initialIdea = searchParams ? searchParams.get('idea') ?? '' : '';
   const paramDistrict = searchParams ? searchParams.get('district') ?? '' : '';
@@ -69,6 +69,7 @@ function NewAssessmentContent(): React.JSX.Element {
 
   let initialLocationId = '';
   let initialLocationDisplay = '';
+
   if (paramLoc) {
     initialLocationId = 'loc_param';
     initialLocationDisplay = paramLoc;
@@ -88,6 +89,35 @@ function NewAssessmentContent(): React.JSX.Element {
   const suggestedCategory = inferCategory(session.idea);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+
+  // Hydrate saved user location on client after initial render to avoid SSR mismatch
+  React.useEffect(() => {
+    if (!paramLoc && !paramDistrict && !session.locationId) {
+      const { location: storedLoc, status: geoStatus } = getSavedUserLocation();
+      const candidateLoc = storedLoc || (homeLocation && homeLocation !== 'Uttar Pradesh' ? homeLocation : '');
+
+      if (candidateLoc && geoStatus !== 'denied') {
+        const matches = searchLocations(candidateLoc);
+        const bestMatch = matches.find((m) => isMathuraLocation(m));
+        if (bestMatch) {
+          updateSession({
+            locationId: bestMatch.id,
+            locationDisplay: `${bestMatch.village}, ${bestMatch.district}`,
+          });
+        } else if (isMathuraLocation(candidateLoc)) {
+          updateSession({
+            locationId: 'loc_07',
+            locationDisplay: candidateLoc,
+          });
+        } else {
+          updateSession({
+            locationId: 'loc_saved',
+            locationDisplay: candidateLoc,
+          });
+        }
+      }
+    }
+  }, [paramLoc, paramDistrict, homeLocation, session.locationId, updateSession]);
 
   async function handleSubmit(): Promise<void> {
     setIsSubmitting(true);

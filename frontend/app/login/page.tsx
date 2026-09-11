@@ -5,8 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react';
+import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
 import { setAuthUser } from '@/lib/auth';
+import { setStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
+import { requestUserLocation, type UserLocationResult } from '@/lib/geolocation';
 
 const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
@@ -57,6 +60,10 @@ function LoginFormContent(): React.JSX.Element {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isShaking, setIsShaking] = useState(false);
+
+  // Post-signup location permission modal state
+  const [showLocationModal, setShowLocationModal] = useState<boolean>(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
 
   // Sync tab with query parameters if they change
   useEffect(() => {
@@ -142,6 +149,9 @@ function LoginFormContent(): React.JSX.Element {
       authProvider: 'google',
       token: userProfile.token,
     });
+    if (userProfile.token) {
+      setStorageItem(STORAGE_KEYS.authToken, userProfile.token);
+    }
 
     router.push(destination);
   };
@@ -186,13 +196,13 @@ function LoginFormContent(): React.JSX.Element {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     const cleanAccount = mobileNumber.trim();
     if (!cleanAccount) {
-      triggerError('Please enter your mobile number');
+      triggerError('Please enter your mobile number or email');
       return;
     }
 
@@ -221,11 +231,16 @@ function LoginFormContent(): React.JSX.Element {
       name: name.trim() || 'Entrepreneur',
       authProvider: 'phone',
     });
+    setStorageItem(STORAGE_KEYS.authToken, 'session-token-' + Date.now());
 
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      router.push(destination);
+      if (activeTab === 'signup') {
+        setShowLocationModal(true);
+      } else {
+        router.push(destination);
+      }
     }, 600);
   };
 
@@ -297,8 +312,30 @@ function LoginFormContent(): React.JSX.Element {
     });
     setTimeout(() => {
       setLoading(false);
+      if (activeTab === 'signup') {
+        setShowLocationModal(true);
+      } else {
+        router.push(destination);
+      }
+    }, 450);
+  };
+
+  const handleAllowLocation = async () => {
+    setIsDetectingLocation(true);
+    try {
+      await requestUserLocation();
+    } catch {
+      // Ignored - fallback
+    } finally {
+      setIsDetectingLocation(false);
+      setShowLocationModal(false);
       router.push(destination);
-    }, 600);
+    }
+  };
+
+  const handleSkipLocation = () => {
+    setShowLocationModal(false);
+    router.push(destination);
   };
 
   return (
@@ -607,6 +644,69 @@ function LoginFormContent(): React.JSX.Element {
           title="Back to Saksham Home"
         />
       </div>
+
+      {/* Post-Signup Location Permission Modal Popup */}
+      {showLocationModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="location-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+        >
+          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800 mb-4 shadow-sm">
+                <MapPin className="h-7 w-7 text-emerald-700" />
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-600" />
+                </span>
+              </div>
+
+              <h2
+                id="location-modal-title"
+                className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight"
+              >
+                Saksham wants to access your location
+              </h2>
+
+              <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed max-w-sm">
+                Allow location permission to automatically discover localized credit schemes, market demand, and verified pilot clusters in your area.
+              </p>
+
+              <div className="mt-6 flex w-full flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleAllowLocation}
+                  disabled={isDetectingLocation}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#167844] hover:bg-[#126438] active:bg-[#0e4e2c] py-3 px-4 text-sm font-semibold text-white shadow-xs transition-all cursor-pointer disabled:opacity-75"
+                >
+                  {isDetectingLocation ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                      <span>Detecting location...</span>
+                    </>
+                  ) : (
+                    <span>Allow Location Access</span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSkipLocation}
+                  disabled={isDetectingLocation}
+                  className="w-full rounded-xl py-2.5 px-4 text-xs sm:text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Not now, I&apos;ll fill manually
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
     </>
   );
