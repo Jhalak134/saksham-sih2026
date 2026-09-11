@@ -28,6 +28,7 @@ import {
   type LanguageCode,
 } from '@/lib/constants';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import { getStorageItem, setStorageItem } from '@/lib/storage';
 
 // ─── Resize constants ─────────────────────────────────────────────────────────
@@ -256,10 +257,11 @@ function useSidebarResize() {
 export function Sidebar(): React.JSX.Element {
   const pathname = usePathname();
   const { compareCount, language, setLanguage } = useShell();
+  const { logout } = useAuth();
   const { width, startResize, resetWidth } = useSidebarResize();
 
   function handleLogOut(): void {
-    // Auth sign-out placeholder — will be wired in authentication sprint.
+    logout();
     window.location.href = '/';
   }
 

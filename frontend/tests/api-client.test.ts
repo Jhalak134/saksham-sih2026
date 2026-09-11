@@ -7,6 +7,9 @@ import {
   fetchInsights,
   fetchAssessment,
   cacheAssessment,
+  searchLocations,
+  formatVillageLocation,
+  queryAI,
   type BackendAssessmentResponse,
 } from '@/lib/api-client';
 
@@ -278,6 +281,162 @@ describe('api-client — Unit Tests', () => {
       const result = await fetchInsights('Vrindavan');
       expect(result.location).toBe('Vrindavan');
       expect(result.categories).toEqual([]);
+    });
+  });
+
+  describe('searchLocations & formatVillageLocation', () => {
+    it('returns empty array immediately for empty or whitespace query without network call', async () => {
+      const fetchSpy = vi.fn();
+      vi.stubGlobal('fetch', fetchSpy);
+
+      const emptyRes = await searchLocations('');
+      const spaceRes = await searchLocations('   ');
+
+      expect(emptyRes).toEqual([]);
+      expect(spaceRes).toEqual([]);
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('successfully queries GET /api/v1/locations and returns village list', async () => {
+      const mockVillages = [
+        {
+          id: 123912,
+          name: 'Bera',
+          block_name: 'Mat',
+          district_name: 'Mathura',
+          state_name: 'Uttar Pradesh',
+          population: 2923,
+          household_count: 553,
+          literacy_rate: 61.2,
+        },
+      ];
+
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => mockVillages,
+        })
+      );
+
+      const res = await searchLocations('Bera', 20);
+      expect(res).toHaveLength(1);
+      expect(res[0].id).toBe(123912);
+      expect(res[0].name).toBe('Bera');
+      expect(res[0].block_name).toBe('Mat');
+    });
+
+    it('formats village location with block and district', () => {
+      const formatted = formatVillageLocation({
+        id: 123912,
+        name: 'Bera',
+        block_name: 'Mat',
+        district_name: 'Mathura',
+        state_name: 'Uttar Pradesh',
+        population: 2923,
+        household_count: 553,
+        literacy_rate: 61.2,
+      });
+      expect(formatted).toBe('Bera, Mat Block · Mathura');
+
+      const noBlock = formatVillageLocation({
+        id: 999,
+        name: 'Mathura Central',
+        block_name: null,
+        district_name: 'Mathura',
+        state_name: 'Uttar Pradesh',
+        population: 5000,
+        household_count: 800,
+        literacy_rate: 70.0,
+      });
+      expect(noBlock).toBe('Mathura Central, Mathura');
+    });
+
+    it('throws descriptive error on API failure', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          status: 500,
+        })
+      );
+
+      await expect(searchLocations('ErrorVillage')).rejects.toThrow(
+        'Location search failed (HTTP 500)'
+      );
+    });
+  });
+
+  describe('queryAI', () => {
+    it('throws error for empty or whitespace query', async () => {
+      await expect(queryAI({ query: '' })).rejects.toThrow('Query cannot be empty');
+      await expect(queryAI({ query: '   ' })).rejects.toThrow('Query cannot be empty');
+    });
+
+    it('submits query to POST /api/v1/ai/query and returns grounded response', async () => {
+      const mockAIResponse = {
+        available: true,
+        source: 'ai_service',
+        summary: 'PMFME supports micro-food processing units with 35% subsidy.',
+        explanation: 'Detailed scheme guidelines and Mathura local context.',
+        recommendation: 'Apply under PMFME for dairy processing.',
+        key_points: ['35% capital subsidy', 'Up to Rs 10 Lakh grant'],
+        citations: [
+          {
+            source: 'pmfme_scheme_guidelines.pdf',
+            title: 'PMFME Guidelines',
+            page_start: 5,
+            page_end: 6,
+            chunk_id: 'pmfme_p005_c001',
+            excerpt: 'Credit linked subsidy provision.',
+            is_template_data: false,
+          },
+        ],
+        limitations: ['Requires FSSAI registration'],
+        warnings: ['Subject to bank sanction'],
+        grounding_status: 'grounded',
+        retrieval_status: 'grounded',
+        evidence_available: true,
+        result_count: 1,
+      };
+
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => mockAIResponse,
+        })
+      );
+
+      const res = await queryAI({
+        query: 'PMFME dairy scheme',
+        language: 'en',
+        top_k: 5,
+      });
+
+      expect(res.available).toBe(true);
+      expect(res.grounding_status).toBe('grounded');
+      expect(res.citations).toHaveLength(1);
+      expect(res.citations[0].chunk_id).toBe('pmfme_p005_c001');
+      expect(res.key_points).toContain('35% capital subsidy');
+      expect(res.limitations).toContain('Requires FSSAI registration');
+    });
+
+    it('throws error when backend AI gateway returns 503 service unavailable', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          status: 503,
+          json: async () => ({
+            detail: 'AI advisory service is currently unavailable. Please try again later.',
+          }),
+        })
+      );
+
+      await expect(
+        queryAI({ query: 'What business should I start?' })
+      ).rejects.toThrow('AI advisory service is currently unavailable');
     });
   });
 });

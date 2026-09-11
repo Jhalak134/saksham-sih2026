@@ -1,6 +1,6 @@
 // tests/Login.test.tsx
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 
 const mockPush = vi.fn();
@@ -33,13 +33,27 @@ vi.mock('next/image', () => ({
   ),
 }));
 
+const mockGetUserProfile = vi.fn();
+const mockSaveUserProfile = vi.fn();
+
+vi.mock('@/lib/api-client', async () => {
+  const actual = await vi.importActual<Record<string, unknown>>('@/lib/api-client');
+  return {
+    ...actual,
+    getUserProfile: (...args: unknown[]) => mockGetUserProfile(...args),
+    saveUserProfile: (...args: unknown[]) => mockSaveUserProfile(...args),
+  };
+});
+
 import LoginPage from '@/app/login/page';
 
 describe('LoginPage', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockGetUserProfile.mockReset();
+    mockSaveUserProfile.mockReset();
     mockSearchParams = new URLSearchParams();
-    vi.useFakeTimers();
+    localStorage.clear();
   });
 
   it('renders login tab active by default and displays heading "Welcome back"', () => {
@@ -60,6 +74,7 @@ describe('LoginPage', () => {
     expect(screen.getByRole('link', { name: /forgot password\?/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /^log in/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /continue with google/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /continue as guest/i })).toHaveAttribute('href', '/discover');
   });
 
   it('toggles password visibility when eye icon button is clicked', () => {
@@ -113,7 +128,15 @@ describe('LoginPage', () => {
     expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
   });
 
-  it('successfully submits valid form and redirects to /discover', () => {
+  it('successfully logs in with verified account and redirects to /discover', async () => {
+    mockGetUserProfile.mockResolvedValueOnce({
+      id: 1,
+      phone_or_email: '9876543210',
+      home_location: 'Bera, Mathura',
+      default_capital: 50000,
+      preferred_language: 'en',
+    });
+
     render(<LoginPage />);
     const mobileInput = screen.getByPlaceholderText(/enter your mobile number/i);
     const pwdInput = screen.getByPlaceholderText(/enter your password/i);
@@ -125,17 +148,80 @@ describe('LoginPage', () => {
 
     expect(screen.getByText(/processing\.\.\./i)).toBeInTheDocument();
 
-    vi.advanceTimersByTime(700);
-    expect(mockPush).toHaveBeenCalledWith('/discover');
+    await waitFor(() => {
+      expect(mockGetUserProfile).toHaveBeenCalledWith('9876543210');
+      expect(mockPush).toHaveBeenCalledWith('/discover');
+    });
   });
 
-  it('handles Google authentication redirect', () => {
+  it('displays backend error message when login fails', async () => {
+    mockGetUserProfile.mockRejectedValueOnce(
+      new Error('Account not found. Please check your mobile number or sign up.')
+    );
+
+    render(<LoginPage />);
+    const mobileInput = screen.getByPlaceholderText(/enter your mobile number/i);
+    const pwdInput = screen.getByPlaceholderText(/enter your password/i);
+    const form = mobileInput.closest('form')!;
+
+    fireEvent.change(mobileInput, { target: { value: '9876543210' } });
+    fireEvent.change(pwdInput, { target: { value: 'password123' } });
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Account not found\. Please check your mobile number or sign up\./i)
+      ).toBeInTheDocument();
+    });
+    expect(mockPush).not.toHaveBeenCalled();
+  });
+
+  it('successfully signs up new user and redirects to /discover', async () => {
+    mockSaveUserProfile.mockResolvedValueOnce({
+      id: 2,
+      phone_or_email: '9876543210',
+      home_location: null,
+      default_capital: null,
+      preferred_language: 'en',
+    });
+
+    render(<LoginPage />);
+    const signupTab = screen.getByRole('tab', { name: /^sign up$/i });
+    fireEvent.click(signupTab);
+
+    const nameInput = screen.getByPlaceholderText(/enter your full name/i);
+    const mobileInput = screen.getByPlaceholderText(/enter your mobile number/i);
+    const pwdInput = screen.getByPlaceholderText(/enter your password/i);
+    const form = mobileInput.closest('form')!;
+
+    // Validation: name required
+    fireEvent.change(mobileInput, { target: { value: '9876543210' } });
+    fireEvent.change(pwdInput, { target: { value: 'password123' } });
+    fireEvent.submit(form);
+    expect(screen.getByText(/please enter your full name/i)).toBeInTheDocument();
+
+    // Fill name and submit
+    fireEvent.change(nameInput, { target: { value: 'Ramesh Patel' } });
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      expect(mockSaveUserProfile).toHaveBeenCalledWith({
+        phone_or_email: '9876543210',
+        preferred_language: 'en',
+      });
+      expect(mockPush).toHaveBeenCalledWith('/discover');
+    });
+  });
+
+  it('displays honest notice when Google authentication is clicked', () => {
     render(<LoginPage />);
     const googleBtn = screen.getByRole('button', { name: /continue with google/i });
     fireEvent.click(googleBtn);
 
-    vi.advanceTimersByTime(700);
-    expect(mockPush).toHaveBeenCalledWith('/discover');
+    expect(
+      screen.getByText(/Google Sign-In is not configured in this pilot environment/i)
+    ).toBeInTheDocument();
+    expect(mockPush).not.toHaveBeenCalled();
   });
 
   it('defaults to Sign up mode when mode=signup query param is present', () => {
