@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useAssessmentFlow } from '@/hooks/useAssessmentFlow';
 
@@ -6,14 +6,14 @@ const FULL_SESSION = {
   idea: 'I want to start a dairy unit in my village',
   category: 'Dairy',
   capital: 100000,
-  locationId: 'loc_01',
-  locationDisplay: 'Kheragarh, Agra',
+  locationId: 'loc_07',
+  locationDisplay: 'Vrindavan, Mathura',
 };
 
 describe('useAssessmentFlow — initial state', () => {
-  it('starts on idea step', () => {
+  it('starts on location step', () => {
     const { result } = renderHook(() => useAssessmentFlow(100000));
-    expect(result.current.currentStep).toBe('idea');
+    expect(result.current.currentStep).toBe('location');
     expect(result.current.stepIndex).toBe(0);
     expect(result.current.totalSteps).toBe(4);
   });
@@ -23,35 +23,92 @@ describe('useAssessmentFlow — initial state', () => {
     expect(result.current.session.capital).toBe(75000);
   });
 
-  it('canProceed is false on idea step when idea is empty', () => {
+  it('canProceed is false on location step when location is empty', () => {
     const { result } = renderHook(() => useAssessmentFlow(100000));
     expect(result.current.canProceed).toBe(false);
   });
 });
 
 describe('useAssessmentFlow — canProceed per step', () => {
+  it('location step: false when no location selected', () => {
+    const { result } = renderHook(() => useAssessmentFlow(100000));
+    expect(result.current.canProceed).toBe(false);
+  });
+
+  it('location step: false when non-Mathura location selected', () => {
+    const { result } = renderHook(() => useAssessmentFlow(100000));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_01',
+        locationDisplay: 'Kheragarh, Agra',
+      })
+    );
+    expect(result.current.canProceed).toBe(false);
+  });
+
+  it('location step: true when Mathura location selected', () => {
+    const { result } = renderHook(() => useAssessmentFlow(100000));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+      })
+    );
+    expect(result.current.canProceed).toBe(true);
+  });
+
   it('idea step: false when < 10 chars', () => {
     const { result } = renderHook(() => useAssessmentFlow(0));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+      })
+    );
+    act(() => result.current.next());
+    expect(result.current.currentStep).toBe('idea');
     act(() => result.current.updateSession({ idea: 'short' }));
     expect(result.current.canProceed).toBe(false);
   });
 
   it('idea step: true when >= 10 chars', () => {
     const { result } = renderHook(() => useAssessmentFlow(0));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+      })
+    );
+    act(() => result.current.next());
     act(() => result.current.updateSession({ idea: '1234567890' }));
     expect(result.current.canProceed).toBe(true);
   });
 
   it('details step: false when category empty', () => {
     const { result } = renderHook(() => useAssessmentFlow(100000));
-    act(() => result.current.updateSession({ idea: '1234567890' }));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+        idea: '1234567890',
+      })
+    );
     act(() => result.current.next());
+    act(() => result.current.next());
+    expect(result.current.currentStep).toBe('details');
     expect(result.current.canProceed).toBe(false);
   });
 
   it('details step: false when capital is 0', () => {
     const { result } = renderHook(() => useAssessmentFlow(0));
-    act(() => result.current.updateSession({ idea: '1234567890' }));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+        idea: '1234567890',
+      })
+    );
+    act(() => result.current.next());
     act(() => result.current.next());
     act(() => result.current.updateSession({ category: 'Dairy' }));
     expect(result.current.canProceed).toBe(false);
@@ -59,26 +116,16 @@ describe('useAssessmentFlow — canProceed per step', () => {
 
   it('details step: true when category and capital filled', () => {
     const { result } = renderHook(() => useAssessmentFlow(100000));
-    act(() => result.current.updateSession({ idea: '1234567890' }));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+        idea: '1234567890',
+      })
+    );
+    act(() => result.current.next());
     act(() => result.current.next());
     act(() => result.current.updateSession({ category: 'Dairy' }));
-    expect(result.current.canProceed).toBe(true);
-  });
-
-  it('location step: false when no location selected', () => {
-    const { result } = renderHook(() => useAssessmentFlow(100000));
-    act(() => result.current.updateSession({ idea: '1234567890', category: 'Dairy' }));
-    act(() => result.current.next());
-    act(() => result.current.next());
-    expect(result.current.canProceed).toBe(false);
-  });
-
-  it('location step: true when locationId filled', () => {
-    const { result } = renderHook(() => useAssessmentFlow(100000));
-    act(() => result.current.updateSession({ idea: '1234567890', category: 'Dairy' }));
-    act(() => result.current.next());
-    act(() => result.current.next());
-    act(() => result.current.updateSession({ locationId: 'loc_01', locationDisplay: 'Kheragarh, Agra' }));
     expect(result.current.canProceed).toBe(true);
   });
 
@@ -130,6 +177,33 @@ describe('useAssessmentFlow — updateSession', () => {
 });
 
 describe('useAssessmentFlow — isComplete()', () => {
+  it('location: false when locationId empty', () => {
+    const { result } = renderHook(() => useAssessmentFlow(0));
+    expect(result.current.isComplete('location')).toBe(false);
+  });
+
+  it('location: false when location is not in Mathura', () => {
+    const { result } = renderHook(() => useAssessmentFlow(0));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_01',
+        locationDisplay: 'Kheragarh, Agra',
+      })
+    );
+    expect(result.current.isComplete('location')).toBe(false);
+  });
+
+  it('location: true when Mathura location is set', () => {
+    const { result } = renderHook(() => useAssessmentFlow(0));
+    act(() =>
+      result.current.updateSession({
+        locationId: 'loc_07',
+        locationDisplay: 'Vrindavan, Mathura',
+      })
+    );
+    expect(result.current.isComplete('location')).toBe(true);
+  });
+
   it('idea: false when empty', () => {
     const { result } = renderHook(() => useAssessmentFlow(0));
     expect(result.current.isComplete('idea')).toBe(false);
@@ -152,23 +226,12 @@ describe('useAssessmentFlow — isComplete()', () => {
     expect(result.current.isComplete('details')).toBe(true);
   });
 
-  it('location: false when locationId empty', () => {
-    const { result } = renderHook(() => useAssessmentFlow(0));
-    expect(result.current.isComplete('location')).toBe(false);
-  });
-
-  it('location: true when locationId set', () => {
-    const { result } = renderHook(() => useAssessmentFlow(0));
-    act(() => result.current.updateSession({ locationId: 'loc_01', locationDisplay: 'X, Y' }));
-    expect(result.current.isComplete('location')).toBe(true);
-  });
-
-  it('review: false when any field missing', () => {
+  it('review: false when any field missing or not in Mathura', () => {
     const { result } = renderHook(() => useAssessmentFlow(0));
     expect(result.current.isComplete('review')).toBe(false);
   });
 
-  it('review: true when all fields complete', () => {
+  it('review: true when all fields complete including Mathura location', () => {
     const { result } = renderHook(() => useAssessmentFlow(100000));
     act(() => result.current.updateSession(FULL_SESSION));
     expect(result.current.isComplete('review')).toBe(true);

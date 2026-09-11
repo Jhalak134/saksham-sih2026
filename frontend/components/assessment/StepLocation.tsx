@@ -2,12 +2,14 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, MapPin, X, Search } from 'lucide-react';
+import { ArrowRight, MapPin, X, Search, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useDebounce } from '@/hooks/useDebounce';
 import {
   searchLocations,
   formatLocation,
+  isMathuraLocation,
+  POPULAR_MATHURA_PILOT_LOCATIONS,
   type LocationResult,
 } from '@/data/mockLocations';
 
@@ -19,29 +21,42 @@ interface ResultItemProps {
 }
 
 function ResultItem({ result, onSelect }: ResultItemProps): React.JSX.Element {
+  const isPilot = isMathuraLocation(result);
+
   return (
     <button
       type="button"
       onClick={() => onSelect(result)}
       className={cn(
-        'flex w-full items-start gap-3 px-4 py-3 text-left',
+        'flex w-full items-start justify-between gap-3 px-4 py-3 text-left',
         'hover:bg-[var(--color-surface)] transition-colors'
       )}
     >
-      <MapPin
-        size={14}
-        strokeWidth={2}
-        className="mt-0.5 shrink-0 text-[var(--color-text-muted)]"
-        aria-hidden="true"
-      />
-      <div>
-        <p className="text-sm font-medium text-[var(--color-text-dark)]">
-          {result.village}
-        </p>
-        <p className="text-xs text-[var(--color-text-muted)]">
-          {result.block} Block · {result.district} · {result.state}
-        </p>
+      <div className="flex items-start gap-3">
+        <MapPin
+          size={14}
+          strokeWidth={2}
+          className="mt-0.5 shrink-0 text-[var(--color-text-muted)]"
+          aria-hidden="true"
+        />
+        <div>
+          <p className="text-sm font-medium text-[var(--color-text-dark)]">
+            {result.village}
+          </p>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            {result.block} Block · {result.district} · {result.state}
+          </p>
+        </div>
       </div>
+      {isPilot ? (
+        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-800">
+          Pilot Area
+        </span>
+      ) : (
+        <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
+          Coming Soon
+        </span>
+      )}
     </button>
   );
 }
@@ -50,28 +65,38 @@ function ResultItem({ result, onSelect }: ResultItemProps): React.JSX.Element {
 
 interface SelectedChipProps {
   display: string;
+  isPilot: boolean;
   onClear: () => void;
 }
 
-function SelectedChip({ display, onClear }: SelectedChipProps): React.JSX.Element {
+function SelectedChip({ display, isPilot, onClear }: SelectedChipProps): React.JSX.Element {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-[var(--color-primary)] bg-[#FEF3C7] px-3 py-2">
+    <div
+      className={cn(
+        'flex items-center gap-2 rounded-lg border px-3 py-2.5 transition-colors',
+        isPilot
+          ? 'border-emerald-300 bg-emerald-50/60'
+          : 'border-amber-300 bg-amber-50/60'
+      )}
+    >
       <MapPin
-        size={14}
+        size={16}
         strokeWidth={2}
-        className="shrink-0 text-[var(--color-text-dark)]"
+        className={cn('shrink-0', isPilot ? 'text-emerald-700' : 'text-amber-700')}
         aria-hidden="true"
       />
-      <span className="flex-1 text-sm font-medium text-[var(--color-text-dark)]">
-        {display}
-      </span>
+      <div className="flex-1 min-w-0">
+        <span className="text-sm font-semibold text-[var(--color-text-dark)] block truncate">
+          {display}
+        </span>
+      </div>
       <button
         type="button"
         onClick={onClear}
         aria-label={`Remove ${display}`}
-        className="rounded p-0.5 hover:bg-[var(--color-primary-dark)]/20 transition-colors"
+        className="rounded p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-800 transition-colors"
       >
-        <X size={14} strokeWidth={2.5} aria-hidden="true" />
+        <X size={15} strokeWidth={2.5} aria-hidden="true" />
       </button>
     </div>
   );
@@ -96,6 +121,7 @@ export function StepLocation({
   const [results, setResults] = useState<LocationResult[]>([]);
   const debouncedQuery = useDebounce(query, 300);
   const hasSelection = locationId.length > 0;
+  const isPilot = hasSelection && isMathuraLocation(locationDisplay || locationId);
 
   useEffect(() => {
     const found = searchLocations(debouncedQuery);
@@ -118,70 +144,139 @@ export function StepLocation({
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <div>
-          <p className="text-sm font-semibold text-[var(--color-text-dark)]">
-            Your location
-          </p>
-          <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
-            Search by village, block, or district.
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-[var(--color-text-dark)]">
+              Select Your Location
+            </p>
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-semibold text-amber-900">
+              <Sparkles size={11} className="text-amber-700" />
+              Pilot Active: Mathura
+            </span>
+          </div>
+          <p className="mt-0.5 text-xs sm:text-sm text-[var(--color-text-muted)]">
+            SAKSHAM localized market intelligence is currently calibrated for villages & blocks across Mathura District.
           </p>
         </div>
 
         {hasSelection ? (
-          <SelectedChip display={locationDisplay} onClear={handleClear} />
+          <div className="flex flex-col gap-3">
+            <SelectedChip display={locationDisplay} isPilot={isPilot} onClear={handleClear} />
+
+            {isPilot ? (
+              <div className="flex items-center gap-2 rounded-lg bg-emerald-50 border border-emerald-200 px-3.5 py-2.5 text-xs text-emerald-800 font-medium">
+                <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                <span>Active Pilot Region verified — comprehensive hyper-local dataset ready.</span>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs sm:text-sm text-amber-950 flex flex-col gap-2.5">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle size={18} className="text-amber-700 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-amber-900">
+                      Pilot Region Boundary Notice
+                    </p>
+                    <p className="mt-1 text-amber-800 text-xs sm:text-sm leading-relaxed">
+                      We are sorry, assessments are currently active exclusively in <strong>Mathura district</strong> (Pilot Region). Full coverage for <strong>{locationDisplay}</strong> is coming soon!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-amber-200/80">
+                  <p className="font-medium text-amber-900 text-xs mb-2">
+                    Try one of our active pilot locations to explore the assessment:
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {POPULAR_MATHURA_PILOT_LOCATIONS.map((loc) => (
+                      <button
+                        key={loc.id}
+                        type="button"
+                        onClick={() => handleSelect(loc)}
+                        className="rounded-lg bg-white border border-amber-300 px-2.5 py-1 text-xs font-semibold text-amber-900 hover:bg-amber-100 hover:border-amber-400 transition-colors cursor-pointer"
+                      >
+                        {loc.village}, {loc.district}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         ) : (
-          <div className="relative">
-            <div className="flex items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-white px-3 py-2.5 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/30 transition-colors">
-              <Search
-                size={16}
-                strokeWidth={2}
-                className="shrink-0 text-[var(--color-text-muted)]"
-                aria-hidden="true"
-              />
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search village, block or district..."
-                className="flex-1 bg-transparent text-sm text-[var(--color-text-dark)] placeholder:text-[var(--color-text-muted)] focus:outline-none"
-                aria-label="Search for your location"
-                aria-controls="location-results"
-                aria-expanded={results.length > 0}
-                role="combobox"
-                aria-autocomplete="list"
-              />
+          <div className="flex flex-col gap-4">
+            <div className="relative">
+              <div className="flex items-center gap-2.5 rounded-lg border border-[var(--color-border)] bg-white px-3 py-2.5 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/30 transition-colors">
+                <Search
+                  size={16}
+                  strokeWidth={2}
+                  className="shrink-0 text-[var(--color-text-muted)]"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search village, block or district (e.g. Vrindavan, Mathura)..."
+                  className="flex-1 bg-transparent text-sm text-[var(--color-text-dark)] placeholder:text-[var(--color-text-muted)] focus:outline-none"
+                  aria-label="Search for your location"
+                  aria-controls="location-results"
+                  aria-expanded={results.length > 0}
+                  role="combobox"
+                  aria-autocomplete="list"
+                />
+              </div>
+
+              {results.length > 0 && (
+                <ul
+                  id="location-results"
+                  role="listbox"
+                  aria-label="Location suggestions"
+                  className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-[var(--color-border)] bg-white shadow-md max-h-60 overflow-y-auto"
+                >
+                  {results.map((r) => (
+                    <li key={r.id} role="option" aria-selected={false}>
+                      <ResultItem result={r} onSelect={handleSelect} />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
 
-            {results.length > 0 && (
-              <ul
-                id="location-results"
-                role="listbox"
-                aria-label="Location suggestions"
-                className="absolute z-10 mt-1 w-full overflow-hidden rounded-lg border border-[var(--color-border)] bg-white shadow-md"
-              >
-                {results.map((r) => (
-                  <li key={r.id} role="option" aria-selected={false}>
-                    <ResultItem result={r} onSelect={handleSelect} />
-                  </li>
+            {/* Quick-select chips for popular Mathura pilot areas */}
+            <div className="flex flex-col gap-2">
+              <p className="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">
+                Quick Select Pilot Areas (Mathura):
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {POPULAR_MATHURA_PILOT_LOCATIONS.map((loc) => (
+                  <button
+                    key={loc.id}
+                    type="button"
+                    onClick={() => handleSelect(loc)}
+                    className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 hover:border-[var(--color-primary)] hover:bg-amber-50 hover:text-amber-950 transition-colors cursor-pointer"
+                  >
+                    <MapPin size={12} className="text-amber-600" />
+                    <span>{loc.village}</span>
+                  </button>
                 ))}
-              </ul>
-            )}
+              </div>
+            </div>
           </div>
         )}
       </div>
 
       <button
         onClick={onContinue}
-        disabled={!hasSelection}
+        disabled={!hasSelection || !isPilot}
         className={cn(
           'flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg px-6 py-3.5 sm:py-3 text-sm font-semibold',
-          'transition-colors disabled:cursor-not-allowed disabled:opacity-40',
-          hasSelection
+          'transition-colors disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer',
+          hasSelection && isPilot
             ? 'bg-[var(--color-primary)] text-[var(--color-text-dark)] hover:bg-[var(--color-primary-dark)]'
             : 'bg-[var(--color-surface)] text-[var(--color-text-muted)]'
         )}
-        aria-disabled={!hasSelection}
+        aria-disabled={!hasSelection || !isPilot}
       >
-        Continue
+        <span>{hasSelection && !isPilot ? 'Select a Mathura Location to Proceed' : 'Continue to Business Idea'}</span>
         <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
       </button>
     </div>

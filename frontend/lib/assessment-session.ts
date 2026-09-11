@@ -1,12 +1,12 @@
-﻿// lib/assessment-session.ts
+// lib/assessment-session.ts
 // Shared types for the 4-step New Assessment wizard.
 
-export type AssessmentStep = 'idea' | 'details' | 'location' | 'review';
+export type AssessmentStep = 'location' | 'idea' | 'details' | 'review';
 
 export const ASSESSMENT_STEPS: readonly AssessmentStep[] = [
+  'location',
   'idea',
   'details',
-  'location',
   'review',
 ] as const;
 

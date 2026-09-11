@@ -1,5 +1,5 @@
 // components/discover/CategoryIcons.tsx
-// Crisp line icons matching the exact illustrations in the target mock UI.
+// Crisp, modern SVG line icons matching the Saksham design system.
 
 import React from 'react';
 
@@ -8,115 +8,153 @@ interface IconProps {
   size?: number;
 }
 
-export function CowIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 1. Spool / Thread Yarn Icon (Textiles & Handloom)
+export function SpoolIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      {/* Horns */}
-      <path d="M7 11C6 7 4 6 3 7" />
-      <path d="M25 11C26 7 28 6 29 7" />
-      {/* Head contour */}
-      <path d="M8 11C8 7 11 5 16 5C21 5 24 7 24 11C24 16 22 18 16 18C10 18 8 16 8 11Z" />
-      {/* Eyes */}
-      <circle cx="12" cy="11" r="1.25" fill="currentColor" />
-      <circle cx="20" cy="11" r="1.25" fill="currentColor" />
-      {/* Snout */}
-      <rect x="10" y="16" width="12" height="9" rx="4.5" fill="none" />
-      {/* Nostrils */}
-      <circle cx="13.5" cy="20.5" r="1" fill="currentColor" />
-      <circle cx="18.5" cy="20.5" r="1" fill="currentColor" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {/* Spool top & bottom flanges */}
+      <rect x="5" y="3" width="14" height="2.5" rx="1.25" />
+      <rect x="5" y="18.5" width="14" height="2.5" rx="1.25" />
+      {/* Spool body */}
+      <path d="M7 5.5V18.5" />
+      <path d="M17 5.5V18.5" />
+      {/* Thread wraps */}
+      <line x1="7" y1="8" x2="17" y2="8" />
+      <line x1="7" y1="10.5" x2="17" y2="10.5" />
+      <line x1="7" y1="13" x2="17" y2="13" />
+      <line x1="7" y1="15.5" x2="17" y2="15.5" />
     </svg>
   );
 }
 
-export function LoomIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 2. Retail / Storefront Icon (Retail & Kirana)
+export function StoreIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="5" y="6" width="22" height="20" rx="2" />
-      <line x1="11" y1="6" x2="11" y2="26" />
-      <line x1="21" y1="6" x2="21" y2="26" />
-      <line x1="5" y1="12" x2="27" y2="12" strokeDasharray="1.5 2" />
-      <line x1="5" y1="16" x2="27" y2="16" />
-      <line x1="5" y1="20" x2="27" y2="20" strokeDasharray="1.5 2" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M3 9L5 4H19L21 9" />
+      <path d="M3 9C3 10.5 4.2 11.5 5.5 11.5C6.8 11.5 8 10.5 8 9C8 10.5 9.2 11.5 10.5 11.5C11.8 11.5 13 10.5 13 9C13 10.5 14.2 11.5 15.5 11.5C16.8 11.5 18 10.5 18 9C18 10.5 19.2 11.5 20.5 11.5C21.8 11.5 23 10.5 23 9" />
+      <path d="M4 11.5V20H20V11.5" />
+      <rect x="9" y="14" width="6" height="6" rx="0.5" />
     </svg>
   );
 }
 
-export function ShopIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 3. Leaf / Plant Icon (Agri Processing)
+export function LeafIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M4 12L7 6H25L28 12" />
-      <path d="M4 12C4 14 6 15 8 15C10 15 12 14 12 12C12 14 14 15 16 15C18 15 20 14 20 12C20 14 22 15 24 15C26 15 28 14 28 12" />
-      <path d="M6 15V26H26V15" />
-      <rect x="12" y="19" width="8" height="7" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M11 20C17 20 20 15 20 4C9 4 4 9 4 15C4 17.5 5.5 20 8 20" />
+      <path d="M4 20L11 13" />
+      <path d="M11 13C12.5 10.5 15 9 17 8" />
     </svg>
   );
 }
 
-export function SackIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 4. Dairy / Milk Carton Icon (Dairy & Livestock)
+export function MilkCartonIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      {/* Tied Top */}
-      <path d="M12 6C12 4.5 13.5 3 16 3C18.5 3 20 4.5 20 6" />
-      <ellipse cx="16" cy="8" rx="5" ry="2" />
-      {/* Body */}
-      <path d="M11 8C7 13 6 24 8 27C9 28.5 23 28.5 24 27C26 24 25 13 21 8" />
-      {/* Center grain icon / tag */}
-      <path d="M16 16V22" />
-      <path d="M16 17C14 15 13 17 13 17" />
-      <path d="M16 19C18 17 19 19 19 19" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {/* Top peak */}
+      <path d="M8 3H16L19 7H5L8 3Z" />
+      {/* Carton body */}
+      <rect x="5" y="7" width="14" height="14" rx="1" />
+      {/* Center drop / label detail */}
+      <path d="M12 11C12 11 10 13 10 14.5C10 15.6 10.9 16.5 12 16.5C13.1 16.5 14 15.6 14 14.5C14 13 12 11 12 11Z" />
     </svg>
   );
 }
 
-export function TruckIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 5. Utensils / Fork & Knife Icon (Food & Beverages)
+export function UtensilsIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="3" y="8" width="17" height="14" rx="2" />
-      <path d="M20 12H25L29 16V22H20V12Z" />
-      <circle cx="9" cy="24" r="3" />
-      <circle cx="24" cy="24" r="3" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M18 3V21" />
+      <path d="M15 3H21V8C21 9.5 19.5 11 18 11V3Z" />
+      <path d="M6 3V10C6 11.5 7.5 12 9 12V21" />
+      <path d="M9 3V12" />
+      <path d="M12 3V10C12 11.5 10.5 12 9 12" />
+      <path d="M6 3H12" />
     </svg>
   );
 }
 
-export function SproutIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 6. Pottery / Vase Icon (Handicrafts)
+export function PotteryIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M16 27V15" />
-      <path d="M16 15C16 9 21 7 26 7C26 12 24 17 16 17" />
-      <path d="M16 19C16 13 11 11 6 11C6 16 8 21 16 21" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      {/* Vase Rim */}
+      <ellipse cx="12" cy="4.5" rx="4" ry="1.5" />
+      {/* Vase Body */}
+      <path d="M8 5C7.5 8 4 10 4 14C4 18 7.5 20.5 12 20.5C16.5 20.5 20 18 20 14C20 10 16.5 8 16 5" />
+      {/* Vase base */}
+      <path d="M8.5 20.5H15.5" />
+      {/* Decorative center arc */}
+      <path d="M7 13.5C9.5 15 14.5 15 17 13.5" />
     </svg>
   );
 }
 
-export function SewingIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 7. Sun / Solar Icon (Solar & Clean Energy)
+export function SolarSunIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M5 23H27" />
-      <path d="M8 23V11C8 9 9.5 7 12 7H20C22.5 7 24 9 24 11V15H17" />
-      <path d="M17 15V20" />
-      <circle cx="20" cy="11" r="2" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <circle cx="12" cy="12" r="4.5" />
+      <line x1="12" y1="2" x2="12" y2="4.5" />
+      <line x1="12" y1="19.5" x2="12" y2="22" />
+      <line x1="2" y1="12" x2="4.5" y2="12" />
+      <line x1="19.5" y1="12" x2="22" y2="12" />
+      <line x1="4.93" y1="4.93" x2="6.7" y2="6.7" />
+      <line x1="17.3" y1="17.3" x2="19.07" y2="19.07" />
+      <line x1="4.93" y1="19.07" x2="6.7" y2="17.3" />
+      <line x1="17.3" y1="6.7" x2="19.07" y2="4.93" />
     </svg>
   );
 }
 
-export function FactoryIcon({ className = 'text-slate-800', size = 28 }: IconProps): React.JSX.Element {
+// 8. Wrench / Repair Icon (Services & Repairs)
+export function WrenchToolIcon({ className = 'text-slate-800', size = 24 }: IconProps): React.JSX.Element {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M4 25V13L11 17V13L18 17V7H28V25H4Z" />
-      <line x1="22" y1="12" x2="24" y2="12" />
-      <line x1="22" y1="16" x2="24" y2="16" />
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M14.7 6.3C15.6 5.4 16.9 5 18.2 5.2C18.6 5.3 18.8 5.7 18.6 6.1L16.8 8.9L18.9 11L21.7 9.2C22.1 9 22.5 9.2 22.6 9.6C22.8 10.9 22.4 12.2 21.5 13.1C20.1 14.5 18 14.8 16.3 14L8.8 21.5C8.4 21.9 7.8 21.9 7.4 21.5L2.5 16.6C2.1 16.2 2.1 15.6 2.5 15.2L10 7.7C9.2 6 9.5 3.9 10.9 2.5C11.8 1.6 13.1 1.2 14.4 1.4C14.8 1.5 15 1.9 14.8 2.3L13 5.1L15.1 7.2L17.9 5.4C18.3 5.2 18.7 5.4 18.8 5.8" />
     </svg>
   );
 }
 
-export function getCategoryIcon(name: string, size = 28, className = 'text-slate-800'): React.JSX.Element {
+// Legacy aliases for backward compatibility with existing components
+export const CowIcon = MilkCartonIcon;
+export const LoomIcon = SpoolIcon;
+export const ShopIcon = StoreIcon;
+export const SackIcon = LeafIcon;
+export const SproutIcon = LeafIcon;
+export const TruckIcon = StoreIcon;
+export const SewingIcon = SpoolIcon;
+export const FactoryIcon = LeafIcon;
+
+export function getCategoryIcon(name: string, size = 24, className = 'text-slate-800'): React.JSX.Element {
   const lower = name.toLowerCase();
-  if (lower.includes('dairy') || lower.includes('milk')) return <CowIcon size={size} className={className} />;
-  if (lower.includes('tailor') || lower.includes('garment')) return <SewingIcon size={size} className={className} />;
-  if (lower.includes('textile') || lower.includes('loom') || lower.includes('cloth')) return <LoomIcon size={size} className={className} />;
-  if (lower.includes('retail') || lower.includes('shop') || lower.includes('store')) return <ShopIcon size={size} className={className} />;
-  if (lower.includes('food') || lower.includes('process')) return <FactoryIcon size={size} className={className} />;
-  if (lower.includes('logistic') || lower.includes('transport') || lower.includes('truck')) return <TruckIcon size={size} className={className} />;
-  return <SproutIcon size={size} className={className} />;
+  if (lower.includes('dairy') || lower.includes('milk') || lower.includes('livestock') || lower.includes('cattle')) {
+    return <MilkCartonIcon size={size} className={className} />;
+  }
+  if (lower.includes('textile') || lower.includes('handloom') || lower.includes('garment') || lower.includes('weaving') || lower.includes('spool')) {
+    return <SpoolIcon size={size} className={className} />;
+  }
+  if (lower.includes('retail') || lower.includes('kirana') || lower.includes('shop') || lower.includes('store') || lower.includes('fmcg')) {
+    return <StoreIcon size={size} className={className} />;
+  }
+  if (lower.includes('agri') || lower.includes('farm') || lower.includes('grain') || lower.includes('crop') || lower.includes('leaf') || lower.includes('plant')) {
+    return <LeafIcon size={size} className={className} />;
+  }
+  if (lower.includes('food') || lower.includes('beverage') || lower.includes('snack') || lower.includes('bakery') || lower.includes('restaurant')) {
+    return <UtensilsIcon size={size} className={className} />;
+  }
+  if (lower.includes('handicraft') || lower.includes('pottery') || lower.includes('craft') || lower.includes('art') || lower.includes('jute')) {
+    return <PotteryIcon size={size} className={className} />;
+  }
+  if (lower.includes('solar') || lower.includes('clean energy') || lower.includes('sun') || lower.includes('power') || lower.includes('renewable')) {
+    return <SolarSunIcon size={size} className={className} />;
+  }
+  if (lower.includes('service') || lower.includes('repair') || lower.includes('wrench') || lower.includes('maintenance') || lower.includes('mechanic')) {
+    return <WrenchToolIcon size={size} className={className} />;
+  }
+  return <LeafIcon size={size} className={className} />;
 }

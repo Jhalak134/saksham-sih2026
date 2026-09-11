@@ -1,0 +1,9198 @@
+{
+  "type": "FeatureCollection",
+  "generator": "overpass-turbo",
+  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+  "timestamp": "2026-09-11T11:06:24Z",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/245759628",
+        "name": "Aring",
+        "place": "village",
+        "postal_code": "281500"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5282434,
+          27.4840031
+        ]
+      },
+      "id": "node/245759628"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/245760701",
+        "AND_a_nosr_p": "10010469",
+        "name": "Jait",
+        "place": "village",
+        "postal_code": "281402",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6092319,
+          27.582095
+        ]
+      },
+      "id": "node/245760701"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/245761113",
+        "name": "Barsana",
+        "name:en": "Barsana",
+        "name:hi": "बरसाना",
+        "place": "village",
+        "postal_code": "281405"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3764667,
+          27.6481353
+        ]
+      },
+      "id": "node/245761113"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/245761454",
+        "name": "Chhata",
+        "name:en": "Chhata",
+        "name:hi": "छाता",
+        "place": "village",
+        "population": "5000",
+        "postal_code": "281401",
+        "wikidata": "Q888816"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.501663,
+          27.7226148
+        ]
+      },
+      "id": "node/245761454"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/617987464",
+        "is_in": "Dist. Mathura",
+        "name": "Radha Kund",
+        "place": "village",
+        "wikidata": "Q2037248"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4905823,
+          27.524509
+        ]
+      },
+      "id": "node/617987464"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/617987466",
+        "is_in": "Dist. Mathura",
+        "name": "Chhatikara",
+        "name:ru": "Чхатикара",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.624707,
+          27.5609785
+        ]
+      },
+      "id": "node/617987466"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/617991462",
+        "is_in": "Dist. Mathura",
+        "name": "Ral",
+        "name:en": "Ral",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.561441,
+          27.5574554
+        ]
+      },
+      "id": "node/617991462"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/1838398001",
+        "alt_name": "Saunk",
+        "name": "Sonkh",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4941247,
+          27.393451
+        ]
+      },
+      "id": "node/1838398001"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2263085440",
+        "name": "Shergarh",
+        "place": "village",
+        "postal_code": "281404",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6124775,
+          27.7865337
+        ]
+      },
+      "id": "node/2263085440"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/2275304386",
+        "alt_name": "Nauhjhil",
+        "name": "Naujheel",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6481271,
+          27.8486484
+        ]
+      },
+      "id": "node/2275304386"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3128813705",
+        "name": "Atmadpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8687129,
+          27.3812357
+        ]
+      },
+      "id": "node/3128813705"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3401700749",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.425186,
+          27.4292329
+        ]
+      },
+      "id": "node/3401700749"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3421056909",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4026802,
+          27.544283
+        ]
+      },
+      "id": "node/3421056909"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/3429749321",
+        "name": "Nandgaon",
+        "name:en": "Nandgaon",
+        "name:hi": "नंदगाँव",
+        "place": "village",
+        "wikidata": "Q2627110"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3856842,
+          27.7109688
+        ]
+      },
+      "id": "node/3429749321"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/4618633887",
+        "name": "Sukhangadh",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7698035,
+          27.5822253
+        ]
+      },
+      "id": "node/4618633887"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814867",
+        "name": "Kinarai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7029943,
+          27.5257792
+        ]
+      },
+      "id": "node/6173814867"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814868",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7818727,
+          27.5145518
+        ]
+      },
+      "id": "node/6173814868"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814869",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7557802,
+          27.5249801
+        ]
+      },
+      "id": "node/6173814869"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814870",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7500295,
+          27.5180533
+        ]
+      },
+      "id": "node/6173814870"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814871",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7343654,
+          27.520413
+        ]
+      },
+      "id": "node/6173814871"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814872",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7746629,
+          27.528253
+        ]
+      },
+      "id": "node/6173814872"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814873",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7656936,
+          27.5324772
+        ]
+      },
+      "id": "node/6173814873"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814874",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7798986,
+          27.5320205
+        ]
+      },
+      "id": "node/6173814874"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814875",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7900266,
+          27.5360163
+        ]
+      },
+      "id": "node/6173814875"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814876",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8094244,
+          27.5166832
+        ]
+      },
+      "id": "node/6173814876"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814877",
+        "name": "Khirari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7997255,
+          27.522316
+        ]
+      },
+      "id": "node/6173814877"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814878",
+        "name": "Madaim",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8257751,
+          27.5338472
+        ]
+      },
+      "id": "node/6173814878"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814879",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.794919,
+          27.5341135
+        ]
+      },
+      "id": "node/6173814879"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814880",
+        "name": "Daharuwa",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7142381,
+          27.5287097
+        ]
+      },
+      "id": "node/6173814880"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814881",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7091312,
+          27.543779
+        ]
+      },
+      "id": "node/6173814881"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814882",
+        "name": "Kaliyanpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7272844,
+          27.5432843
+        ]
+      },
+      "id": "node/6173814882"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814883",
+        "name": "Diwana Kalan",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7445364,
+          27.531678
+        ]
+      },
+      "id": "node/6173814883"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173814884",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7824735,
+          27.5279866
+        ]
+      },
+      "id": "node/6173814884"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815085",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7867651,
+          27.5366632
+        ]
+      },
+      "id": "node/6173815085"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815086",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7408027,
+          27.5462903
+        ]
+      },
+      "id": "node/6173815086"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815087",
+        "name": "Panigaon",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7234649,
+          27.5636399
+        ]
+      },
+      "id": "node/6173815087"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815088",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7381849,
+          27.5739875
+        ]
+      },
+      "id": "node/6173815088"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815089",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7632474,
+          27.5505138
+        ]
+      },
+      "id": "node/6173815089"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815090",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7686548,
+          27.5707159
+        ]
+      },
+      "id": "node/6173815090"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815091",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8012704,
+          27.5424472
+        ]
+      },
+      "id": "node/6173815091"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815092",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8043174,
+          27.5454152
+        ]
+      },
+      "id": "node/6173815092"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815093",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8047895,
+          27.5519977
+        ]
+      },
+      "id": "node/6173815093"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815094",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8082656,
+          27.550666
+        ]
+      },
+      "id": "node/6173815094"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815095",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7769374,
+          27.5500572
+        ]
+      },
+      "id": "node/6173815095"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815096",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7771949,
+          27.5551557
+        ]
+      },
+      "id": "node/6173815096"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815097",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7840185,
+          27.5651997
+        ]
+      },
+      "id": "node/6173815097"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815098",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7961635,
+          27.5737212
+        ]
+      },
+      "id": "node/6173815098"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815099",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7856063,
+          27.6680979
+        ]
+      },
+      "id": "node/6173815099"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815100",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7211904,
+          27.7498227
+        ]
+      },
+      "id": "node/6173815100"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815101",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7436781,
+          27.7507722
+        ]
+      },
+      "id": "node/6173815101"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815102",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.732048,
+          27.7298246
+        ]
+      },
+      "id": "node/6173815102"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815103",
+        "name": "Akbarpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7378845,
+          27.7265577
+        ]
+      },
+      "id": "node/6173815103"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815104",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7697706,
+          27.6975882
+        ]
+      },
+      "id": "node/6173815104"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815105",
+        "name": "Hernol",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7514886,
+          27.7018819
+        ]
+      },
+      "id": "node/6173815105"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815116",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7887392,
+          27.7026038
+        ]
+      },
+      "id": "node/6173815116"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815117",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7820873,
+          27.7178012
+        ]
+      },
+      "id": "node/6173815117"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815118",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7856922,
+          27.7309452
+        ]
+      },
+      "id": "node/6173815118"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815119",
+        "name": "Karahari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7765083,
+          27.7296916
+        ]
+      },
+      "id": "node/6173815119"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815120",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7955198,
+          27.6768014
+        ]
+      },
+      "id": "node/6173815120"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815125",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7780103,
+          27.6811339
+        ]
+      },
+      "id": "node/6173815125"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815126",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8240156,
+          27.6578353
+        ]
+      },
+      "id": "node/6173815126"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815127",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7798557,
+          27.6572271
+        ]
+      },
+      "id": "node/6173815127"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815128",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8165483,
+          27.6516772
+        ]
+      },
+      "id": "node/6173815128"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815129",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8112697,
+          27.643656
+        ]
+      },
+      "id": "node/6173815129"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815130",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8155183,
+          27.6475336
+        ]
+      },
+      "id": "node/6173815130"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815131",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8245306,
+          27.6106907
+        ]
+      },
+      "id": "node/6173815131"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815132",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8195095,
+          27.5958207
+        ]
+      },
+      "id": "node/6173815132"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815133",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.784748,
+          27.6017157
+        ]
+      },
+      "id": "node/6173815133"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815134",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7419614,
+          27.6287525
+        ]
+      },
+      "id": "node/6173815134"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815135",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7892541,
+          27.6109188
+        ]
+      },
+      "id": "node/6173815135"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815136",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8081798,
+          27.6219084
+        ]
+      },
+      "id": "node/6173815136"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815137",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8035879,
+          27.6119076
+        ]
+      },
+      "id": "node/6173815137"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815138",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7961635,
+          27.6290187
+        ]
+      },
+      "id": "node/6173815138"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815139",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7811431,
+          27.6224787
+        ]
+      },
+      "id": "node/6173815139"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815140",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7708864,
+          27.6101203
+        ]
+      },
+      "id": "node/6173815140"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815141",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7669382,
+          27.6135427
+        ]
+      },
+      "id": "node/6173815141"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815142",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7116203,
+          27.60974
+        ]
+      },
+      "id": "node/6173815142"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815143",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7362966,
+          27.613885
+        ]
+      },
+      "id": "node/6173815143"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815144",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7105045,
+          27.6514491
+        ]
+      },
+      "id": "node/6173815144"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815145",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7689123,
+          27.6233913
+        ]
+      },
+      "id": "node/6173815145"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815146",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7693414,
+          27.6195889
+        ]
+      },
+      "id": "node/6173815146"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815147",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7497291,
+          27.6204634
+        ]
+      },
+      "id": "node/6173815147"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815148",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7647066,
+          27.6387898
+        ]
+      },
+      "id": "node/6173815148"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815149",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7275848,
+          27.6660075
+        ]
+      },
+      "id": "node/6173815149"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815150",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7580118,
+          27.6801078
+        ]
+      },
+      "id": "node/6173815150"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815151",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7448797,
+          27.6859603
+        ]
+      },
+      "id": "node/6173815151"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815152",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7195596,
+          27.6880123
+        ]
+      },
+      "id": "node/6173815152"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815153",
+        "name": "Bhaugaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6967716,
+          27.7012739
+        ]
+      },
+      "id": "node/6173815153"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815154",
+        "name": "Sei",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6454019,
+          27.6681359
+        ]
+      },
+      "id": "node/6173815154"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815155",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.670679,
+          27.6883924
+        ]
+      },
+      "id": "node/6173815155"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815156",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6360893,
+          27.6962583
+        ]
+      },
+      "id": "node/6173815156"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815157",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6366043,
+          27.7190929
+        ]
+      },
+      "id": "node/6173815157"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815158",
+        "name": "Gangroli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6729536,
+          27.7176872
+        ]
+      },
+      "id": "node/6173815158"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815159",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6602506,
+          27.7187509
+        ]
+      },
+      "id": "node/6173815159"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815160",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6504659,
+          27.7260449
+        ]
+      },
+      "id": "node/6173815160"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815161",
+        "name": "Astauli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6093101,
+          27.7489112
+        ]
+      },
+      "id": "node/6173815161"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815162",
+        "name": "Agaryala",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6278066,
+          27.7394538
+        ]
+      },
+      "id": "node/6173815162"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815163",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6127004,
+          27.7588994
+        ]
+      },
+      "id": "node/6173815163"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815164",
+        "name": "Garhi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.634201,
+          27.7691146
+        ]
+      },
+      "id": "node/6173815164"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815166",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7748775,
+          27.8155076
+        ]
+      },
+      "id": "node/6173815166"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815167",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8022146,
+          27.7919719
+        ]
+      },
+      "id": "node/6173815167"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815168",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7889108,
+          27.7707475
+        ]
+      },
+      "id": "node/6173815168"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815169",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8208398,
+          27.7617856
+        ]
+      },
+      "id": "node/6173815169"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815171",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6944542,
+          27.7573044
+        ]
+      },
+      "id": "node/6173815171"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815172",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6929092,
+          27.7459107
+        ]
+      },
+      "id": "node/6173815172"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815173",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.780714,
+          27.7451131
+        ]
+      },
+      "id": "node/6173815173"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815174",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7536344,
+          27.7507342
+        ]
+      },
+      "id": "node/6173815174"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815175",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.730503,
+          27.7565069
+        ]
+      },
+      "id": "node/6173815175"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815176",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7917432,
+          27.7771646
+        ]
+      },
+      "id": "node/6173815176"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815177",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7621746,
+          27.7561271
+        ]
+      },
+      "id": "node/6173815177"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815178",
+        "name": "Surir",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7207613,
+          27.771355
+        ]
+      },
+      "id": "node/6173815178"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815179",
+        "name": "Bhadanwara",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7432918,
+          27.7697981
+        ]
+      },
+      "id": "node/6173815179"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815180",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7231645,
+          27.7875299
+        ]
+      },
+      "id": "node/6173815180"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815181",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7674961,
+          27.8628672
+        ]
+      },
+      "id": "node/6173815181"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815285",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7908849,
+          27.8577072
+        ]
+      },
+      "id": "node/6173815285"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815286",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7950477,
+          27.8143309
+        ]
+      },
+      "id": "node/6173815286"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815287",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.78831,
+          27.7932247
+        ]
+      },
+      "id": "node/6173815287"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815288",
+        "name": "Bera",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7689123,
+          27.8135718
+        ]
+      },
+      "id": "node/6173815288"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815289",
+        "name": "Jarara",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7642345,
+          27.8019183
+        ]
+      },
+      "id": "node/6173815289"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815290",
+        "name": "Sikanderpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7462959,
+          27.8102694
+        ]
+      },
+      "id": "node/6173815290"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815291",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7587843,
+          27.8295886
+        ]
+      },
+      "id": "node/6173815291"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815292",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7736759,
+          27.8349397
+        ]
+      },
+      "id": "node/6173815292"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815293",
+        "name": "Hasanpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.752819,
+          27.8381654
+        ]
+      },
+      "id": "node/6173815293"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815294",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7189159,
+          27.8410494
+        ]
+      },
+      "id": "node/6173815294"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815295",
+        "name": "Baroth",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6988744,
+          27.8533818
+        ]
+      },
+      "id": "node/6173815295"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815296",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7182293,
+          27.8549374
+        ]
+      },
+      "id": "node/6173815296"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815297",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7088308,
+          27.8635122
+        ]
+      },
+      "id": "node/6173815297"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815298",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7556085,
+          27.8641192
+        ]
+      },
+      "id": "node/6173815298"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815299",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7486562,
+          27.8678372
+        ]
+      },
+      "id": "node/6173815299"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815300",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6801633,
+          27.8673061
+        ]
+      },
+      "id": "node/6173815300"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815304",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6633405,
+          27.9463033
+        ]
+      },
+      "id": "node/6173815304"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815307",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5695705,
+          27.9001559
+        ]
+      },
+      "id": "node/6173815307"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815308",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5540781,
+          27.9104716
+        ]
+      },
+      "id": "node/6173815308"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815309",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5812864,
+          27.9056173
+        ]
+      },
+      "id": "node/6173815309"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815310",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5761365,
+          27.9100544
+        ]
+      },
+      "id": "node/6173815310"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815311",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5717592,
+          27.9234785
+        ]
+      },
+      "id": "node/6173815311"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815316",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5982379,
+          27.9231373
+        ]
+      },
+      "id": "node/6173815316"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815317",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6048898,
+          27.930645
+        ]
+      },
+      "id": "node/6173815317"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815318",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5809002,
+          27.8735468
+        ]
+      },
+      "id": "node/6173815318"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815319",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.586565,
+          27.8762971
+        ]
+      },
+      "id": "node/6173815319"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815320",
+        "name": "Bhairai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5956416,
+          27.8711188
+        ]
+      },
+      "id": "node/6173815320"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815321",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5999331,
+          27.8830684
+        ]
+      },
+      "id": "node/6173815321"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815322",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6075935,
+          27.8836564
+        ]
+      },
+      "id": "node/6173815322"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815323",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6103616,
+          27.8770748
+        ]
+      },
+      "id": "node/6173815323"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815324",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6205754,
+          27.8812855
+        ]
+      },
+      "id": "node/6173815324"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815325",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.624309,
+          27.8829736
+        ]
+      },
+      "id": "node/6173815325"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815326",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6067567,
+          27.9073618
+        ]
+      },
+      "id": "node/6173815326"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815327",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.598989,
+          27.9045933
+        ]
+      },
+      "id": "node/6173815327"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815328",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6537704,
+          27.9096752
+        ]
+      },
+      "id": "node/6173815328"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815329",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6488351,
+          27.8968183
+        ]
+      },
+      "id": "node/6173815329"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815330",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7201604,
+          27.8729588
+        ]
+      },
+      "id": "node/6173815330"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815331",
+        "name": "Shall",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7209329,
+          27.8865772
+        ]
+      },
+      "id": "node/6173815331"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815332",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7075004,
+          27.9271187
+        ]
+      },
+      "id": "node/6173815332"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815333",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7053976,
+          27.917108
+        ]
+      },
+      "id": "node/6173815333"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815334",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7094316,
+          27.9076652
+        ]
+      },
+      "id": "node/6173815334"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815335",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6881456,
+          27.9131641
+        ]
+      },
+      "id": "node/6173815335"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815336",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7096033,
+          27.8891944
+        ]
+      },
+      "id": "node/6173815336"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815337",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6777172,
+          27.8887393
+        ]
+      },
+      "id": "node/6173815337"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815338",
+        "name": "Parsauli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.694025,
+          27.8789526
+        ]
+      },
+      "id": "node/6173815338"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815339",
+        "name": "Bajna",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6781892,
+          27.8977665
+        ]
+      },
+      "id": "node/6173815339"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815340",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.658019,
+          27.9286733
+        ]
+      },
+      "id": "node/6173815340"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815341",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6386642,
+          27.9270428
+        ]
+      },
+      "id": "node/6173815341"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815342",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6326131,
+          27.9370526
+        ]
+      },
+      "id": "node/6173815342"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815345",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6439857,
+          27.9476681
+        ]
+      },
+      "id": "node/6173815345"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173815350",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6427344,
+          27.9614543
+        ]
+      },
+      "id": "node/6173815350"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924211",
+        "name": "Parkham",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7171993,
+          27.2888838
+        ]
+      },
+      "id": "node/6173924211"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924212",
+        "name": "Barari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7131009,
+          27.3669843
+        ]
+      },
+      "id": "node/6173924212"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924213",
+        "name": "Baburi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7102899,
+          27.3763786
+        ]
+      },
+      "id": "node/6173924213"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924214",
+        "name": "Anwla Sultanpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7440643,
+          27.3839621
+        ]
+      },
+      "id": "node/6173924214"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924215",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7297306,
+          27.362468
+        ]
+      },
+      "id": "node/6173924215"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924216",
+        "name": "Jhandipur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7474975,
+          27.3580467
+        ]
+      },
+      "id": "node/6173924216"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924217",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7949941,
+          27.3804752
+        ]
+      },
+      "id": "node/6173924217"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924218",
+        "name": "Garhaya Latipur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.772603,
+          27.371329
+        ]
+      },
+      "id": "node/6173924218"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924219",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7655864,
+          27.3967841
+        ]
+      },
+      "id": "node/6173924219"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924220",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7750921,
+          27.3890301
+        ]
+      },
+      "id": "node/6173924220"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924232",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9189014,
+          27.2865382
+        ]
+      },
+      "id": "node/6173924232"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924233",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7432918,
+          27.2606954
+        ]
+      },
+      "id": "node/6173924233"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924234",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7442574,
+          27.2862903
+        ]
+      },
+      "id": "node/6173924234"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924235",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7394295,
+          27.2761446
+        ]
+      },
+      "id": "node/6173924235"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924236",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7591705,
+          27.2978271
+        ]
+      },
+      "id": "node/6173924236"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924237",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7571535,
+          27.3099918
+        ]
+      },
+      "id": "node/6173924237"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924238",
+        "name": "Daulatpur Farah",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7522611,
+          27.316455
+        ]
+      },
+      "id": "node/6173924238"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924239",
+        "name": "Sanaura",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7165663,
+          27.316026
+        ]
+      },
+      "id": "node/6173924239"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924240",
+        "name": "Kurkanda",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.720139,
+          27.3418464
+        ]
+      },
+      "id": "node/6173924240"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924241",
+        "name": "Mahuan",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7328205,
+          27.3377102
+        ]
+      },
+      "id": "node/6173924241"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924242",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7566385,
+          27.3357469
+        ]
+      },
+      "id": "node/6173924242"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924243",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7465749,
+          27.3301427
+        ]
+      },
+      "id": "node/6173924243"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924244",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7633762,
+          27.3301236
+        ]
+      },
+      "id": "node/6173924244"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924245",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7752852,
+          27.3209542
+        ]
+      },
+      "id": "node/6173924245"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924247",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8256571,
+          27.2910291
+        ]
+      },
+      "id": "node/6173924247"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924250",
+        "name": "Rajpurajat",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8116989,
+          27.2669135
+        ]
+      },
+      "id": "node/6173924250"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924251",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7750492,
+          27.2553545
+        ]
+      },
+      "id": "node/6173924251"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924252",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7729892,
+          27.2674857
+        ]
+      },
+      "id": "node/6173924252"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924253",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7796411,
+          27.2680579
+        ]
+      },
+      "id": "node/6173924253"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924254",
+        "name": "Pingari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.774105,
+          27.2841163
+        ]
+      },
+      "id": "node/6173924254"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924255",
+        "name": "Shehzadpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7933311,
+          27.2843452
+        ]
+      },
+      "id": "node/6173924255"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924256",
+        "name": "Pauri",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8018283,
+          27.2811413
+        ]
+      },
+      "id": "node/6173924256"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924257",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7957344,
+          27.2635184
+        ]
+      },
+      "id": "node/6173924257"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924258",
+        "name": "Nagla Akos",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8650087,
+          27.2695964
+        ]
+      },
+      "id": "node/6173924258"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924260",
+        "name": "Nera",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9133224,
+          27.2888838
+        ]
+      },
+      "id": "node/6173924260"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924262",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9707088,
+          27.2920485
+        ]
+      },
+      "id": "node/6173924262"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924263",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9696703,
+          27.3108879
+        ]
+      },
+      "id": "node/6173924263"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924267",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9597139,
+          27.3208398
+        ]
+      },
+      "id": "node/6173924267"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924273",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9035163,
+          27.3208589
+        ]
+      },
+      "id": "node/6173924273"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924274",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9000187,
+          27.3175989
+        ]
+      },
+      "id": "node/6173924274"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924276",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8961992,
+          27.3298186
+        ]
+      },
+      "id": "node/6173924276"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924277",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8805137,
+          27.3088288
+        ]
+      },
+      "id": "node/6173924277"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924278",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8738511,
+          27.3113741
+        ]
+      },
+      "id": "node/6173924278"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924279",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8616094,
+          27.3170746
+        ]
+      },
+      "id": "node/6173924279"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924280",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8714049,
+          27.3176275
+        ]
+      },
+      "id": "node/6173924280"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924281",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8567171,
+          27.3321633
+        ]
+      },
+      "id": "node/6173924281"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924282",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8333711,
+          27.3249576
+        ]
+      },
+      "id": "node/6173924282"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924283",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8291654,
+          27.329304
+        ]
+      },
+      "id": "node/6173924283"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173924284",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8092956,
+          27.3262158
+        ]
+      },
+      "id": "node/6173924284"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925585",
+        "name": "Lahrauli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7895546,
+          27.3352132
+        ]
+      },
+      "id": "node/6173925585"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925586",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8267622,
+          27.339178
+        ]
+      },
+      "id": "node/6173925586"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925587",
+        "name": "Mandaura",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8362035,
+          27.3360138
+        ]
+      },
+      "id": "node/6173925587"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925588",
+        "name": "Kachnau",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8909635,
+          27.3567126
+        ]
+      },
+      "id": "node/6173925588"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925589",
+        "name": "Barauli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8762865,
+          27.3425707
+        ]
+      },
+      "id": "node/6173925589"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925590",
+        "name": "Daulatpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8081798,
+          27.3578561
+        ]
+      },
+      "id": "node/6173925590"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925591",
+        "name": "Angai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8406238,
+          27.3741302
+        ]
+      },
+      "id": "node/6173925591"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925592",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8728532,
+          27.3681087
+        ]
+      },
+      "id": "node/6173925592"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925593",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8598928,
+          27.3563315
+        ]
+      },
+      "id": "node/6173925593"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925594",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8565025,
+          27.3511094
+        ]
+      },
+      "id": "node/6173925594"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925595",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8259897,
+          27.3562933
+        ]
+      },
+      "id": "node/6173925595"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925596",
+        "name": "Saidpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8297662,
+          27.365517
+        ]
+      },
+      "id": "node/6173925596"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925597",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8362465,
+          27.4592728
+        ]
+      },
+      "id": "node/6173925597"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925598",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8347659,
+          27.4512375
+        ]
+      },
+      "id": "node/6173925598"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925599",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8619957,
+          27.4506282
+        ]
+      },
+      "id": "node/6173925599"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925600",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8534984,
+          27.4360032
+        ]
+      },
+      "id": "node/6173925600"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925601",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8504514,
+          27.4237761
+        ]
+      },
+      "id": "node/6173925601"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925602",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8296804,
+          27.4350891
+        ]
+      },
+      "id": "node/6173925602"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925603",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.799468,
+          27.4160049
+        ]
+      },
+      "id": "node/6173925603"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925604",
+        "name": "Chholi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8062486,
+          27.4218334
+        ]
+      },
+      "id": "node/6173925604"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925605",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7812075,
+          27.4182716
+        ]
+      },
+      "id": "node/6173925605"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925606",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.768805,
+          27.4188239
+        ]
+      },
+      "id": "node/6173925606"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925607",
+        "name": "Koila",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7127576,
+          27.4203096
+        ]
+      },
+      "id": "node/6173925607"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925608",
+        "name": "Mahaban",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7421867,
+          27.4330227
+        ]
+      },
+      "id": "node/6173925608"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925609",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7472186,
+          27.4699729
+        ]
+      },
+      "id": "node/6173925609"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925610",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7594065,
+          27.4693065
+        ]
+      },
+      "id": "node/6173925610"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925611",
+        "name": "Raval",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7258387,
+          27.477212
+        ]
+      },
+      "id": "node/6173925611"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925612",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7433133,
+          27.4736091
+        ]
+      },
+      "id": "node/6173925612"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925613",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7413392,
+          27.4794155
+        ]
+      },
+      "id": "node/6173925613"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925614",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7451372,
+          27.4810907
+        ]
+      },
+      "id": "node/6173925614"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925615",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7257824,
+          27.5006775
+        ]
+      },
+      "id": "node/6173925615"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925616",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7252459,
+          27.4933305
+        ]
+      },
+      "id": "node/6173925616"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925617",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7318764,
+          27.4888954
+        ]
+      },
+      "id": "node/6173925617"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925618",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7369618,
+          27.4938634
+        ]
+      },
+      "id": "node/6173925618"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925619",
+        "name": "Lohaban",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7232503,
+          27.5109359
+        ]
+      },
+      "id": "node/6173925619"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925620",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7713478,
+          27.4944821
+        ]
+      },
+      "id": "node/6173925620"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925621",
+        "name": "Sihora",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7646208,
+          27.4986504
+        ]
+      },
+      "id": "node/6173925621"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925622",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8369331,
+          27.5133718
+        ]
+      },
+      "id": "node/6173925622"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925623",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8409242,
+          27.5129151
+        ]
+      },
+      "id": "node/6173925623"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925624",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8447866,
+          27.5083856
+        ]
+      },
+      "id": "node/6173925624"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925625",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.862339,
+          27.5022953
+        ]
+      },
+      "id": "node/6173925625"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925626",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8644847,
+          27.5123061
+        ]
+      },
+      "id": "node/6173925626"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925627",
+        "name": "Nagaura",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8541851,
+          27.5202989
+        ]
+      },
+      "id": "node/6173925627"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925628",
+        "name": "Itauli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8051757,
+          27.5099082
+        ]
+      },
+      "id": "node/6173925628"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925629",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8165483,
+          27.5057592
+        ]
+      },
+      "id": "node/6173925629"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925630",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8380918,
+          27.498679
+        ]
+      },
+      "id": "node/6173925630"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925631",
+        "name": "Sonkh",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.834959,
+          27.4866493
+        ]
+      },
+      "id": "node/6173925631"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925632",
+        "name": "Karab",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7981805,
+          27.4836035
+        ]
+      },
+      "id": "node/6173925632"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925633",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8237152,
+          27.4645278
+        ]
+      },
+      "id": "node/6173925633"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925634",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8525114,
+          27.4496761
+        ]
+      },
+      "id": "node/6173925634"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925635",
+        "name": "Pachawar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8406238,
+          27.4670409
+        ]
+      },
+      "id": "node/6173925635"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925636",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7858639,
+          27.4499236
+        ]
+      },
+      "id": "node/6173925636"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925637",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.786572,
+          27.437203
+        ]
+      },
+      "id": "node/6173925637"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925638",
+        "name": "Bandi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8058195,
+          27.446915
+        ]
+      },
+      "id": "node/6173925638"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925639",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7644062,
+          27.4473149
+        ]
+      },
+      "id": "node/6173925639"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925640",
+        "name": "Hayatpur",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7608442,
+          27.4657082
+        ]
+      },
+      "id": "node/6173925640"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925641",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7725172,
+          27.4690971
+        ]
+      },
+      "id": "node/6173925641"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6173925642",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7871942,
+          27.4647563
+        ]
+      },
+      "id": "node/6173925642"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685324",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6231718,
+          27.2629081
+        ]
+      },
+      "id": "node/6174685324"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685326",
+        "name": "Bhaderua",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6433849,
+          27.2600469
+        ]
+      },
+      "id": "node/6174685326"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685327",
+        "name": "Birona",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6545,
+          27.2492884
+        ]
+      },
+      "id": "node/6174685327"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685328",
+        "name": "Birona Kalan",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.660551,
+          27.2544007
+        ]
+      },
+      "id": "node/6174685328"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685329",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6526546,
+          27.2671043
+        ]
+      },
+      "id": "node/6174685329"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685330",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6820945,
+          27.2646628
+        ]
+      },
+      "id": "node/6174685330"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685331",
+        "name": "Jhundawai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6881885,
+          27.2581394
+        ]
+      },
+      "id": "node/6174685331"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685332",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6986599,
+          27.2551256
+        ]
+      },
+      "id": "node/6174685332"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6174685333",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7083158,
+          27.2542863
+        ]
+      },
+      "id": "node/6174685333"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6281736990",
+        "name": "Kharauth",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4526262,
+          27.8317518
+        ]
+      },
+      "id": "node/6281736990"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6281737047",
+        "name": "Hatana",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.425332,
+          27.8747418
+        ]
+      },
+      "id": "node/6281737047"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6281737293",
+        "name": "Kotwan",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4074363,
+          27.8410874
+        ]
+      },
+      "id": "node/6281737293"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6281737379",
+        "name": "Kamar",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3406172,
+          27.8137805
+        ]
+      },
+      "id": "node/6281737379"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6281737536",
+        "name": "Bathain Kalan",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3908281,
+          27.7775253
+        ]
+      },
+      "id": "node/6281737536"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6281738783",
+        "name": "Kosi Kalan",
+        "place": "village",
+        "wikidata": "Q2237390"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4367904,
+          27.7925414
+        ]
+      },
+      "id": "node/6281738783"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283358904",
+        "name": "Bad",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6924586,
+          27.4106714
+        ]
+      },
+      "id": "node/6283358904"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283358905",
+        "alt_name": "Baldev",
+        "name": "Baldeo",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8222989,
+          27.4070522
+        ]
+      },
+      "id": "node/6283358905"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283363328",
+        "name": "Beri",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6830387,
+          27.3227462
+        ]
+      },
+      "id": "node/6283363328"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283363768",
+        "name": "Ol",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6246309,
+          27.3035664
+        ]
+      },
+      "id": "node/6283363768"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283571490",
+        "name": "Bati",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6026583,
+          27.5385468
+        ]
+      },
+      "id": "node/6283571490"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283986811",
+        "name": "Ajhai Khurd",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.577424,
+          27.6027045
+        ]
+      },
+      "id": "node/6283986811"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283986838",
+        "name": "Parkham",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6208543,
+          27.6316801
+        ]
+      },
+      "id": "node/6283986838"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283986839",
+        "name": "Pasoli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6024007,
+          27.6505368
+        ]
+      },
+      "id": "node/6283986839"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6283987132",
+        "name": "Chaumuha",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5821018,
+          27.6221935
+        ]
+      },
+      "id": "node/6283987132"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6284082499",
+        "name": "Akbarpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5613308,
+          27.6465832
+        ]
+      },
+      "id": "node/6284082499"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6284082500",
+        "name": "Tarauli Shumali",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.587713,
+          27.6809914
+        ]
+      },
+      "id": "node/6284082500"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6284082501",
+        "name": "Tarauli Janubi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5880026,
+          27.6775045
+        ]
+      },
+      "id": "node/6284082501"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6284180399",
+        "name": "Jagdishpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7859926,
+          27.4496951
+        ]
+      },
+      "id": "node/6284180399"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6284180416",
+        "name": "Khanpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7979231,
+          27.4562453
+        ]
+      },
+      "id": "node/6284180416"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6286163492",
+        "name": "Paigaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5269126,
+          27.7818348
+        ]
+      },
+      "id": "node/6286163492"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6288769324",
+        "name": "Sunrakh",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.666291,
+          27.5811484
+        ]
+      },
+      "id": "node/6288769324"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6290752906",
+        "name": "Tarsi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6383102,
+          27.4288804
+        ]
+      },
+      "id": "node/6290752906"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6290752907",
+        "name": "Pali Khera",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.641443,
+          27.475056
+        ]
+      },
+      "id": "node/6290752907"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6290752965",
+        "name": "Maholi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6488888,
+          27.4642612
+        ]
+      },
+      "id": "node/6290752965"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6292013996",
+        "name": "Asgarhpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6171207,
+          27.4963189
+        ]
+      },
+      "id": "node/6292013996"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6292013997",
+        "name": "Satoha",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6272058,
+          27.4977274
+        ]
+      },
+      "id": "node/6292013997"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6294254911",
+        "name": "Aruki",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6706576,
+          27.4300612
+        ]
+      },
+      "id": "node/6294254911"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6294300227",
+        "name": "Uspar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6118421,
+          27.4425923
+        ]
+      },
+      "id": "node/6294300227"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6295216005",
+        "name": "Gaju",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8535628,
+          27.5902011
+        ]
+      },
+      "id": "node/6295216005"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6295348151",
+        "name": "Ladpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7269196,
+          27.3896779
+        ]
+      },
+      "id": "node/6295348151"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6295348397",
+        "name": "Alipur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7295911,
+          27.4201763
+        ]
+      },
+      "id": "node/6295348397"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6295348398",
+        "name": "Karnawal",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7425623,
+          27.4012039
+        ]
+      },
+      "id": "node/6295348398"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6295535740",
+        "name": "Bhainsa",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6773739,
+          27.3861913
+        ]
+      },
+      "id": "node/6295535740"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6295535994",
+        "name": "Dhangaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6472044,
+          27.4130049
+        ]
+      },
+      "id": "node/6295535994"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296235470",
+        "name": "Rampur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6113915,
+          27.4066331
+        ]
+      },
+      "id": "node/6296235470"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296235471",
+        "name": "Umari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6071858,
+          27.4021564
+        ]
+      },
+      "id": "node/6296235471"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296237052",
+        "name": "Kudarban",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5991821,
+          27.4279186
+        ]
+      },
+      "id": "node/6296237052"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296353914",
+        "name": "Bhahai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.703166,
+          27.3437906
+        ]
+      },
+      "id": "node/6296353914"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296353915",
+        "name": "Dhana Shamsabad",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6906776,
+          27.355712
+        ]
+      },
+      "id": "node/6296353915"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296811222",
+        "name": "Son",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5701499,
+          27.3952791
+        ]
+      },
+      "id": "node/6296811222"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6296811397",
+        "name": "Magorra",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5606012,
+          27.359171
+        ]
+      },
+      "id": "node/6296811397"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6297549406",
+        "name": "Datiya",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6005232,
+          27.506511
+        ]
+      },
+      "id": "node/6297549406"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6297549407",
+        "name": "Khamini",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5853204,
+          27.4978796
+        ]
+      },
+      "id": "node/6297549407"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6297549512",
+        "name": "Arhera",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6218629,
+          27.5263025
+        ]
+      },
+      "id": "node/6297549512"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6297549513",
+        "name": "Phenchari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6068103,
+          27.5222494
+        ]
+      },
+      "id": "node/6297549513"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6297549950",
+        "name": "Ganesara",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.629931,
+          27.5115163
+        ]
+      },
+      "id": "node/6297549950"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298068360",
+        "name": "Jachonda",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5614595,
+          27.4883434
+        ]
+      },
+      "id": "node/6298068360"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298068579",
+        "name": "Pelkhu",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5113773,
+          27.5850568
+        ]
+      },
+      "id": "node/6298068579"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298068678",
+        "name": "Mora",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5870585,
+          27.5169115
+        ]
+      },
+      "id": "node/6298068678"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298068679",
+        "name": "Kunjera",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4779892,
+          27.5516933
+        ]
+      },
+      "id": "node/6298068679"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298068767",
+        "name": "Bharna Khurd",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4929023,
+          27.5813101
+        ]
+      },
+      "id": "node/6298068767"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298068931",
+        "name": "Shiwal",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5181579,
+          27.6083329
+        ]
+      },
+      "id": "node/6298068931"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298069633",
+        "name": "Tos",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5631976,
+          27.5244663
+        ]
+      },
+      "id": "node/6298069633"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298069634",
+        "name": "Jikhangaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5374376,
+          27.5150561
+        ]
+      },
+      "id": "node/6298069634"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298126177",
+        "name": "Konhi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.51127,
+          27.5551367
+        ]
+      },
+      "id": "node/6298126177"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298126219",
+        "name": "Bhadal",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5422549,
+          27.5643057
+        ]
+      },
+      "id": "node/6298126219"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298172153",
+        "name": "Madhurikund",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5585387,
+          27.4626079
+        ]
+      },
+      "id": "node/6298172153"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6298977119",
+        "name": "Garhi Rambal",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6461422,
+          27.3030421
+        ]
+      },
+      "id": "node/6298977119"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6299625404",
+        "name": "Jhapara",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5851864,
+          27.3253341
+        ]
+      },
+      "id": "node/6299625404"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6299625453",
+        "name": "Rasulpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.568385,
+          27.3406551
+        ]
+      },
+      "id": "node/6299625453"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6299720063",
+        "name": "Gopalpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5867957,
+          27.3553309
+        ]
+      },
+      "id": "node/6299720063"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6300185111",
+        "name": "Loriha Patti",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5116777,
+          27.3888777
+        ]
+      },
+      "id": "node/6300185111"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6300926513",
+        "name": "Pentha",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4728823,
+          27.4472958
+        ]
+      },
+      "id": "node/6300926513"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6300927348",
+        "name": "Gantholi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4265337,
+          27.4864969
+        ]
+      },
+      "id": "node/6300927348"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6300927392",
+        "name": "Jatipura",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4418813,
+          27.4745467
+        ]
+      },
+      "id": "node/6300927392"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6300927393",
+        "name": "Aanyor",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4458349,
+          27.4744278
+        ]
+      },
+      "id": "node/6300927393"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301030696",
+        "name": "Hathiya",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3737049,
+          27.5994718
+        ]
+      },
+      "id": "node/6301030696"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301195009",
+        "name": "Gidoh",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.365551,
+          27.743176
+        ]
+      },
+      "id": "node/6301195009"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301195540",
+        "name": "Sanket",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3821163,
+          27.6796898
+        ]
+      },
+      "id": "node/6301195540"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301196008",
+        "name": "Chiksoli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3695207,
+          27.6426248
+        ]
+      },
+      "id": "node/6301196008"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301196044",
+        "name": "Rankoli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3369264,
+          27.612592
+        ]
+      },
+      "id": "node/6301196044"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301196578",
+        "name": "Bhagosa",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.430439,
+          27.5296991
+        ]
+      },
+      "id": "node/6301196578"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301196715",
+        "name": "Devseras",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3978233,
+          27.5219735
+        ]
+      },
+      "id": "node/6301196715"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301197099",
+        "name": "Mahroli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3804426,
+          27.5601398
+        ]
+      },
+      "id": "node/6301197099"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301197167",
+        "name": "Madaura",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4140185,
+          27.5358545
+        ]
+      },
+      "id": "node/6301197167"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301197357",
+        "name": "Palson",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4162769,
+          27.5723898
+        ]
+      },
+      "id": "node/6301197357"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301197692",
+        "name": "Kamai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4273062,
+          27.6324025
+        ]
+      },
+      "id": "node/6301197692"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301407421",
+        "name": "Umrala",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3845624,
+          27.8473676
+        ]
+      },
+      "id": "node/6301407421"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301407422",
+        "name": "Dahgaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3743056,
+          27.8330802
+        ]
+      },
+      "id": "node/6301407422"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301407423",
+        "name": "Lalpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3579978,
+          27.833991
+        ]
+      },
+      "id": "node/6301407423"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301407887",
+        "name": "Sirthala",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3297381,
+          27.7897319
+        ]
+      },
+      "id": "node/6301407887"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301408159",
+        "name": "Hulwana",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.355144,
+          27.7914973
+        ]
+      },
+      "id": "node/6301408159"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301409196",
+        "name": "Jao",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4129295,
+          27.7309452
+        ]
+      },
+      "id": "node/6301409196"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6301633770",
+        "name": "Naugaona",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6077381,
+          27.7073167
+        ]
+      },
+      "id": "node/6301633770"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6302349937",
+        "name": "Padal",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4543643,
+          27.5486684
+        ]
+      },
+      "id": "node/6302349937"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303151884",
+        "name": "Husaini",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5620389,
+          27.7959202
+        ]
+      },
+      "id": "node/6303151884"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303152442",
+        "name": "Behta",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6674604,
+          27.7787118
+        ]
+      },
+      "id": "node/6303152442"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303152469",
+        "name": "Dhimari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6646709,
+          27.8008363
+        ]
+      },
+      "id": "node/6303152469"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303323627",
+        "name": "Siyaraha",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6758826,
+          27.7394727
+        ]
+      },
+      "id": "node/6303323627"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303323628",
+        "name": "Kajraut",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6547146,
+          27.7625261
+        ]
+      },
+      "id": "node/6303323628"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303521649",
+        "name": "Undi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5609034,
+          27.7093278
+        ]
+      },
+      "id": "node/6303521649"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303521686",
+        "name": "Ladpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5523403,
+          27.7295681
+        ]
+      },
+      "id": "node/6303521686"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303755545",
+        "name": "Sankhi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4927531,
+          27.655354
+        ]
+      },
+      "id": "node/6303755545"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303756241",
+        "name": "Sahar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4794534,
+          27.6294149
+        ]
+      },
+      "id": "node/6303756241"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303756792",
+        "name": "Ranwari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.500561,
+          27.690429
+        ]
+      },
+      "id": "node/6303756792"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303756793",
+        "name": "Umraya",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4773384,
+          27.6735452
+        ]
+      },
+      "id": "node/6303756793"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6303757066",
+        "name": "Alwai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4963625,
+          27.6749036
+        ]
+      },
+      "id": "node/6303757066"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304112920",
+        "name": "Khaira",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4378638,
+          27.6993507
+        ]
+      },
+      "id": "node/6304112920"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304112921",
+        "alt_name": "Ghazipur",
+        "name": "Gajipur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3822886,
+          27.6667001
+        ]
+      },
+      "id": "node/6304112921"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304113248",
+        "name": "Sanchauli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3254828,
+          27.74242
+        ]
+      },
+      "id": "node/6304113248"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304113494",
+        "name": "Unchagaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3657976,
+          27.6643335
+        ]
+      },
+      "id": "node/6304113494"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304114469",
+        "name": "Bharna Kalan",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.465372,
+          27.5980104
+        ]
+      },
+      "id": "node/6304114469"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304592612",
+        "name": "Ajnokh",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4158048,
+          27.6725828
+        ]
+      },
+      "id": "node/6304592612"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304593116",
+        "name": "Karhela",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4307179,
+          27.6486741
+        ]
+      },
+      "id": "node/6304593116"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304593393",
+        "name": "Dabhala",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3557448,
+          27.629684
+        ]
+      },
+      "id": "node/6304593393"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6304593394",
+        "name": "Manpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3632872,
+          27.6414272
+        ]
+      },
+      "id": "node/6304593394"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6305555666",
+        "name": "Mudseras",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3610019,
+          27.5292805
+        ]
+      },
+      "id": "node/6305555666"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306118918",
+        "name": "Janu",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.353363,
+          27.5694035
+        ]
+      },
+      "id": "node/6306118918"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306119477",
+        "name": "Mahrana",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3157692,
+          27.7190929
+        ]
+      },
+      "id": "node/6306119477"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306308349",
+        "name": "Nabipur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4094534,
+          27.819474
+        ]
+      },
+      "id": "node/6306308349"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306309608",
+        "name": "Bathain Khurd",
+        "place": "village",
+        "source": "GNS"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3848629,
+          27.7846065
+        ]
+      },
+      "id": "node/6306309608"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306540486",
+        "name": "Badangarh",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3493933,
+          27.7252851
+        ]
+      },
+      "id": "node/6306540486"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306616795",
+        "name": "Bijwari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4169743,
+          27.6973412
+        ]
+      },
+      "id": "node/6306616795"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6306790235",
+        "name": "Sehi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4149197,
+          27.5864689
+        ]
+      },
+      "id": "node/6306790235"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309044722",
+        "name": "Khitwita",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3458099,
+          27.7597349
+        ]
+      },
+      "id": "node/6309044722"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309044723",
+        "name": "Kadauna",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3434924,
+          27.7801642
+        ]
+      },
+      "id": "node/6309044723"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309123703",
+        "name": "Jalalpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4317801,
+          27.7202135
+        ]
+      },
+      "id": "node/6309123703"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309123952",
+        "name": "Bhadawal",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4703932,
+          27.7177632
+        ]
+      },
+      "id": "node/6309123952"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309123953",
+        "name": "Dham Singha",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4535489,
+          27.7374026
+        ]
+      },
+      "id": "node/6309123953"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309123981",
+        "name": "Shernagar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.537384,
+          27.8631138
+        ]
+      },
+      "id": "node/6309123981"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309124413",
+        "name": "Phalain",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4928164,
+          27.8030571
+        ]
+      },
+      "id": "node/6309124413"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6309257637",
+        "name": "Badokhar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.336111,
+          27.714382
+        ]
+      },
+      "id": "node/6309257637"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6316180639",
+        "name": "Chaundras",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5113773,
+          27.9268912
+        ]
+      },
+      "id": "node/6316180639"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6316181044",
+        "name": "Shahzadpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5605583,
+          27.8486197
+        ]
+      },
+      "id": "node/6316181044"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6316181045",
+        "name": "Majhoi",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5633049,
+          27.8620135
+        ]
+      },
+      "id": "node/6316181045"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6316181407",
+        "name": "Baraka",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.467904,
+          27.8753867
+        ]
+      },
+      "id": "node/6316181407"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6316181565",
+        "name": "Bukharari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4869907,
+          27.8598035
+        ]
+      },
+      "id": "node/6316181565"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6316182267",
+        "name": "Bishambhara",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5373839,
+          27.8150902
+        ]
+      },
+      "id": "node/6316182267"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6320472959",
+        "name": "Diwana Khurd",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7440321,
+          27.5383755
+        ]
+      },
+      "id": "node/6320472959"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6327277693",
+        "name": "Salempur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6378917,
+          27.4662794
+        ]
+      },
+      "id": "node/6327277693"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6327277694",
+        "name": "Mukandpur",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6306819,
+          27.4537129
+        ]
+      },
+      "id": "node/6327277694"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6327725498",
+        "name": "Junsuti",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5721454,
+          27.4638043
+        ]
+      },
+      "id": "node/6327725498"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6344856413",
+        "name": "Nahora",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3305642,
+          27.597285
+        ]
+      },
+      "id": "node/6344856413"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6347357460",
+        "name": "Bachgaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4694008,
+          27.3977128
+        ]
+      },
+      "id": "node/6347357460"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6347655623",
+        "name": "Konthra",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4278211,
+          27.4310325
+        ]
+      },
+      "id": "node/6347655623"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6347656652",
+        "name": "Jamunavata",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4895978,
+          27.4868586
+        ]
+      },
+      "id": "node/6347656652"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6347656653",
+        "name": "Bhavanpura",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.491647,
+          27.4726668
+        ]
+      },
+      "id": "node/6347656653"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6347656654",
+        "alt_name": "Parasoli",
+        "name": "Muhammadpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4726999,
+          27.4788634
+        ]
+      },
+      "id": "node/6347656654"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660014",
+        "name": "Nagla Dukri",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5465464,
+          27.5329338
+        ]
+      },
+      "id": "node/6349660014"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660015",
+        "name": "Nagla Pisawa",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5477052,
+          27.5398406
+        ]
+      },
+      "id": "node/6349660015"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660016",
+        "name": "Nagla Matoli",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5485635,
+          27.5471845
+        ]
+      },
+      "id": "node/6349660016"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660017",
+        "name": "Basonti",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5174069,
+          27.5308598
+        ]
+      },
+      "id": "node/6349660017"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660018",
+        "name": "Junhaidi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5311398,
+          27.5377477
+        ]
+      },
+      "id": "node/6349660018"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660501",
+        "name": "Nagla Mora",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5743127,
+          27.5132957
+        ]
+      },
+      "id": "node/6349660501"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660805",
+        "name": "Kushipura",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.56706,
+          27.537272
+        ]
+      },
+      "id": "node/6349660805"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660861",
+        "name": "Nagla Moharsingh",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5869512,
+          27.5538145
+        ]
+      },
+      "id": "node/6349660861"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660875",
+        "name": "Maghera",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5904274,
+          27.5671399
+        ]
+      },
+      "id": "node/6349660875"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660876",
+        "name": "Sakna",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.587316,
+          27.5274538
+        ]
+      },
+      "id": "node/6349660876"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660877",
+        "name": "Sora",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4648141,
+          27.4284424
+        ]
+      },
+      "id": "node/6349660877"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349660878",
+        "name": "Debiya",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4484849,
+          27.4403452
+        ]
+      },
+      "id": "node/6349660878"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349773386",
+        "name": "Bhutpura",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5503445,
+          27.511659
+        ]
+      },
+      "id": "node/6349773386"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349773387",
+        "name": "Haripura",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5429094,
+          27.5060542
+        ]
+      },
+      "id": "node/6349773387"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349773388",
+        "name": "Ramnagar",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.551868,
+          27.5029234
+        ]
+      },
+      "id": "node/6349773388"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349773496",
+        "name": "Pritamgarh",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5523615,
+          27.4747038
+        ]
+      },
+      "id": "node/6349773496"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6349773497",
+        "name": "Sonsa",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5577044,
+          27.4493905
+        ]
+      },
+      "id": "node/6349773497"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6350463383",
+        "name": "Pali",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4590206,
+          27.5672921
+        ]
+      },
+      "id": "node/6350463383"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6350465125",
+        "name": "Nibgaon",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4536294,
+          27.5196946
+        ]
+      },
+      "id": "node/6350465125"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6352005051",
+        "name": "Azmatpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3504019,
+          27.5441119
+        ]
+      },
+      "id": "node/6352005051"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6352539318",
+        "name": "Malsari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4160623,
+          27.5080621
+        ]
+      },
+      "id": "node/6352539318"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6352539319",
+        "name": "Sakarwa",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.4300956,
+          27.5075482
+        ]
+      },
+      "id": "node/6352539319"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6352539546",
+        "name": "Nagla Rampur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5151539,
+          27.460539
+        ]
+      },
+      "id": "node/6352539546"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6352539547",
+        "name": "Borpa",
+        "place": "village",
+        "population": "2000"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.5298095,
+          27.4388979
+        ]
+      },
+      "id": "node/6352539547"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6353243536",
+        "name": "Loharwari",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3504662,
+          27.7062894
+        ]
+      },
+      "id": "node/6353243536"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6353243537",
+        "name": "Nagla Imamkhan",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3464107,
+          27.6855612
+        ]
+      },
+      "id": "node/6353243537"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6353243538",
+        "name": "Rithora",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3587489,
+          27.6863498
+        ]
+      },
+      "id": "node/6353243538"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6372918509",
+        "name": "Kolahar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7317982,
+          27.9211251
+        ]
+      },
+      "id": "node/6372918509"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6372918611",
+        "name": "Pach Hara",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7520429,
+          27.8964048
+        ]
+      },
+      "id": "node/6372918611"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745113",
+        "name": "Nagla Hari",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8261399,
+          27.4953291
+        ]
+      },
+      "id": "node/6376745113"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745134",
+        "name": "Mohanpur",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.817058,
+          27.4367649
+        ]
+      },
+      "id": "node/6376745134"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745223",
+        "name": "Akos",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8665233,
+          27.2932697
+        ]
+      },
+      "id": "node/6376745223"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745230",
+        "name": "Tal Garhi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8480911,
+          27.4824042
+        ]
+      },
+      "id": "node/6376745230"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745231",
+        "name": "Gudera",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.864356,
+          27.5359401
+        ]
+      },
+      "id": "node/6376745231"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745233",
+        "name": "Jugsana",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8859424,
+          27.4674598
+        ]
+      },
+      "id": "node/6376745233"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745234",
+        "name": "Jharauta",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8788185,
+          27.4099095
+        ]
+      },
+      "id": "node/6376745234"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745235",
+        "name": "Dagheta",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8870582,
+          27.436765
+        ]
+      },
+      "id": "node/6376745235"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745245",
+        "name": "Radoi",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9243517,
+          27.4251665
+        ]
+      },
+      "id": "node/6376745245"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745413",
+        "name": "Sarai Daud",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9222059,
+          27.4420972
+        ]
+      },
+      "id": "node/6376745413"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6376745414",
+        "name": "Awerni",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8371691,
+          27.4272234
+        ]
+      },
+      "id": "node/6376745414"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6380449602",
+        "name": "Bisavli",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8336286,
+          27.5570961
+        ]
+      },
+      "id": "node/6380449602"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6380449603",
+        "name": "Pirsuwa",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8232431,
+          27.5653899
+        ]
+      },
+      "id": "node/6380449603"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6380449604",
+        "name": "Khajuri",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8402161,
+          27.5306886
+        ]
+      },
+      "id": "node/6380449604"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6380449855",
+        "name": "Birhana",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8339076,
+          27.5710773
+        ]
+      },
+      "id": "node/6380449855"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/6380450132",
+        "name": "Pavesara",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8583908,
+          27.5339328
+        ]
+      },
+      "id": "node/6380450132"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732669",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9074216,
+          27.3280649
+        ]
+      },
+      "id": "node/8207732669"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732670",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8794622,
+          27.3224221
+        ]
+      },
+      "id": "node/8207732670"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732671",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8830242,
+          27.3195244
+        ]
+      },
+      "id": "node/8207732671"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732672",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8893113,
+          27.3148917
+        ]
+      },
+      "id": "node/8207732672"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732673",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8920793,
+          27.3087335
+        ]
+      },
+      "id": "node/8207732673"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732674",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9105544,
+          27.3091529
+        ]
+      },
+      "id": "node/8207732674"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732675",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9087305,
+          27.3060642
+        ]
+      },
+      "id": "node/8207732675"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732676",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9037738,
+          27.3037189
+        ]
+      },
+      "id": "node/8207732676"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732682",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8646993,
+          27.2967593
+        ]
+      },
+      "id": "node/8207732682"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732683",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8693342,
+          27.3038143
+        ]
+      },
+      "id": "node/8207732683"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732684",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8643346,
+          27.3076658
+        ]
+      },
+      "id": "node/8207732684"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732685",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8604507,
+          27.3041575
+        ]
+      },
+      "id": "node/8207732685"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732686",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8572964,
+          27.3218883
+        ]
+      },
+      "id": "node/8207732686"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732687",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8537774,
+          27.3155208
+        ]
+      },
+      "id": "node/8207732687"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732688",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8482842,
+          27.322079
+        ]
+      },
+      "id": "node/8207732688"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732689",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8573823,
+          27.3254151
+        ]
+      },
+      "id": "node/8207732689"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732690",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8520608,
+          27.3293421
+        ]
+      },
+      "id": "node/8207732690"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8207732691",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8662658,
+          27.3301427
+        ]
+      },
+      "id": "node/8207732691"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484099",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7017927,
+          27.943441
+        ]
+      },
+      "id": "node/8209484099"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484105",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7273273,
+          27.9305312
+        ]
+      },
+      "id": "node/8209484105"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484106",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7255463,
+          27.9241042
+        ]
+      },
+      "id": "node/8209484106"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484107",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7301168,
+          27.9157997
+        ]
+      },
+      "id": "node/8209484107"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484108",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7245164,
+          27.9147379
+        ]
+      },
+      "id": "node/8209484108"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484109",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6964497,
+          27.9252986
+        ]
+      },
+      "id": "node/8209484109"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484110",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7006984,
+          27.9320478
+        ]
+      },
+      "id": "node/8209484110"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484111",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.692008,
+          27.9396497
+        ]
+      },
+      "id": "node/8209484111"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484112",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6808071,
+          27.9359341
+        ]
+      },
+      "id": "node/8209484112"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484113",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6699066,
+          27.9319151
+        ]
+      },
+      "id": "node/8209484113"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209484114",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6681042,
+          27.9185679
+        ]
+      },
+      "id": "node/8209484114"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209634733",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7350092,
+          27.904214
+        ]
+      },
+      "id": "node/8209634733"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8209634734",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7179288,
+          27.8994732
+        ]
+      },
+      "id": "node/8209634734"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8355197178",
+        "name": "Nagla Tangar",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6158332,
+          27.2891889
+        ]
+      },
+      "id": "node/8355197178"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8357474979",
+        "name": "Nagla Dandoo",
+        "name:hi": "नगला दांदू",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.3120785,
+          27.7461528
+        ]
+      },
+      "id": "node/8357474979"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140053",
+        "name": "Sonai",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.887449,
+          27.5730437
+        ]
+      },
+      "id": "node/8665140053"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140055",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8592479,
+          27.5816351
+        ]
+      },
+      "id": "node/8665140055"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140061",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8478508,
+          27.614989
+        ]
+      },
+      "id": "node/8665140061"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140062",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8396621,
+          27.6160355
+        ]
+      },
+      "id": "node/8665140062"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140063",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.819781,
+          27.615896
+        ]
+      },
+      "id": "node/8665140063"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140064",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8288161,
+          27.6048374
+        ]
+      },
+      "id": "node/8665140064"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140065",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.832379,
+          27.6015056
+        ]
+      },
+      "id": "node/8665140065"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140066",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8391503,
+          27.6049769
+        ]
+      },
+      "id": "node/8665140066"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140067",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8341112,
+          27.5973713
+        ]
+      },
+      "id": "node/8665140067"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140068",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8260406,
+          27.5808325
+        ]
+      },
+      "id": "node/8665140068"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140069",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8222219,
+          27.5786342
+        ]
+      },
+      "id": "node/8665140069"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140070",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8332057,
+          27.5638376
+        ]
+      },
+      "id": "node/8665140070"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140071",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8352922,
+          27.5809721
+        ]
+      },
+      "id": "node/8665140071"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140072",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8480673,
+          27.5823504
+        ]
+      },
+      "id": "node/8665140072"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140073",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8449965,
+          27.578198
+        ]
+      },
+      "id": "node/8665140073"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140074",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8418864,
+          27.5766451
+        ]
+      },
+      "id": "node/8665140074"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140075",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8412959,
+          27.573836
+        ]
+      },
+      "id": "node/8665140075"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140076",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8397015,
+          27.5704509
+        ]
+      },
+      "id": "node/8665140076"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140077",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8507837,
+          27.5728414
+        ]
+      },
+      "id": "node/8665140077"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140078",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8594448,
+          27.5742198
+        ]
+      },
+      "id": "node/8665140078"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140079",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8579685,
+          27.5681302
+        ]
+      },
+      "id": "node/8665140079"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140080",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8634997,
+          27.5679557
+        ]
+      },
+      "id": "node/8665140080"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140081",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8741883,
+          27.5647101
+        ]
+      },
+      "id": "node/8665140081"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140082",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8884396,
+          27.5660711
+        ]
+      },
+      "id": "node/8665140082"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140083",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8942071,
+          27.5602777
+        ]
+      },
+      "id": "node/8665140083"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140084",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8989313,
+          27.5652685
+        ]
+      },
+      "id": "node/8665140084"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140085",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8968054,
+          27.5713234
+        ]
+      },
+      "id": "node/8665140085"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8665140086",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9016478,
+          27.5679382
+        ]
+      },
+      "id": "node/8665140086"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8687778456",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8403663,
+          27.6479898
+        ]
+      },
+      "id": "node/8687778456"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8687778458",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8211832,
+          27.6672998
+        ]
+      },
+      "id": "node/8687778458"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8687778459",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8269338,
+          27.6648672
+        ]
+      },
+      "id": "node/8687778459"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8703069026",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7693166,
+          27.8511568
+        ]
+      },
+      "id": "node/8703069026"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8703069033",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8006824,
+          27.8590608
+        ]
+      },
+      "id": "node/8703069033"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8735762475",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7891994,
+          27.724246
+        ]
+      },
+      "id": "node/8735762475"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892067123",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8040686,
+          27.672524
+        ]
+      },
+      "id": "node/8892067123"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892067124",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.792826,
+          27.6602879
+        ]
+      },
+      "id": "node/8892067124"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892067125",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7990832,
+          27.6603268
+        ]
+      },
+      "id": "node/8892067125"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083519",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8313435,
+          27.623846
+        ]
+      },
+      "id": "node/8892083519"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083520",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8350556,
+          27.6285407
+        ]
+      },
+      "id": "node/8892083520"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083521",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8300263,
+          27.630132
+        ]
+      },
+      "id": "node/8892083521"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083522",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8262243,
+          27.6329169
+        ]
+      },
+      "id": "node/8892083522"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083523",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8367476,
+          27.6366387
+        ]
+      },
+      "id": "node/8892083523"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083530",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8577999,
+          27.6230645
+        ]
+      },
+      "id": "node/8892083530"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083531",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8385604,
+          27.6235826
+        ]
+      },
+      "id": "node/8892083531"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083532",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8442329,
+          27.6272095
+        ]
+      },
+      "id": "node/8892083532"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083533",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8437943,
+          27.6331676
+        ]
+      },
+      "id": "node/8892083533"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083534",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8490574,
+          27.6307585
+        ]
+      },
+      "id": "node/8892083534"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892083535",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8532093,
+          27.6345664
+        ]
+      },
+      "id": "node/8892083535"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892641113",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6203066,
+          27.91136
+        ]
+      },
+      "id": "node/8892641113"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892641114",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6245462,
+          27.9099852
+        ]
+      },
+      "id": "node/8892641114"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892641115",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6316994,
+          27.9102239
+        ]
+      },
+      "id": "node/8892641115"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892641116",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6600527,
+          27.9194512
+        ]
+      },
+      "id": "node/8892641116"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892652817",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6560083,
+          27.9217462
+        ]
+      },
+      "id": "node/8892652817"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892652823",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6410922,
+          27.9541332
+        ]
+      },
+      "id": "node/8892652823"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892652824",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.6515557,
+          27.9597705
+        ]
+      },
+      "id": "node/8892652824"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682482",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7991584,
+          27.7587134
+        ]
+      },
+      "id": "node/8892682482"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682483",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7905872,
+          27.7482715
+        ]
+      },
+      "id": "node/8892682483"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682484",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7811997,
+          27.7525403
+        ]
+      },
+      "id": "node/8892682484"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682485",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7686954,
+          27.7764427
+        ]
+      },
+      "id": "node/8892682485"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682486",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.764809,
+          27.7901777
+        ]
+      },
+      "id": "node/8892682486"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682487",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7721331,
+          27.7939744
+        ]
+      },
+      "id": "node/8892682487"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682488",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7747118,
+          27.7917629
+        ]
+      },
+      "id": "node/8892682488"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682489",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7887074,
+          27.7865386
+        ]
+      },
+      "id": "node/8892682489"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/8892682490",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8098486,
+          27.8127794
+        ]
+      },
+      "id": "node/8892682490"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9004913394",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.867799,
+          27.2572388
+        ]
+      },
+      "id": "node/9004913394"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9004913395",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8363199,
+          27.2883712
+        ]
+      },
+      "id": "node/9004913395"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9004913399",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8113301,
+          27.2802397
+        ]
+      },
+      "id": "node/9004913399"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9004913400",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8151995,
+          27.2776246
+        ]
+      },
+      "id": "node/9004913400"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9004913403",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7869448,
+          27.25061
+        ]
+      },
+      "id": "node/9004913403"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9004913406",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7873479,
+          27.2475642
+        ]
+      },
+      "id": "node/9004913406"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9006060873",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9332787,
+          27.2809681
+        ]
+      },
+      "id": "node/9006060873"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9006060874",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.928966,
+          27.2745019
+        ]
+      },
+      "id": "node/9006060874"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9006060875",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9198367,
+          27.2585945
+        ]
+      },
+      "id": "node/9006060875"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9006060876",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9253989,
+          27.2539186
+        ]
+      },
+      "id": "node/9006060876"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9006060877",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9243711,
+          27.2514463
+        ]
+      },
+      "id": "node/9006060877"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9008033209",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7414306,
+          27.2460294
+        ]
+      },
+      "id": "node/9008033209"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9008033210",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7469603,
+          27.2493679
+        ]
+      },
+      "id": "node/9008033210"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016246563",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8448724,
+          27.3107354
+        ]
+      },
+      "id": "node/9016246563"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016246564",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8388643,
+          27.3116887
+        ]
+      },
+      "id": "node/9016246564"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016246565",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8372335,
+          27.3182471
+        ]
+      },
+      "id": "node/9016246565"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016246566",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.831912,
+          27.3158831
+        ]
+      },
+      "id": "node/9016246566"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016246567",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8281354,
+          27.3220599
+        ]
+      },
+      "id": "node/9016246567"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016246568",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.8175783,
+          27.3197722
+        ]
+      },
+      "id": "node/9016246568"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016371694",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9804849,
+          27.2953673
+        ]
+      },
+      "id": "node/9016371694"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016371695",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.9737043,
+          27.2968165
+        ]
+      },
+      "id": "node/9016371695"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609768",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.740674,
+          27.2830484
+        ]
+      },
+      "id": "node/9016609768"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609769",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7509737,
+          27.2865192
+        ]
+      },
+      "id": "node/9016609769"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609770",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7613592,
+          27.2795775
+        ]
+      },
+      "id": "node/9016609770"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609771",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7702856,
+          27.2729787
+        ]
+      },
+      "id": "node/9016609771"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609772",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7611875,
+          27.2700034
+        ]
+      },
+      "id": "node/9016609772"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609773",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7579689,
+          27.2730168
+        ]
+      },
+      "id": "node/9016609773"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609774",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7490425,
+          27.2679053
+        ]
+      },
+      "id": "node/9016609774"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609775",
+        "place": "village"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7601575,
+          27.2616873
+        ]
+      },
+      "id": "node/9016609775"
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "@id": "node/9016609776",
+        "place": "hamlet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.7673244,
+          27.2627555
+        ]
+      },
+      "id": "node/9016609776"
+    }
+  ]
+}
