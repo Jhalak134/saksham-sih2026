@@ -90,8 +90,13 @@ function NewAssessmentContent(): React.JSX.Element {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
 
-  // Hydrate saved user location on client after initial render to avoid SSR mismatch
+  const hasHydratedLocationRef = React.useRef(false);
+
+  // Hydrate saved user location on client ONCE after initial mount so user can clear/change location freely
   React.useEffect(() => {
+    if (hasHydratedLocationRef.current) return;
+    hasHydratedLocationRef.current = true;
+
     if (!paramLoc && !paramDistrict && !session.locationId) {
       const { location: storedLoc, status: geoStatus } = getSavedUserLocation();
       const candidateLoc = storedLoc || (homeLocation && homeLocation !== 'Uttar Pradesh' ? homeLocation : '');
