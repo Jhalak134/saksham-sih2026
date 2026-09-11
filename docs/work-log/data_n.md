@@ -341,3 +341,18 @@ know what query functions exist — this unblocks their feasibility engine work.
 Reference. It makes the data layer's quality visible to users and judges — prevents the
 "how do you know there's no competition here?" question from landing badly.
 **Status:** Done
+
+
+## Step 19 — Data Coverage Report
+**Date:** 2026-09-11
+**Files touched:** `backend/data_pipeline/coverage_report.py`, `docs/data_coverage_report.md`
+**What I did:**
+Wrote `coverage_report.py` — queries the live DB and outputs a markdown
+report covering: geographic scope, village confidence breakdown, OSM
+business counts per block, business categories, financing schemes,
+census summary totals. Defaults to writing `docs/data_coverage_report.md`.
+Ran it; report generated successfully.
+**Why:** The data layer is invisible during a demo by default. This report
+makes it visible in 15 seconds — "here's the real data backbone" is a
+strong differentiator from teams that hardcoded demo numbers.
+**Status:** Done
