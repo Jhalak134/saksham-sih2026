@@ -216,4 +216,30 @@ describe('StepLocation — clear', () => {
     await userEvent.click(screen.getByRole('button', { name: /remove bera, mat block · mathura/i }));
     expect(onSelect).toHaveBeenCalledWith('', '');
   });
+
+  it('switches to search mode when Change button is clicked and allows selecting a new location', async () => {
+    const onSelect = vi.fn();
+    render(
+      <StepLocation
+        {...defaultProps}
+        locationId="loc_01"
+        locationDisplay="Kheragarh, Agra"
+        onSelect={onSelect}
+      />
+    );
+
+    const changeBtn = screen.getByRole('button', { name: /^change$/i });
+    expect(changeBtn).toBeInTheDocument();
+    await userEvent.click(changeBtn);
+
+    // Search input and quick-select chips should now be visible
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /vrindavan/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
+
+    // Clicking a new location should select it
+    await userEvent.click(screen.getByRole('button', { name: /vrindavan/i }));
+    expect(onSelect).toHaveBeenCalledWith('loc_07', 'Vrindavan, Mathura');
+  });
 });
+

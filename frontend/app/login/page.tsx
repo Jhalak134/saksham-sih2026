@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Smartphone,
@@ -11,9 +12,47 @@ import {
   EyeOff,
   ArrowRight,
   User,
+  MapPin,
+  CheckCircle2,
   AlertCircle,
 } from 'lucide-react';
 import { useAuth, AuthProvider, AuthContext } from '@/lib/auth-context';
+import { setAuthUser } from '@/lib/auth';
+import { setStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
+import { requestUserLocation } from '@/lib/geolocation';
+
+const GOOGLE_CLIENT_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+  '1086921631486-qv5d894bgisg6f4p5u3deitfpm2lqnfd.apps.googleusercontent.com';
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        oauth2: {
+          initTokenClient: (config: {
+            client_id: string;
+            scope: string;
+            callback: (response: { access_token?: string; error?: string }) => void;
+            error_callback?: (err: unknown) => void;
+          }) => {
+            requestAccessToken: (options?: { prompt?: string }) => void;
+          };
+        };
+        id: {
+          initialize: (config: {
+            client_id: string;
+            callback: (response: { credential?: string }) => void;
+            auto_select?: boolean;
+            cancel_on_tap_outside?: boolean;
+          }) => void;
+          prompt: (notification?: unknown) => void;
+        };
+      };
+    };
+  }
+}
 
 function LoginFormContent(): React.JSX.Element {
   const router = useRouter();
@@ -21,6 +60,7 @@ function LoginFormContent(): React.JSX.Element {
   const { login, signup } = useAuth();
 
   const initialMode = searchParams.get('mode') || searchParams.get('tab');
+  const destination = searchParams.get('redirect') || '/discover';
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>(
     initialMode === 'signup' ? 'signup' : 'login'
   );
@@ -34,6 +74,10 @@ function LoginFormContent(): React.JSX.Element {
   const [googleNotice, setGoogleNotice] = useState<string | null>(null);
   const [isShaking, setIsShaking] = useState(false);
 
+  // Post-signup location permission modal state
+  const [showLocationModal, setShowLocationModal] = useState<boolean>(false);
+  const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
+
   // Sync tab with query parameters if they change
   useEffect(() => {
     const mode = searchParams.get('mode') || searchParams.get('tab');
@@ -43,6 +87,35 @@ function LoginFormContent(): React.JSX.Element {
       setActiveTab('login');
     }
   }, [searchParams]);
+
+  // Handle Google OAuth hash fragment redirect if present
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      if (accessToken) {
+        setLoading(true);
+        fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+          .then((res) => res.json())
+          .then((profile) => {
+            if (profile && profile.email) {
+              onGoogleSuccess({
+                email: profile.email,
+                name: profile.name,
+                picture: profile.picture,
+                google_id: profile.sub,
+                token: accessToken,
+              });
+            }
+          })
+          .catch(() => {
+            setLoading(false);
+          });
+      }
+    }
+  }, []);
 
   const isValidAccount = (val: string) => {
     const clean = val.trim();
@@ -57,6 +130,84 @@ function LoginFormContent(): React.JSX.Element {
     setTimeout(() => setIsShaking(false), 450);
   };
 
+  const onGoogleSuccess = async (userProfile: {
+    email: string;
+    name?: string;
+    picture?: string;
+    token?: string;
+    google_id?: string;
+  }) => {
+    setLoading(true);
+    try {
+      const backendUrl =
+        process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+      await fetch(`${backendUrl}/api/v1/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: userProfile.email,
+          name: userProfile.name,
+          picture: userProfile.picture,
+          google_id: userProfile.google_id,
+        }),
+      });
+    } catch (syncErr) {
+      console.warn('Backend sync note:', syncErr);
+    }
+
+    setAuthUser({
+      email: userProfile.email,
+      name: userProfile.name,
+      picture: userProfile.picture,
+      authProvider: 'google',
+      token: userProfile.token,
+    });
+    if (userProfile.token) {
+      setStorageItem(STORAGE_KEYS.authToken, userProfile.token);
+    }
+
+    router.push(destination);
+  };
+
+  const initGoogleOneTap = () => {
+    if (typeof window !== 'undefined' && window.google?.accounts?.id) {
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: (response) => {
+            if (response.credential) {
+              try {
+                const base64Url = response.credential.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(
+                  atob(base64)
+                    .split('')
+                    .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join('')
+                );
+                const payload = JSON.parse(jsonPayload);
+                if (payload && payload.email) {
+                  onGoogleSuccess({
+                    email: payload.email,
+                    name: payload.name,
+                    picture: payload.picture,
+                    google_id: payload.sub,
+                    token: response.credential,
+                  });
+                }
+              } catch {
+                // Ignore parse errors
+              }
+            }
+          },
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+      } catch (err) {
+        console.warn('GSI initialize note:', err);
+      }
+    }
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -64,7 +215,7 @@ function LoginFormContent(): React.JSX.Element {
 
     const cleanAccount = mobileNumber.trim();
     if (!cleanAccount) {
-      triggerError('Please enter your mobile number');
+      triggerError('Please enter your mobile number or email');
       return;
     }
 
@@ -88,6 +239,13 @@ function LoginFormContent(): React.JSX.Element {
       return;
     }
 
+    setAuthUser({
+      phone: cleanAccount,
+      name: name.trim() || 'Entrepreneur',
+      authProvider: 'phone',
+    });
+    setStorageItem(STORAGE_KEYS.authToken, 'session-token-' + Date.now());
+
     setLoading(true);
     try {
       if (activeTab === 'login') {
@@ -98,7 +256,7 @@ function LoginFormContent(): React.JSX.Element {
           preferred_language: 'en',
         });
       }
-      router.push('/discover');
+      router.push(destination);
     } catch (err: unknown) {
       const msg =
         err instanceof Error
@@ -117,8 +275,32 @@ function LoginFormContent(): React.JSX.Element {
     );
   };
 
+  const handleAllowLocation = async () => {
+    setIsDetectingLocation(true);
+    try {
+      await requestUserLocation();
+    } catch {
+      // Ignored - fallback
+    } finally {
+      setIsDetectingLocation(false);
+      setShowLocationModal(false);
+      router.push(destination);
+    }
+  };
+
+  const handleSkipLocation = () => {
+    setShowLocationModal(false);
+    router.push(destination);
+  };
+
   return (
-    <div className="flex min-h-screen w-full flex-col lg:flex-row items-stretch justify-between bg-[#F9FAF9] font-sans antialiased text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
+    <>
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+        onLoad={initGoogleOneTap}
+      />
+      <div className="flex min-h-screen w-full flex-col lg:flex-row items-stretch justify-between bg-[#F9FAF9] font-sans antialiased text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       {/* Mobile Top Header with Logo */}
       <div className="flex lg:hidden items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-30">
         <Link href="/" className="flex items-center gap-2" aria-label="Saksham Home">
@@ -437,7 +619,71 @@ function LoginFormContent(): React.JSX.Element {
           title="Back to Saksham Home"
         />
       </div>
+
+      {/* Post-Signup Location Permission Modal Popup */}
+      {showLocationModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="location-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
+        >
+          <div className="relative w-full max-w-md rounded-2xl bg-white p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800 mb-4 shadow-sm">
+                <MapPin className="h-7 w-7 text-emerald-700" />
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-600" />
+                </span>
+              </div>
+
+              <h2
+                id="location-modal-title"
+                className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight"
+              >
+                Saksham wants to access your location
+              </h2>
+
+              <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed max-w-sm">
+                Allow location permission to automatically discover localized credit schemes, market demand, and verified pilot clusters in your area.
+              </p>
+
+              <div className="mt-6 flex w-full flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleAllowLocation}
+                  disabled={isDetectingLocation}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#167844] hover:bg-[#126438] active:bg-[#0e4e2c] py-3 px-4 text-sm font-semibold text-white shadow-xs transition-all cursor-pointer disabled:opacity-75"
+                >
+                  {isDetectingLocation ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      </svg>
+                      <span>Detecting location...</span>
+                    </>
+                  ) : (
+                    <span>Allow Location Access</span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleSkipLocation}
+                  disabled={isDetectingLocation}
+                  className="w-full rounded-xl py-2.5 px-4 text-xs sm:text-sm font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Not now, I&apos;ll fill manually
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+    </>
   );
 }
 

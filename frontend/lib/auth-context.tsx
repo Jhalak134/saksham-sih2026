@@ -58,7 +58,7 @@ export function AuthProvider({
 
     async function hydrateSession(): Promise<void> {
       try {
-        const storedIdentifier = getStorageItem<string>(STORAGE_KEYS.authUser);
+        const storedIdentifier = getStorageItem(STORAGE_KEYS.authUser);
         if (storedIdentifier && storedIdentifier.trim()) {
           const profile = await getUserProfile(storedIdentifier.trim());
           if (isMounted) {
