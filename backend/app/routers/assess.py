@@ -48,12 +48,7 @@ class AssessmentRequest(BaseModel):
     phone_or_email: Optional[str] = "guest_entrepreneur@saksham.gov.in"
 
 
-@router.post("")
-async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db)):
-    """
-    Run complete multi-criteria assessment per SIH Problem Statement #91.
-    """
-    # 1. Resolve Location
+def _resolve_assessment_village(db: Session, req: AssessmentRequest) -> Village:
     loc_str = req.location or req.location_query or (str(req.village_id) if req.village_id else "Kamar")
     resolved = resolve_location(db, loc_str)
     village = resolved.get("village")
@@ -61,8 +56,10 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         village = db.query(Village).order_by(Village.population.desc()).first()
     if not village:
         raise HTTPException(status_code=400, detail="No villages available in database.")
+    return village
 
-    # 2. Resolve Category
+
+def _resolve_assessment_category(db: Session, req: AssessmentRequest) -> BusinessCategory:
     cat: Optional[BusinessCategory] = None
     if req.category_id is not None:
         cat = get_category_by_id(db, req.category_id)
@@ -72,6 +69,19 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         cat = db.query(BusinessCategory).first()
     if not cat:
         raise HTTPException(status_code=400, detail="No business categories available.")
+    return cat
+
+
+@router.post("")
+async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db)):
+    """
+    Run complete multi-criteria assessment per SIH Problem Statement #91.
+    """
+    # 1. Resolve Location
+    village = _resolve_assessment_village(db, req)
+
+    # 2. Resolve Category
+    cat = _resolve_assessment_category(db, req)
 
     # 3. Resolve Margin Capital
     margin = req.capital or req.available_capital or req.capital_input or 100000.0
@@ -107,6 +117,10 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         loan_amount=fin_data["max_loan_amount"],
         scheme_name=fin_data["scheme_name"],
         monthly_emi=fin_data["monthly_emi"],
+        interest_rate=fin_data.get("interest_rate"),
+        tenure_months=fin_data.get("tenure_months"),
+        moratorium_months=fin_data.get("moratorium_months"),
+        repayment_burden_category=fin_data.get("repayment_burden_category"),
         language=req.language or "en",
     )
 
@@ -127,13 +141,15 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         status="Exploring",
     )
 
+    recommendation_text = ai_data.get("recommendation") or ai_data.get("explanation", "")
+
     # Unified response matching frontend interface & rich backend spec
     return {
         "id": saved.id,
         # Frontend compatibility fields
         "fitScore": feas_data["fit_score"],
         "confidence": feas_data["confidence_level"],
-        "recommendation": ai_data.get("recommendation", ""),
+        "recommendation": recommendation_text,
         # Rich report fields
         "fit_score": feas_data["fit_score"],
         "confidence_level": feas_data["confidence_level"],

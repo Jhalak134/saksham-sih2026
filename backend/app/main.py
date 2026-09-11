@@ -13,7 +13,7 @@ from sqlalchemy import text
 
 from backend.app.db.session import engine, get_db
 from backend.app.db import models
-from backend.app.routers import location, schemes, insights, assess, auth
+from backend.app.routers import location, schemes, insights, assess, auth, ai
 
 
 @asynccontextmanager
@@ -47,6 +47,7 @@ app.include_router(schemes.router)
 app.include_router(insights.router)
 app.include_router(assess.router)
 app.include_router(auth.router)
+app.include_router(ai.router)
 
 
 @app.get("/health", tags=["System"])
