@@ -12,6 +12,7 @@ import { StepIdea } from '@/components/assessment/StepIdea';
 import { StepDetails } from '@/components/assessment/StepDetails';
 import { StepLocation } from '@/components/assessment/StepLocation';
 import { StepReview } from '@/components/assessment/StepReview';
+import { createAssessment } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
 
 // ─── Infer suggested category from idea text ──────────────────────────────────
@@ -85,9 +86,30 @@ function NewAssessmentContent(): React.JSX.Element {
   );
   const { currentStep, stepIndex, session, next, back, updateSession, isComplete } = flow;
   const suggestedCategory = inferCategory(session.idea);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
 
-  function handleSubmit(): void {
-    router.push('/assessment/completed');
+  async function handleSubmit(): Promise<void> {
+    setIsSubmitting(true);
+    setSubmitError(null);
+    try {
+      const locationValue = session.locationDisplay || session.locationId;
+      const res = await createAssessment({
+        location: locationValue,
+        category: session.category,
+        capital: session.capital,
+        idea: session.idea.trim() || undefined,
+        language: 'en',
+      });
+      router.push(`/assessment/completed?id=${res.id}`);
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : 'Failed to generate assessment. Please check your connection and try again.';
+      setSubmitError(message);
+      setIsSubmitting(false);
+    }
   }
 
   function handleGoToStep(idx: number): void {
@@ -170,11 +192,23 @@ function NewAssessmentContent(): React.JSX.Element {
           )}
 
           {currentStep === 'review' && (
-            <StepReview
-              session={session}
-              goToStep={handleGoToStep}
-              onSubmit={handleSubmit}
-            />
+            <div className="flex flex-col gap-4">
+              {submitError && (
+                <div
+                  className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"
+                  role="alert"
+                >
+                  <p className="font-semibold">Unable to complete assessment</p>
+                  <p className="mt-1 text-xs text-red-700">{submitError}</p>
+                </div>
+              )}
+              <StepReview
+                session={session}
+                goToStep={handleGoToStep}
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+            </div>
           )}
         </div>
       </div>
