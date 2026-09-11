@@ -13,7 +13,7 @@ Security rules enforced here:
   - Passwords are NEVER logged or stored in plaintext
   - password_hash is NEVER returned in any response
   - Duplicate identifiers return 409 Conflict
-  - Wrong credentials return 401 with a generic message (including legacy users with NULL password_hash)
+  - Legacy users with NULL password_hash receive the same generic 401 "Invalid credentials." response as other invalid credentials to avoid revealing that an account exists.
   - All protected endpoints require a valid, non-expired JWT
 """
 
@@ -160,8 +160,8 @@ def login(
     """
     Authenticate a user and return a JWT token.
 
-    - Returns 401 for invalid credentials (same message for wrong user/password
-      or legacy accounts with NULL password_hash to avoid leaking whether an account exists).
+    - Legacy users with NULL password_hash receive the same generic 401 "Invalid credentials."
+      response as other invalid credentials. We do not reveal that an account exists.
     - Never logs passwords.
     """
     user = get_user_by_identifier(db, body.phone_or_email)
