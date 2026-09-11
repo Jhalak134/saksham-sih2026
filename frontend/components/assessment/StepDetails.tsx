@@ -132,36 +132,34 @@ export function StepDetails({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Category grid */}
-      <div className="flex flex-col gap-3">
-        <div>
-          <p className="text-sm font-semibold text-[var(--color-text-dark)]">
-            Select a category
+      {/* Category selector */}
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-semibold text-[var(--color-text-dark)]">
+          Business Category
+        </p>
+        {suggestedCategory.length > 0 && (
+          <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
+            We&apos;ve suggested a category based on your idea. You can change it.
           </p>
-          {suggestedCategory.length > 0 && (
-            <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
-              We&apos;ve suggested a category based on your idea. You can change it.
-            </p>
-          )}
-        </div>
-        <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
-          {CATEGORIES.map((cat) => (
-            <CategoryTile
-              key={cat}
-              category={cat}
-              selected={category === cat}
-              suggested={suggestedCategory === cat}
-              onSelect={handleSelect}
-            />
-          ))}
-        </div>
+        )}
+      </div>
+      <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+        {CATEGORIES.map((cat) => (
+          <CategoryTile
+            key={cat}
+            category={cat}
+            selected={category === cat}
+            suggested={suggestedCategory === cat}
+            onSelect={handleSelect}
+          />
+        ))}
       </div>
 
       {/* Capital input */}
       <CapitalInput value={capital} onChange={onCapitalChange} />
 
       {/* Progress hint + CTA */}
-      <div className="flex flex-col gap-3">
+      <div className="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <p className="text-xs text-[var(--color-text-muted)]" aria-live="polite">
           {filled} of 2 details added
         </p>
@@ -169,16 +167,16 @@ export function StepDetails({
           onClick={onContinue}
           disabled={!canProceed}
           className={cn(
-            'flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg px-6 py-3.5 sm:py-3 text-sm font-semibold',
-            'transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+            'flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm sm:text-base font-semibold',
+            'transition-all disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer shadow-xs',
             canProceed
-              ? 'bg-[var(--color-primary)] text-[var(--color-text-dark)] hover:bg-[var(--color-primary-dark)]'
+              ? 'bg-[var(--color-primary)] text-[var(--color-text-dark)] hover:bg-[var(--color-primary-dark)] active:scale-[0.99]'
               : 'bg-[var(--color-surface)] text-[var(--color-text-muted)]'
           )}
           aria-disabled={!canProceed}
         >
-          Continue
-          <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
+          <span>Continue</span>
+          <ArrowRight size={16} strokeWidth={2.25} aria-hidden="true" />
         </button>
       </div>
     </div>

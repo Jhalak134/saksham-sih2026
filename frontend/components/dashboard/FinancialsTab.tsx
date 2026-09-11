@@ -65,16 +65,35 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
 
         {/* Recommended Structure (Suitability) Card (Green border & highlight) */}
         <div className="flex-1 rounded-xl border-2 border-emerald-500 bg-emerald-50/20 p-5 space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <CheckCircle size={18} className="text-emerald-700" />
               <h3 className="text-sm font-bold text-emerald-950">
                 Recommended Structure (Suitability)
               </h3>
             </div>
-            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
-              Best Fit
-            </span>
+            <div className="flex items-center gap-1.5">
+              {report.repaymentBurdenCategory && (
+                <span
+                  className={cn(
+                    'text-[11px] font-bold px-2 py-0.5 rounded border',
+                    report.repaymentBurdenCategory === 'Low' &&
+                      'bg-emerald-100 text-emerald-800 border-emerald-200',
+                    report.repaymentBurdenCategory === 'Moderate' &&
+                      'bg-amber-100 text-amber-800 border-amber-200',
+                    report.repaymentBurdenCategory === 'High' &&
+                      'bg-rose-100 text-rose-800 border-rose-200',
+                    report.repaymentBurdenCategory === 'Very High' &&
+                      'bg-red-100 text-red-900 border-red-300'
+                  )}
+                >
+                  Burden: {report.repaymentBurdenCategory}
+                </span>
+              )}
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                Best Fit
+              </span>
+            </div>
           </div>
 
           <p className="text-xs text-emerald-900/80">

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
-import '@fontsource/inter/700.css';
-import '@fontsource/inter/800.css';
-import '@fontsource/inter/900.css';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { ShellProvider } from '@/lib/shell-context';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'SAKSHAM — Business Advisory for Rural Entrepreneurs',
@@ -22,7 +22,7 @@ export default function RootLayout({
 }): React.JSX.Element {
   return (
     <html lang="en">
-      <body className="bg-white text-[var(--color-text-dark)] font-sans antialiased">
+      <body className={`${inter.className} bg-white text-[var(--color-text-dark)] antialiased`}>
         <ShellProvider>{children}</ShellProvider>
       </body>
     </html>

@@ -4,10 +4,13 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 const mockPush = vi.fn();
+let mockSearchParams = new URLSearchParams();
+
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
   }),
+  useSearchParams: () => mockSearchParams,
 }));
 
 vi.mock('next/link', () => ({
@@ -35,6 +38,7 @@ import LoginPage from '@/app/login/page';
 describe('LoginPage', () => {
   beforeEach(() => {
     mockPush.mockClear();
+    mockSearchParams = new URLSearchParams();
     vi.useFakeTimers();
   });
 
@@ -132,5 +136,12 @@ describe('LoginPage', () => {
 
     vi.advanceTimersByTime(700);
     expect(mockPush).toHaveBeenCalledWith('/discover');
+  });
+
+  it('defaults to Sign up mode when mode=signup query param is present', () => {
+    mockSearchParams = new URLSearchParams('mode=signup');
+    render(<LoginPage />);
+    expect(screen.getByRole('heading', { level: 1, name: /create an account/i })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/enter your full name/i)).toBeInTheDocument();
   });
 });
