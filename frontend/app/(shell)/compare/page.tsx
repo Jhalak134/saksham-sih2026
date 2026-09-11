@@ -1,15 +1,17 @@
-import { ArrowLeftRight } from 'lucide-react';
+// app/(shell)/compare/page.tsx
+import React, { Suspense } from 'react';
+import { CompareScreen } from '@/components/compare/CompareScreen';
 
 export default function ComparePage(): React.JSX.Element {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center min-h-[calc(100vh-var(--header-height))] gap-4 p-8 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
-        <ArrowLeftRight size={28} strokeWidth={1.5} className="text-[var(--color-text-muted)]" />
-      </div>
-      <div>
-        <p className="text-lg font-semibold text-[var(--color-text-dark)]">Compare</p>
-        <p className="mt-1 text-sm text-[var(--color-text-muted)]">Side-by-side category comparison with overlaid trend lines.</p>
-      </div>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex flex-1 items-center justify-center min-h-[60vh]">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
+        </div>
+      }
+    >
+      <CompareScreen />
+    </Suspense>
   );
 }

@@ -1,0 +1,41 @@
+/* styles/tokens.css */
+:root {
+  /* Brand / landing */
+  --color-primary: #F2B705;
+  --color-primary-dark: #D99A00;
+  --color-accent-blue: #2E6FF2;
+
+  /* App accent (green) — active states, CTAs, key numbers */
+  --color-accent: #16A34A;
+
+  /* Surfaces */
+  --color-bg: #FFFFFF;
+  --color-surface: #F7F9FC;
+  --color-surface-hover: #F3F4F6;
+  --color-nav-active-bg: #FEF3C7;
+
+  /* Text */
+  --color-text-dark: #111827;
+  --color-text-muted: #6B7280;
+
+  /* Borders */
+  --color-border: #E5E7EB;
+
+  /* Semantic */
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+
+  /* Typography */
+  --font-sans: 'Inter', 'DM Sans', sans-serif;
+
+  /* Layout dimensions */
+  --sidebar-width: 200px;
+  --header-height: 56px;
+  --bottom-nav-height: 64px;
+
+  /* Z-index layers */
+  --z-header: 40;
+  --z-sidebar: 50;
+  --z-overlay: 60;
+  --z-drawer: 70;
+}
