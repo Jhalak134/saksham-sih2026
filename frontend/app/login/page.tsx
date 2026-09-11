@@ -1,14 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react';
 
-export default function LoginPage(): React.JSX.Element {
+function LoginFormContent(): React.JSX.Element {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+  const searchParams = useSearchParams();
+
+  const initialMode = searchParams.get('mode') || searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'login' | 'signup'>(
+    initialMode === 'signup' ? 'signup' : 'login'
+  );
+
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -16,6 +22,16 @@ export default function LoginPage(): React.JSX.Element {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isShaking, setIsShaking] = useState(false);
+
+  // Sync tab with query parameters if they change
+  useEffect(() => {
+    const mode = searchParams.get('mode') || searchParams.get('tab');
+    if (mode === 'signup') {
+      setActiveTab('signup');
+    } else if (mode === 'login') {
+      setActiveTab('login');
+    }
+  }, [searchParams]);
 
   const isValidAccount = (val: string) => {
     const clean = val.trim();
@@ -376,5 +392,19 @@ export default function LoginPage(): React.JSX.Element {
         />
       </div>
     </div>
+  );
+}
+
+export default function LoginPage(): React.JSX.Element {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#F9FAF9]">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#167844] border-t-transparent" />
+        </div>
+      }
+    >
+      <LoginFormContent />
+    </Suspense>
   );
 }
