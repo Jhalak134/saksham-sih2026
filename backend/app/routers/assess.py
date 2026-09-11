@@ -195,7 +195,7 @@ def get_my_reports(
     current_user: User = Depends(get_current_user)
 ):
     assessments = get_assessments_for_user(db, current_user.id)
-    
+
     reports = []
     for a in assessments:
         # Construct the response expected by the frontend
@@ -211,7 +211,7 @@ def get_my_reports(
                 status=a.status or "Exploring"
             )
         )
-        
+
     return MyReportsResponse(reports=reports)
 
 

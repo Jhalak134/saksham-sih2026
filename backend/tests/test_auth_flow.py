@@ -80,7 +80,7 @@ def fixture_setup_geo(db_session):
     category = BusinessCategory(name="TestCategory")
     db_session.add(category)
     db_session.commit()
-    
+
     return {"village_id": village.id, "category_id": category.id}
 
 
@@ -99,7 +99,7 @@ def test_full_auth_and_reports_flow(client: TestClient, db_session: Session, set
     token_data = resp.json()
     assert "access_token" in token_data
     assert token_data["token_type"] == "bearer"
-    
+
     # Verify response does not leak password hash
     user_resp = token_data["user"]
     assert "password_hash" not in user_resp
@@ -162,7 +162,7 @@ def test_full_auth_and_reports_flow(client: TestClient, db_session: Session, set
     assert reports_resp.status_code == 200
     reports_data = reports_resp.json()
     assert "reports" in reports_data
-    
+
     # 8. Confirm the created report is returned for that user
     reports = reports_data["reports"]
     assert len(reports) == 1
@@ -178,7 +178,7 @@ def test_full_auth_and_reports_flow(client: TestClient, db_session: Session, set
     login2_resp = client.post("/auth/login", json={"phone_or_email": "user2@example.com", "password": "User2Pass!"})
     token2 = login2_resp.json()["access_token"]
     headers2 = {"Authorization": f"Bearer {token2}"}
-    
+
     # User 2 fetching their reports should see empty
     reports2_resp = client.get("/assess/my-reports", headers=headers2)
     assert reports2_resp.status_code == 200
@@ -188,7 +188,7 @@ def test_full_auth_and_reports_flow(client: TestClient, db_session: Session, set
     # To test invalidation properly, we could just pass no token or an invalid token
     no_auth_resp = client.get("/assess/my-reports")
     assert no_auth_resp.status_code == 401
-    
+
     bad_auth_resp = client.get("/assess/my-reports", headers={"Authorization": "Bearer invalid.token.string"})
     assert bad_auth_resp.status_code == 401
 
@@ -208,7 +208,7 @@ def test_legacy_user_login_returns_generic_401(client: TestClient, db_session: S
         "password": "SomePassword"
     }
     resp = client.post("/auth/login", json=login_data)
-    
+
     # Assert we get a generic 401 response, not a 500 or special message
     assert resp.status_code == 401
     assert resp.json()["detail"] == "Invalid credentials."
