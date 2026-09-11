@@ -148,9 +148,6 @@ function NewAssessmentContent(): React.JSX.Element {
           <h1 className="text-xl font-bold tracking-tight text-[var(--color-text-dark)] sm:text-2xl">
             New Assessment
           </h1>
-          <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm">
-            Select your location and describe your business idea in plain language — no technical terms needed.
-          </p>
         </div>
 
         {/* Stepper */}
