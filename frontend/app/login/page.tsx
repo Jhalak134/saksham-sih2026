@@ -30,18 +30,18 @@ export default function LoginPage(): React.JSX.Element {
     setTimeout(() => setIsShaking(false), 450);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     const cleanAccount = mobileNumber.trim();
     if (!cleanAccount) {
-      triggerError('Please enter your mobile number');
+      triggerError('Please enter your mobile number or email');
       return;
     }
 
     if (!isValidAccount(cleanAccount)) {
-      triggerError('Please enter a valid 10-digit mobile number');
+      triggerError('Please enter a valid mobile number or email');
       return;
     }
 
@@ -61,10 +61,24 @@ export default function LoginPage(): React.JSX.Element {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { login, signup } = await import('@/lib/api-client');
+      const { setStorageItem } = await import('@/lib/storage');
+      
+      let res;
+      if (activeTab === 'signup') {
+        res = await signup(cleanAccount, password, '', 'en');
+      } else {
+        res = await login(cleanAccount, password);
+      }
+      
+      setStorageItem('auth_token', res.access_token);
       router.push('/discover');
-    }, 600);
+    } catch (err: any) {
+      triggerError(err.message || 'An error occurred during authentication');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
