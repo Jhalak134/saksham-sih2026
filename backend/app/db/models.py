@@ -124,6 +124,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     phone_or_email = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=False)
     home_location = Column(String)
     default_capital = Column(Float)
     preferred_language = Column(String)
