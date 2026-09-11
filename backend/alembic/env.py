@@ -1,6 +1,9 @@
 import os
 
 from dotenv import load_dotenv
+from pathlib import Path
+load_dotenv(Path(__file__).parent.parent.parent / ".env")
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 from backend.app.db.session import Base
 from backend.app.db import models
@@ -10,8 +13,6 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-
-load_dotenv()
 
 target_metadata = Base.metadata
 
