@@ -3,10 +3,21 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { isAuthenticated } from '@/lib/auth';
 
 export function CtaBannerSection(): React.JSX.Element {
+  const router = useRouter();
+
+  const handleCtaClick = (e: React.MouseEvent, href: string) => {
+    if (!isAuthenticated()) {
+      e.preventDefault();
+      router.push(`/login?redirect=${encodeURIComponent(href)}`);
+    }
+  };
+
   return (
     <section className="py-6 sm:py-8 lg:py-12 bg-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -26,6 +37,7 @@ export function CtaBannerSection(): React.JSX.Element {
               <div className="mt-6">
                 <Link
                   href="/new-assessment"
+                  onClick={(e) => handleCtaClick(e, '/new-assessment')}
                   className={cn(
                     'inline-flex items-center gap-2 rounded-xl bg-[#F2B705] px-6 py-3.5 text-sm sm:text-base font-bold text-slate-950 shadow-2xs',
                     'hover:bg-[#D99A00] transition-transform hover:scale-[1.02] active:scale-[0.98]',

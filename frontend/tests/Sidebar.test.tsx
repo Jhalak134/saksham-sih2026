@@ -60,8 +60,8 @@ describe('Sidebar — structure', () => {
     expect(screen.getByText('Log out')).toBeInTheDocument();
   });
 
-  it('renders the version footer', () => {
-    expect(screen.getByText('SAKSHAM v1.0.0')).toBeInTheDocument();
+  it('does not render the version footer', () => {
+    expect(screen.queryByText('SAKSHAM v1.0.0')).not.toBeInTheDocument();
   });
 });
 
@@ -190,6 +190,68 @@ describe('Sidebar — resize handle', () => {
   });
 });
 
+describe('Sidebar — user profile and logout modal', () => {
+  beforeEach(() => {
+    vi.mocked(usePathname).mockReturnValue('/discover');
+    localStorage.clear();
+  });
+
+  it('renders the user profile card with profile link', () => {
+    renderSidebar();
+    const profileLink = screen.getByTitle('Manage Profile');
+    expect(profileLink).toBeInTheDocument();
+    expect(profileLink).toHaveAttribute('href', '/profile');
+    expect(screen.getByText('Rural Entrepreneur')).toBeInTheDocument();
+  });
+
+  it('shows the confirmation modal when Log out is clicked', async () => {
+    renderSidebar();
+    expect(screen.queryByText('Are you sure you want to log out?')).not.toBeInTheDocument();
+
+    const logoutBtn = screen.getByText('Log out');
+    await userEvent.click(logoutBtn);
+
+    expect(screen.getByText('Are you sure you want to log out?')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Yes, Log Out/i })).toBeInTheDocument();
+  });
+
+  it('closes the modal when Cancel is clicked', async () => {
+    renderSidebar();
+    const logoutBtn = screen.getByText('Log out');
+    await userEvent.click(logoutBtn);
+    expect(screen.getByText('Are you sure you want to log out?')).toBeInTheDocument();
+
+    const cancelBtn = screen.getByRole('button', { name: /Cancel/i });
+    await userEvent.click(cancelBtn);
+
+    await waitFor(() => {
+      expect(screen.queryByText('Are you sure you want to log out?')).not.toBeInTheDocument();
+    });
+  });
+
+  it('clears auth user on Yes, Log Out confirmation', async () => {
+    localStorage.setItem('saksham_user', JSON.stringify({ name: 'Test User' }));
+    const originalLocation = window.location;
+    // @ts-expect-error Mocking window.location for test
+    delete window.location;
+    window.location = { href: '' } as unknown as Location;
+
+    renderSidebar();
+    const logoutBtn = screen.getByText('Log out');
+    await userEvent.click(logoutBtn);
+
+    const confirmBtn = screen.getByRole('button', { name: /Yes, Log Out/i });
+    await userEvent.click(confirmBtn);
+
+    expect(localStorage.getItem('saksham_user')).toBeNull();
+    expect(window.location.href).toBe('/');
+
+    window.location = originalLocation;
+  });
+});
+
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/react';
+
 
