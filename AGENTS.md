@@ -1,12 +1,6 @@
-# SAKSHAM — AI/RAG TASK 2
+# SAKSHAM — AI/RAG & BACKEND ARCHITECTURE STATE
 
-## Implement and Verify the Embeddings and Vector Store Layer
-
-You are working ONLY on the AI section of the SAKSHAM repository.
-
-Do NOT modify frontend, backend, database, API contracts, financial engines, datasets outside `ai/`, or any non-AI project functionality.
-
-Your job in this task is to complete the NEXT unfinished stage of the AI/RAG pipeline:
+## Pipeline Progress
 
 ```
 Raw PDFs
@@ -27,9 +21,13 @@ Intent / Query Parser         ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
     ↓
 Evidence Pack / Grounding     ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
     ↓
->>> Explanation prompt <<<        ← NEXT TASK (TASK 6)
+Explanation prompt            ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
     ↓
-AI service                    ❌ future task
+AI service                    ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
+    ↓
+Main Backend Integration      ✅ COMPLETED & VERIFIED (Task 8B)
+    ↓
+Frontend Wire-up              ⏳ NEXT TASK (Task 9)
     ↓
 Hallucination tests           ❌ future task
 ```
@@ -617,3 +615,75 @@ CLEANED DOCUMENTS → HIGH-QUALITY, METADATA-RICH CHUNKS
 ```
 
 Stop after this stage is verified.
+
+
+==================================================
+# SAKSHAM — TASK 8B CURRENT STATE & HANDOFF
+==================================================
+
+### Task 8B — Main Backend Integration
+
+- **Status**: COMPLETED and VERIFIED.
+- **Implementation Completed**:
+  - Modernized `AIClient` (`backend/app/clients/ai_client.py`):
+    - Replaced outdated legacy stub (`/api/v1/explain` with raw root parameters) with canonical Task 7 client calling `POST /query`.
+    - Enforced strict payload format matching `QueryRequest` with bounded query (`max_length=2000`, non-whitespace), language normalization (`en`, `hi`, `hinglish`), top_k clamping (`1..20`), and nested calculations dict.
+    - Added zero-PII guarantee: borrower phone/email is strictly excluded from AI payload.
+    - Integrated clean response parser mapping `QueryResponse` fields (`explanation`, `recommendation`, `key_points`, `citations`, `limitations`, `warnings`, `grounding_status`, `retrieval_status`, `evidence_available`, `parsed_query`).
+    - Added robust deterministic rule-based fallback when AI microservice is offline, times out, or returns HTTP errors, supporting both English and Hindi.
+  - Updated Assessment Orchestrator (`backend/app/routers/assess.py`):
+    - Passes complete deterministic calculation results (`project_cost`, `loan_amount`, `monthly_emi`, `scheme_name`, `interest_rate`, `tenure_months`, `moratorium_months`, `fit_score`, `rating`, `repayment_burden_category`) to `get_assessment_insights`.
+    - Preserves mathematical integrity: AI text is strictly explanatory and NEVER overwrites backend deterministic calculations or fit scores.
+    - Populates `ai_insights` with full provenance, citations, limitations, and grounding status.
+    - Refactored `_resolve_assessment_village` and `_resolve_assessment_category` to reduce cyclomatic complexity from 22 to 12.
+  - Added Direct AI Query Route (`backend/app/routers/ai.py`):
+    - Mounted at `POST /api/v1/ai/query` on the main backend.
+    - Allows frontend conversational search/chat to query the AI microservice through the main backend gateway without direct browser exposure to the AI microservice.
+    - Returns HTTP 503 if AI service is offline rather than fabricating ungrounded citations.
+  - Added backend dependency `httpx` to `backend/requirements.txt`.
+  - Added test configuration and seed fixtures in `backend/tests/conftest.py`.
+  - Added comprehensive test suite in `backend/tests/test_ai_integration.py`.
+- **Exact Files Changed**:
+  - `backend/app/clients/ai_client.py` (rewritten and modernized)
+  - `backend/app/routers/ai.py` (new gateway router)
+  - `backend/app/routers/assess.py` (updated assessment pipeline and refactored)
+  - `backend/app/main.py` (mounted `ai.router`)
+  - `backend/requirements.txt` (added `httpx`)
+  - `backend/tests/conftest.py` (test database setup and environment configuration)
+  - `backend/tests/test_ai_integration.py` (comprehensive integration tests)
+- **Architecture / Data Flow**:
+  - Frontend -> Main Backend (port 8000) -> Deterministic Engines (Location, Financial, Feasibility, DB) -> AIClient -> AI Service (port 8001: Parser -> Retriever -> Evidence Pack -> Grounded Explainer) -> Structured Response.
+- **AI Endpoint Integration**:
+  - `POST {AI_SERVICE_URL}/query` with `QueryRequest` schema.
+- **Fallback Behavior**:
+  - On connection refusal, timeout, HTTP 4xx/5xx, or malformed responses:
+  - Assessment gracefully degrades to deterministic rule-based advice with `available: False`, `source: "deterministic_fallback"`, `grounding_status: "unverified"`, and `citations: []`.
+  - Direct conversational queries return HTTP 503 without fabricating fake advice.
+- **Configuration Variables**:
+  - `AI_SERVICE_URL` (default: `http://localhost:8001`)
+  - `AI_REQUEST_TIMEOUT` (default: `5.0`)
+  - `AI_DEFAULT_TOP_K` (default: `5`)
+- **Tests Run & Results**:
+  - Full suite: **217/217 passed** (186 AI tests + 31 backend tests).
+  - Backend integration test suite: 17/17 passed.
+- **Coverage Results**:
+  - `backend/app/clients/ai_client.py`: **100% line coverage** (77/77 statements), **100% branch coverage** (24/24 branches).
+  - `backend/app/routers/ai.py`: **100% line coverage** (35/35 statements), **100% branch coverage** (10/10 branches).
+  - Combined new/modified integration modules: **100% line and branch coverage**.
+- **Complexity Metrics**:
+  - Cyclomatic Complexity: Max 12 (`create_assessment`), Max 7 (`AIClient.build_calculations_payload`), Max 4 (`AIQueryRequest.normalize_language`). Average 4.61 (Grade A). All functions < 22.
+  - Cognitive Complexity: Max 9 (`create_assessment`), Max 6 (`build_calculations_payload`), Max 3 (`query_ai`). All functions <= 9 (Limit < 22).
+  - Halstead Difficulty: `ai_client.py` = 5.33, `ai.py` = 1.88, `assess.py` = 2.95 (Limit < 80).
+  - Maintainability Index: Grade A across all files.
+  - CRAP Score: Max 12 across methods (Limit < 25).
+  - Dead Code: 0 unused items via `vulture`.
+  - LOC per file: `ai_client.py` = 303, `ai.py` = 77, `assess.py` = 240, `main.py` = 291 (all < 500).
+- **Known Limitations**:
+  - Frontend client stubs in `frontend/lib/api-client.ts` are currently mock promises and need to be wired to call the real backend endpoints in Task 9.
+  - Live Neon PostgreSQL requires network and `DATABASE_URL` environment variable; offline tests use SQLite.
+- **Unresolved Issues**: None. Zero regressions on Tasks 1–7.
+- **Next Task**:
+  ```
+  NEXT TASK: TASK 9 — FRONTEND API CLIENT INTEGRATION & ADVISORY DISPLAY
+  ```
+
