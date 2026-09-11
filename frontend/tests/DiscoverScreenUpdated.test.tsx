@@ -55,13 +55,14 @@ describe('Discover Page Layout and Interactions', () => {
     expect(screen.getByRole('img', { name: /Uttar Pradesh District Map|Interactive India Map/i })).toBeInTheDocument();
     expect(screen.getAllByText(/Uttar Pradesh/i).length).toBeGreaterThan(0);
 
-    // Bottom Section: Featured Article Banner & categories
-    expect(screen.getByText(/Dairy registrations are up 34% this year/i)).toBeInTheDocument();
+    // Bottom Section: Live News & categories
+    expect(screen.getByText(/News · Uttar Pradesh/i)).toBeInTheDocument();
     expect(screen.getByText(/Textiles & Handloom/i)).toBeInTheDocument();
     expect(screen.getByText(/Retail & Kirana/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Agri Processing/i).length).toBeGreaterThan(0);
     expect(screen.getByText(/Food & Beverages/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /See all categories/i })).toBeInTheDocument();
+    expect(screen.getByText(/Dairy & Livestock/i)).toBeInTheDocument();
+    expect(screen.getByText(/Solar & Clean Energy/i)).toBeInTheDocument();
   });
 
   describe('StateInsightsBar (Start Assessment Pilot Rule)', () => {
@@ -102,32 +103,38 @@ describe('Discover Page Layout and Interactions', () => {
     });
   });
 
-  describe('ArticleCategorySection (Category Details in Left Space & Scrollable List)', () => {
-    it('shows 4 categories by default and expands to all categories on "See all" click', async () => {
-      const user = userEvent.setup();
-      render(<ArticleCategorySection stateName="Uttar Pradesh" />);
+  describe('ArticleCategorySection (Single Slideable News + 4X2 Category Grid)', () => {
+    it('shows all 8 business categories in a clean 4X2 grid without see all button', () => {
+      render(
+        <ShellProvider>
+          <ArticleCategorySection stateName="Uttar Pradesh" />
+        </ShellProvider>
+      );
 
-      // Initially 4 categories are in the right list
+      // All 8 categories are rendered directly in the 4X2 grid
       expect(screen.getByText(/Textiles & Handloom/i)).toBeInTheDocument();
       expect(screen.getByText(/Retail & Kirana/i)).toBeInTheDocument();
       expect(screen.getAllByText(/Agri Processing/i).length).toBeGreaterThan(0);
       expect(screen.getByText(/Food & Beverages/i)).toBeInTheDocument();
-
-      // Expand to all categories
-      const seeAllBtn = screen.getByRole('button', { name: /See all categories/i });
-      await user.click(seeAllBtn);
-
+      expect(screen.getByText(/Dairy & Livestock/i)).toBeInTheDocument();
       expect(screen.getByText(/Solar & Clean Energy/i)).toBeInTheDocument();
       expect(screen.getByText(/Handicrafts & Pottery/i)).toBeInTheDocument();
       expect(screen.getByText(/Services & Repairs/i)).toBeInTheDocument();
+
+      // No See all button exists
+      expect(screen.queryByRole('button', { name: /See all categories/i })).not.toBeInTheDocument();
     });
 
     it('clicking a category card shows that category info in the left space', async () => {
       const user = userEvent.setup();
-      render(<ArticleCategorySection stateName="Uttar Pradesh" />);
+      render(
+        <ShellProvider>
+          <ArticleCategorySection stateName="Uttar Pradesh" />
+        </ShellProvider>
+      );
 
-      // Default left area shows dairy featured story
-      expect(screen.getByText(/Dairy registrations are up 34% this year/i)).toBeInTheDocument();
+      // Default left area shows live news section
+      expect(screen.getByText(/News · Uttar Pradesh/i)).toBeInTheDocument();
 
       // Click on "Textiles & Handloom" category
       const textilesCard = screen.getByRole('button', { name: /Textiles & Handloom category/i });
@@ -135,15 +142,15 @@ describe('Discover Page Layout and Interactions', () => {
 
       // Left area now displays Textiles & Handloom details
       expect(screen.getByRole('heading', { level: 3, name: 'Textiles & Handloom' })).toBeInTheDocument();
-      expect(screen.getByText(/YoY Registrations in Uttar Pradesh/i)).toBeInTheDocument();
+      expect(screen.getByText(/YoY in Uttar Pradesh/i)).toBeInTheDocument();
       expect(screen.getByText(/ODOP Textile Cluster Support/i)).toBeInTheDocument();
 
-      // Click "Back to Featured Story"
-      const backBtn = screen.getByRole('button', { name: /Back to Featured Story/i });
+      // Click "Back to Live News"
+      const backBtn = screen.getByRole('button', { name: /Back to Live News/i });
       await user.click(backBtn);
 
-      // Returns to featured article
-      expect(screen.getByText(/Dairy registrations are up 34% this year/i)).toBeInTheDocument();
+      // Returns to live news
+      expect(screen.getByText(/News · Uttar Pradesh/i)).toBeInTheDocument();
     });
   });
 });
