@@ -249,7 +249,15 @@ class TestKnowledgeRetrieverUnit(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        cls.tmp_dir.cleanup()
+        cls.retriever = None
+        cls.col = None
+        cls.client = None
+        import gc
+        gc.collect()
+        try:
+            cls.tmp_dir.cleanup()
+        except Exception:
+            pass
 
     def test_basic_similarity_and_ordering(self) -> None:
         results = self.retriever.retrieve("dairy yogurt milk processing", top_k=2)

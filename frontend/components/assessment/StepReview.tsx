@@ -99,15 +99,15 @@ export function StepReview({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="mt-8 pt-4 border-t border-slate-100 flex flex-col gap-2.5">
         <button
           onClick={onSubmit}
           disabled={isButtonDisabled}
           className={cn(
-            'flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3.5 text-sm font-bold',
-            'transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+            'flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-sm sm:text-base font-bold shadow-xs',
+            'transition-all disabled:cursor-not-allowed disabled:opacity-40 cursor-pointer',
             allFilled && !isSubmitting
-              ? 'bg-[var(--color-primary)] text-[var(--color-text-dark)] hover:bg-[var(--color-primary-dark)]'
+              ? 'bg-[var(--color-primary)] text-[var(--color-text-dark)] hover:bg-[var(--color-primary-dark)] active:scale-[0.99]'
               : 'bg-[var(--color-surface)] text-[var(--color-text-muted)]'
           )}
           aria-disabled={isButtonDisabled}
@@ -119,7 +119,7 @@ export function StepReview({
             </>
           ) : (
             <>
-              Get my recommendation
+              <span>Get my recommendation</span>
               <ArrowRight size={16} strokeWidth={2.5} aria-hidden="true" />
             </>
           )}

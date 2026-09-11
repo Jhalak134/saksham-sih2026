@@ -19,7 +19,7 @@ export default function ShellLayout({
       >
         <Header />
         {/* Content scrolls independently; Header is sticky inside this column */}
-        <main className="flex-1 overflow-y-auto bg-[#F8FAFC] pb-[var(--bottom-nav-height)] lg:pb-0">
+        <main className="flex-1 flex flex-col overflow-y-auto bg-[#F8FAFC] pb-[var(--bottom-nav-height)] lg:pb-0">
           {children}
         </main>
       </div>
