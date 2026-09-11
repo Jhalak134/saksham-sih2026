@@ -60,6 +60,7 @@ class Village(Base):
     literacy_rate = Column(Float)
     data_source = Column(String)
     data_year = Column(String)
+    data_confidence = Column(String)   # 'High' | 'Medium' | 'Low' — set by compute_confidence.py
 
     block = relationship("Block", back_populates="villages")
     households = relationship("Household", back_populates="village")
