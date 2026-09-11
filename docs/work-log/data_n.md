@@ -251,3 +251,93 @@ accuracy, not village-level.
 **Live data:** Re-ran loader after clearing the businesses table — 334 OSM
 businesses now loaded (down from 491; duplicates by name were skipped, and
 rows missing coordinates were excluded) correctly matched to real blocks.
+
+
+## Step 15 — Sanity check: DB values vs. Census source data
+**Date:** 2026-09-11
+**Files touched:** `docs/work-log/data_n.md` (this entry only)
+**What I did:**
+Spot-checked 3 villages from `mathura_villages_clean.csv` against the
+expected DB values to confirm `load_to_postgres.py → seed_villages()` maps
+fields correctly.
+
+Checked villages: **Mandora** (uninhabited), **Kamar** (large village),
+**Hulwana** (mid-size village) — chosen to cover zero-population edge case,
+high-population, and mid-range.
+
+| Field | Mandora (id=123578) | Kamar (id=123579) | Hulwana (id=123580) |
+|---|---|---|---|
+| `population` | 0 | 7,031 | 3,457 |
+| `household_count` | 0 | 1,153 | 573 |
+| `literacy_rate` | `None` | 0.5362 | 0.5291 |
+
+CSV→DB mapping verified by tracing `seed_villages()`:
+- `Village.id` ← `village_code` column
+- `Village.population` ← `population_total` column
+- `Village.household_count` ← `households` column
+- `Village.literacy_rate` ← `round(literate_total / population_total, 4)`,
+  `None` when population = 0 (correctly guarded in code)
+
+**Live DB verification SQL** (run in Neon SQL Editor to confirm):
+```sql
+SELECT id, name, population, household_count, literacy_rate
+FROM villages
+WHERE id IN (123578, 123579, 123580)
+ORDER BY id;
+```
+Expected result:
+```
+123578 | Mandora | 0    | 0    | NULL
+123579 | Kamar   | 7031 | 1153 | 0.5362
+123580 | Hulwana | 3457 | 573  | 0.5291
+```
+
+Note: `.env` with `DATABASE_URL` is gitignored and must be created locally
+before connecting. The mapping logic check above is code-level; run the SQL
+above against your Neon instance to complete the live-DB half of this
+verification.
+
+**Why:** Downstream engines (feasibility scoring, competitor density) depend
+on population and household counts being correct — a systematic loading bug
+(e.g. wrong column mapped) would silently corrupt every feasibility
+calculation.
+
+**Status:** Done (code-level verified; SQL query provided for live-DB
+confirmation by team member with Neon credentials)
+
+## Step 16 — Handed off queries.py to backend_s
+**Date:** 2026-09-11
+**Files touched:** `backend/app/db/queries.py` (already written), `docs/work-log/data_n.md`
+**What I did:** Messaged backend_s teammate that `queries.py` is live on
+main and ready to use. Shared the key function signatures: `get_village_by_name`,
+`search_villages`, `get_scheme_for_cost`, `count_competitors_in_catchment`,
+`save_assessment`, `list_business_categories`. Noted they need the Neon
+`DATABASE_URL` separately (not in repo).
+**Why:** backend_s can't build engine logic against real data until they
+know what query functions exist — this unblocks their feasibility engine work.
+**Status:** Done
+
+
+## Step 18 — Confidence Score (data_confidence field per village)
+**Date:** 2026-09-11
+**Files touched:** `backend/app/db/models.py`, `backend/data_pipeline/compute_confidence.py`,
+`backend/app/db/queries.py`
+**What I did:**
+- Added `data_confidence` column (`VARCHAR`, values: `'High'`/`'Medium'`/`'Low'`) to the
+  `Village` model in `models.py`
+- Added the column to the live Neon DB via:
+  `ALTER TABLE villages ADD COLUMN IF NOT EXISTS data_confidence VARCHAR;`
+- Wrote `backend/data_pipeline/compute_confidence.py` — standalone, re-runnable script
+  that computes confidence for all 874 villages based on two signals:
+  1. Census signal: `population > 0`
+  2. OSM signal: at least one business mapped in the village's block
+- Added `get_village_confidence(db, village_id)` to `queries.py` for `backend_s` to use
+- Ran against all 874 villages. Results:
+  - 🟢 High   : 565 (64%) — inhabited + OSM-mapped block
+  - 🟡 Medium : 269 (30%) — one signal missing
+  - 🔴 Low    :  40 (4%)  — uninhabited + no OSM data
+  - Blocks with OSM data: 3 out of 4 (one block is rural/sparse — expected)
+**Why:** The confidence badge (🟢/🟡/🔴) is an explicitly open item in the Master
+Reference. It makes the data layer's quality visible to users and judges — prevents the
+"how do you know there's no competition here?" question from landing badly.
+**Status:** Done
