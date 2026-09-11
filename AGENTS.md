@@ -25,9 +25,9 @@ Retrieval                     ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
     ↓
 Intent / Query Parser         ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
     ↓
->>> Evidence Pack / Grounding <<<  ← NEXT TASK (TASK 5)
+Evidence Pack / Grounding     ✅ COMPLETED & VERIFIED (see ai/AGENTS.md)
     ↓
-Explanation prompt            ❌ future task
+>>> Explanation prompt <<<        ← NEXT TASK (TASK 6)
     ↓
 AI service                    ❌ future task
     ↓
