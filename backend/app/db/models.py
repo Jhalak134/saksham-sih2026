@@ -125,7 +125,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     phone_or_email = Column(String, unique=True, nullable=False)
-    password_hash = Column(String, nullable=True)  # nullable=True: existing users predate password auth; enforce NOT NULL in Step 9 cleanup
+    password_hash = Column(String, nullable=False)
     home_location = Column(String)
     default_capital = Column(Float)
     preferred_language = Column(String)
