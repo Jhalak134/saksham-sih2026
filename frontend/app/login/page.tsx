@@ -64,6 +64,7 @@ export default function LoginPage(): React.JSX.Element {
     try {
       const { login, signup } = await import('@/lib/api-client');
       const { setStorageItem } = await import('@/lib/storage');
+      const { STORAGE_KEYS } = await import('@/lib/constants');
       
       let res;
       if (activeTab === 'signup') {
@@ -72,7 +73,7 @@ export default function LoginPage(): React.JSX.Element {
         res = await login(cleanAccount, password);
       }
       
-      setStorageItem('auth_token', res.access_token);
+      setStorageItem(STORAGE_KEYS.authToken, res.access_token);
       router.push('/discover');
     } catch (err: any) {
       triggerError(err.message || 'An error occurred during authentication');

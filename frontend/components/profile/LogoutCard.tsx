@@ -3,6 +3,8 @@
 
 import React from 'react';
 import { LogOut, ChevronRight } from 'lucide-react';
+import { removeStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 interface LogoutCardProps {
   onLogout?: () => void;
@@ -10,6 +12,7 @@ interface LogoutCardProps {
 
 export function LogoutCard({ onLogout }: LogoutCardProps): React.JSX.Element {
   function handleLogout(): void {
+    removeStorageItem(STORAGE_KEYS.authToken);
     if (onLogout) {
       onLogout();
     } else {
