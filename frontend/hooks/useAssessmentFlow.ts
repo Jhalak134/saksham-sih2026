@@ -1,4 +1,3 @@
-// hooks/useAssessmentFlow.ts
 import { useCallback, useState } from 'react';
 import {
   ASSESSMENT_STEPS,
@@ -6,6 +5,7 @@ import {
   type AssessmentSession,
   type AssessmentStep,
 } from '@/lib/assessment-session';
+import { isMathuraLocation } from '@/data/mockLocations';
 
 // ─── Step index helpers ───────────────────────────────────────────────────────
 
@@ -15,6 +15,13 @@ function stepIndex(step: AssessmentStep): number {
 
 // ─── Per-step completion guards ───────────────────────────────────────────────
 
+function isLocationComplete(session: AssessmentSession): boolean {
+  return (
+    session.locationId.length > 0 &&
+    isMathuraLocation(session.locationDisplay || session.locationId)
+  );
+}
+
 function isIdeaComplete(session: AssessmentSession): boolean {
   return session.idea.trim().length >= 10;
 }
@@ -23,15 +30,11 @@ function isDetailsComplete(session: AssessmentSession): boolean {
   return session.category.length > 0 && session.capital > 0;
 }
 
-function isLocationComplete(session: AssessmentSession): boolean {
-  return session.locationId.length > 0;
-}
-
 function isReviewComplete(session: AssessmentSession): boolean {
   return (
+    isLocationComplete(session) &&
     isIdeaComplete(session) &&
-    isDetailsComplete(session) &&
-    isLocationComplete(session)
+    isDetailsComplete(session)
   );
 }
 
@@ -39,9 +42,9 @@ function isStepComplete(
   step: AssessmentStep,
   session: AssessmentSession
 ): boolean {
+  if (step === 'location') return isLocationComplete(session);
   if (step === 'idea') return isIdeaComplete(session);
   if (step === 'details') return isDetailsComplete(session);
-  if (step === 'location') return isLocationComplete(session);
   return isReviewComplete(session);
 }
 
@@ -63,13 +66,17 @@ export interface AssessmentFlowState {
 
 export function useAssessmentFlow(
   initialCapital: number,
-  initialIdea: string = ''
+  initialIdea: string = '',
+  initialLocationId: string = '',
+  initialLocationDisplay: string = ''
 ): AssessmentFlowState {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [session, setSession] = useState<AssessmentSession>({
     ...EMPTY_SESSION,
     idea: initialIdea,
     capital: initialCapital,
+    locationId: initialLocationId,
+    locationDisplay: initialLocationDisplay,
   });
 
   const currentStep = ASSESSMENT_STEPS[currentStepIndex];

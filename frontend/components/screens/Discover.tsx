@@ -1,15 +1,15 @@
 // components/screens/Discover.tsx
-// Discover screen matching the approved desktop mockup layout.
+// Discover screen:
+// 1. TOP HALF: 3-Level IndiaMap Heatmap (Left) + Dynamic State/District Info Bar (Right)
+// 2. BOTTOM HALF: Space for Featured Article / Category Details (Left) + 4 Categories with "See all" scroll (Right)
 
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
 import { useShell } from '@/lib/shell-context';
-import { MOCK_INSIGHTS } from '@/data/mockDiscover';
-import { TopMovers } from '@/components/discover/TopMovers';
 import { IndiaMap } from '@/components/discover/IndiaMap';
-import { InsightsPanel } from '@/components/discover/InsightsPanel';
-import { CategoryList } from '@/components/discover/CategoryList';
+import { StateInsightsBar } from '@/components/discover/StateInsightsBar';
+import { ArticleCategorySection } from '@/components/discover/ArticleCategorySection';
 import { CompareBar } from '@/components/discover/CompareBar';
 
 export function DiscoverScreen(): React.JSX.Element {
@@ -17,31 +17,21 @@ export function DiscoverScreen(): React.JSX.Element {
     browsingLocation,
     setBrowsingLocation,
     setCompareCount,
-    isCategorySaved,
-    toggleSaveCategory,
+    capital,
   } = useShell();
 
-  // Selected state on the map
-  const [selectedState, setSelectedState] = useState<string | null>(
-    MOCK_INSIGHTS.stateSelected
-  );
+  // Selected state on the map - defaults to null so Level 1 National Heatmap loads first!
+  const [selectedState, setSelectedState] = useState<string | null>(null);
 
-  // Selected district on the state map
+  // Selected district on the state map (e.g. Mathura)
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
 
-  // Categories selected for comparison
-  const [compared, setCompared] = useState<ReadonlySet<string>>(
-    new Set(['Dairy', 'Textiles'])
-  );
+  // Compared categories
+  const [compared, setCompared] = useState<ReadonlySet<string>>(new Set());
 
   useEffect(() => {
     setCompareCount(compared.size);
   }, [compared, setCompareCount]);
-
-  const scope = selectedDistrict
-    ? `${selectedDistrict}, ${selectedState}`
-    : selectedState ?? 'India';
-  const movers = MOCK_INSIGHTS.topMovers;
 
   const handleStateSelect = useCallback(
     (state: string | null) => {
@@ -50,7 +40,7 @@ export function DiscoverScreen(): React.JSX.Element {
       if (state) {
         setBrowsingLocation(state);
       } else {
-        setBrowsingLocation('Kheragarh');
+        setBrowsingLocation('Uttar Pradesh');
       }
     },
     [setBrowsingLocation]
@@ -64,64 +54,51 @@ export function DiscoverScreen(): React.JSX.Element {
       } else if (selectedState) {
         setBrowsingLocation(selectedState);
       } else {
-        setBrowsingLocation('Kheragarh');
+        setBrowsingLocation('Uttar Pradesh');
       }
     },
     [selectedState, setBrowsingLocation]
   );
 
-  const handleCompareToggle = useCallback((category: string) => {
-    setCompared((prev) => {
-      const next = new Set(prev);
-      if (next.has(category)) {
-        next.delete(category);
-      } else {
-        next.add(category);
-      }
-      return next;
-    });
-  }, []);
-
   const handleClearCompare = useCallback(() => {
     setCompared(new Set());
   }, []);
 
-  const categoriesWithBookmarkState = MOCK_INSIGHTS.categories.map((c) => ({
-    ...c,
-    bookmarked: isCategorySaved(c.category),
-  }));
+  const formattedCapital = capital ? `₹${capital.toLocaleString('en-IN')}` : '₹1,00,000';
 
   return (
-    <div className="min-h-full w-full bg-[#F8FAFC]/60 px-6 py-6 md:px-8 md:py-7">
-      <div className="w-full space-y-6">
-        {/* 1. Top Movers Section */}
-        <TopMovers movers={movers} scope={scope} />
-
-        {/* 2. Middle Grid: India Map (Left) + Location Insights (Right) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-          <IndiaMap
-            selectedState={selectedState}
-            onStateSelect={handleStateSelect}
-            selectedDistrict={selectedDistrict}
-            onDistrictSelect={handleDistrictSelect}
-          />
-
-          <InsightsPanel
-            location={browsingLocation}
-            data={MOCK_INSIGHTS.insights}
-          />
+    <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-7">
+      <div className="w-full space-y-6 md:space-y-8">
+        {/* 1. TOP HALF: 3-Level Interactive Map Heatmap (Left) + Dynamic State Info Bar (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <div className="lg:col-span-7">
+            <IndiaMap
+              selectedState={selectedState}
+              onStateSelect={handleStateSelect}
+              selectedDistrict={selectedDistrict}
+              onDistrictSelect={handleDistrictSelect}
+            />
+          </div>
+          <div className="lg:col-span-5">
+            <StateInsightsBar
+              selectedState={selectedState}
+              selectedDistrict={selectedDistrict}
+              browsingLocation={browsingLocation}
+              availableCapital={formattedCapital}
+            />
+          </div>
         </div>
 
-        {/* 3. Categories 3-Column Grid */}
-        <CategoryList
-          categories={categoriesWithBookmarkState}
-          comparedCategories={compared}
-          onCompareToggle={handleCompareToggle}
-          onBookmarkToggle={toggleSaveCategory}
+        {/* 2. BOTTOM HALF: Space for Featured Article / Category Details (Left) + 4 Categories with "See all" scroll (Right) */}
+        <ArticleCategorySection
+          stateName={selectedState ?? 'Uttar Pradesh'}
+          availableCapital={formattedCapital}
         />
 
-        {/* 4. Comparison Bar at Bottom */}
-        <CompareBar selected={compared} onClear={handleClearCompare} />
+        {/* 3. Bottom comparison bar if items are compared */}
+        {compared.size > 0 && (
+          <CompareBar selected={compared} onClear={handleClearCompare} />
+        )}
       </div>
     </div>
   );
