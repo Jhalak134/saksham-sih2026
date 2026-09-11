@@ -259,8 +259,10 @@ export function Sidebar(): React.JSX.Element {
   const { width, startResize, resetWidth } = useSidebarResize();
 
   function handleLogOut(): void {
-    // Auth sign-out placeholder — will be wired in authentication sprint.
-    window.location.href = '/';
+    import('@/lib/storage').then(({ removeStorageItem }) => {
+      removeStorageItem('auth_token');
+      window.location.href = '/login';
+    });
   }
 
   return (

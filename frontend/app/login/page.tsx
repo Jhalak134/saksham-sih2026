@@ -194,18 +194,18 @@ function LoginFormContent(): React.JSX.Element {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     const cleanAccount = mobileNumber.trim();
     if (!cleanAccount) {
-      triggerError('Please enter your mobile number');
+      triggerError('Please enter your mobile number or email');
       return;
     }
 
     if (!isValidAccount(cleanAccount)) {
-      triggerError('Please enter a valid 10-digit mobile number');
+      triggerError('Please enter a valid mobile number or email');
       return;
     }
 
@@ -225,16 +225,31 @@ function LoginFormContent(): React.JSX.Element {
     }
 
     setLoading(true);
+    try {
+      const { login, signup } = await import('@/lib/api-client');
+      const { setStorageItem } = await import('@/lib/storage');
+      const { STORAGE_KEYS } = await import('@/lib/constants');
 
-    setTimeout(() => {
-      setLoading(false);
+      let res;
       if (activeTab === 'signup') {
-        // Show post-signup location permission modal popup!
+        res = await signup(cleanAccount, password, '', 'en');
+      } else {
+        res = await login(cleanAccount, password);
+      }
+
+      setStorageItem(STORAGE_KEYS.authToken, res.access_token);
+
+      if (activeTab === 'signup') {
+        // Show post-signup location permission modal popup.
         setShowLocationModal(true);
       } else {
         router.push('/discover');
       }
-    }, 450);
+    } catch (err: any) {
+      triggerError(err.message || 'An error occurred during authentication');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
