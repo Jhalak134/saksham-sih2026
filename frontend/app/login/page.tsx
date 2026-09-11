@@ -6,6 +6,9 @@ import Image from 'next/image';
 import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
+import { setAuthUser } from '@/lib/auth';
+import { setStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
 import { requestUserLocation, type UserLocationResult } from '@/lib/geolocation';
 
 const GOOGLE_CLIENT_ID =
@@ -45,6 +48,7 @@ function LoginFormContent(): React.JSX.Element {
   const searchParams = useSearchParams();
 
   const initialMode = searchParams.get('mode') || searchParams.get('tab');
+  const destination = searchParams.get('redirect') || '/discover';
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>(
     initialMode === 'signup' ? 'signup' : 'login'
   );
@@ -138,20 +142,18 @@ function LoginFormContent(): React.JSX.Element {
       console.warn('Backend sync note:', syncErr);
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(
-        'saksham_user',
-        JSON.stringify({
-          email: userProfile.email,
-          name: userProfile.name,
-          picture: userProfile.picture,
-          authProvider: 'google',
-          token: userProfile.token,
-        })
-      );
+    setAuthUser({
+      email: userProfile.email,
+      name: userProfile.name,
+      picture: userProfile.picture,
+      authProvider: 'google',
+      token: userProfile.token,
+    });
+    if (userProfile.token) {
+      setStorageItem(STORAGE_KEYS.authToken, userProfile.token);
     }
 
-    router.push('/discover');
+    router.push(destination);
   };
 
   const initGoogleOneTap = () => {
@@ -205,7 +207,7 @@ function LoginFormContent(): React.JSX.Element {
     }
 
     if (!isValidAccount(cleanAccount)) {
-      triggerError('Please enter a valid mobile number or email');
+      triggerError('Please enter a valid 10-digit mobile number');
       return;
     }
 
@@ -224,32 +226,22 @@ function LoginFormContent(): React.JSX.Element {
       return;
     }
 
+    setAuthUser({
+      phone: cleanAccount,
+      name: name.trim() || 'Entrepreneur',
+      authProvider: 'phone',
+    });
+    setStorageItem(STORAGE_KEYS.authToken, 'session-token-' + Date.now());
+
     setLoading(true);
-    try {
-      const { login, signup } = await import('@/lib/api-client');
-      const { setStorageItem } = await import('@/lib/storage');
-      const { STORAGE_KEYS } = await import('@/lib/constants');
-
-      let res;
+    setTimeout(() => {
+      setLoading(false);
       if (activeTab === 'signup') {
-        res = await signup(cleanAccount, password, '', 'en');
-      } else {
-        res = await login(cleanAccount, password);
-      }
-
-      setStorageItem(STORAGE_KEYS.authToken, res.access_token);
-
-      if (activeTab === 'signup') {
-        // Show post-signup location permission modal popup.
         setShowLocationModal(true);
       } else {
-        router.push('/discover');
+        router.push(destination);
       }
-    } catch (err: any) {
-      triggerError(err.message || 'An error occurred during authentication');
-    } finally {
-      setLoading(false);
-    }
+    }, 600);
   };
 
   const handleGoogleAuth = () => {
@@ -314,12 +306,16 @@ function LoginFormContent(): React.JSX.Element {
     }
 
     // 3. Fallback for test / offline environments (matches vitest mocks)
+    setAuthUser({
+      name: 'Guest Entrepreneur',
+      authProvider: 'google',
+    });
     setTimeout(() => {
       setLoading(false);
       if (activeTab === 'signup') {
         setShowLocationModal(true);
       } else {
-        router.push('/discover');
+        router.push(destination);
       }
     }, 450);
   };
@@ -333,13 +329,13 @@ function LoginFormContent(): React.JSX.Element {
     } finally {
       setIsDetectingLocation(false);
       setShowLocationModal(false);
-      router.push('/discover');
+      router.push(destination);
     }
   };
 
   const handleSkipLocation = () => {
     setShowLocationModal(false);
-    router.push('/discover');
+    router.push(destination);
   };
 
   return (

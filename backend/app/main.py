@@ -61,7 +61,9 @@ app.include_router(location.router)
 app.include_router(schemes.router)
 app.include_router(insights.router)
 app.include_router(assess.router)
+app.include_router(assess.legacy_router)
 app.include_router(auth.router)
+app.include_router(auth.legacy_router)
 app.include_router(ai.router)
 
 

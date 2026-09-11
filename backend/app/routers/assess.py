@@ -35,6 +35,7 @@ from backend.app.routers.auth import get_current_user
 from backend.app.schemas.assess import ReportSummary, MyReportsResponse
 
 router = APIRouter(prefix="/api/v1/assess", tags=["Assessment Engine"])
+legacy_router = APIRouter(prefix="/assess", tags=["Assessment Engine Legacy"])
 
 
 class AssessmentRequest(BaseModel):
@@ -190,6 +191,7 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
 
 
 @router.get("/my-reports", response_model=MyReportsResponse)
+@legacy_router.get("/my-reports", response_model=MyReportsResponse)
 def get_my_reports(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
