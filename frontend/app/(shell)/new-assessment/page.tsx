@@ -89,9 +89,13 @@ function NewAssessmentContent(): React.JSX.Element {
   const suggestedCategory = inferCategory(session.idea);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const hasHydratedRef = React.useRef(false);
 
   // Hydrate saved user location on client after initial render to avoid SSR mismatch
   React.useEffect(() => {
+    if (hasHydratedRef.current) return;
+    hasHydratedRef.current = true;
+
     if (!paramLoc && !paramDistrict && !session.locationId) {
       const { location: storedLoc, status: geoStatus } = getSavedUserLocation();
       const candidateLoc = storedLoc || (homeLocation && homeLocation !== 'Uttar Pradesh' ? homeLocation : '');
