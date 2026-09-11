@@ -191,3 +191,24 @@ def test_full_auth_and_reports_flow(client: TestClient, db_session: Session, set
     
     bad_auth_resp = client.get("/assess/my-reports", headers={"Authorization": "Bearer invalid.token.string"})
     assert bad_auth_resp.status_code == 401
+
+
+def test_legacy_user_login_returns_generic_401(client: TestClient, db_session: Session):
+    # Create a legacy user with a null password_hash
+    legacy_user = User(
+        phone_or_email="legacy@example.com",
+        password_hash=None
+    )
+    db_session.add(legacy_user)
+    db_session.commit()
+
+    # Attempt to log in as the legacy user
+    login_data = {
+        "phone_or_email": "legacy@example.com",
+        "password": "SomePassword"
+    }
+    resp = client.post("/auth/login", json=login_data)
+    
+    # Assert we get a generic 401 response, not a 500 or special message
+    assert resp.status_code == 401
+    assert resp.json()["detail"] == "Invalid credentials."

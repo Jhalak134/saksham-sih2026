@@ -13,8 +13,7 @@ Security rules enforced here:
   - Passwords are NEVER logged or stored in plaintext
   - password_hash is NEVER returned in any response
   - Duplicate identifiers return 409 Conflict
-  - Wrong credentials return 401 with a generic message
-  - Legacy users with NULL password_hash are rejected at login with a clear message
+  - Wrong credentials return 401 with a generic message (including legacy users with NULL password_hash)
   - All protected endpoints require a valid, non-expired JWT
 """
 
@@ -162,9 +161,7 @@ def login(
     Authenticate a user and return a JWT token.
 
     - Returns 401 for invalid credentials (same message for wrong user/password
-      to avoid leaking whether an account exists).
-    - Returns 401 for legacy accounts with NULL password_hash, with a specific
-      message instructing the user to set a password.
+      or legacy accounts with NULL password_hash to avoid leaking whether an account exists).
     - Never logs passwords.
     """
     user = get_user_by_identifier(db, body.phone_or_email)
@@ -173,16 +170,6 @@ def login(
     # to avoid timing-based user enumeration
     stored_hash = user.password_hash if user else None
 
-    if stored_hash is None and user is not None:
-        # Legacy account: exists but predates password auth
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=(
-                "This account was created before password authentication was enabled. "
-                "Please contact support to set up your password."
-            ),
-            headers={"WWW-Authenticate": "Bearer"},
-        )
 
     if user is None or not verify_password(body.password, stored_hash):
         raise HTTPException(
