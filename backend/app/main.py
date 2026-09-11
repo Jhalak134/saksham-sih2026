@@ -57,8 +57,9 @@ app.add_middleware(
 app.include_router(auth_router.router)
 
 # Future routers — uncomment as they are implemented:
-# from backend.app.routers import assess, location, insights, schemes
-# app.include_router(assess.router)
+from backend.app.routers import assess
+app.include_router(assess.router)
+# from backend.app.routers import location, insights, schemes
 # app.include_router(location.router)
 # app.include_router(insights.router)
 # app.include_router(schemes.router)
