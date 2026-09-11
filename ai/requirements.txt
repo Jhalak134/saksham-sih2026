@@ -1,2 +1,3 @@
 pdfplumber
 chromadb
+fastapi
