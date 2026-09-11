@@ -169,6 +169,7 @@ function useShellState(): ShellContextValue {
     removeStorageItem(STORAGE_KEYS.capital);
     removeStorageItem(STORAGE_KEYS.savedCategories);
     removeStorageItem(STORAGE_KEYS.emailNotifications);
+    removeStorageItem(STORAGE_KEYS.authToken);
     setHomeLocationState(DEFAULT_HOME_LOCATION);
     setBrowsingLocation(DEFAULT_HOME_LOCATION);
     setCapitalState(DEFAULT_CAPITAL);
