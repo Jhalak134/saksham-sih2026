@@ -1,9 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from pathlib import Path
-load_dotenv(Path(__file__).parent.parent.parent / ".env")
-load_dotenv(Path(__file__).parent.parent / ".env")
+load_dotenv()
 
 from backend.app.db.session import Base
 from backend.app.db import models
