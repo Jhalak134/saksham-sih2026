@@ -264,7 +264,7 @@ export function StepIdea({
       )}
 
       {/* Primary CTA & Helper Note */}
-      <div className="mt-5 flex flex-col items-center gap-2">
+      <div className="mt-8 flex flex-col items-center gap-2">
         <button
           type="button"
           onClick={onContinue}
