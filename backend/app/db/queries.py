@@ -51,6 +51,16 @@ def list_villages(db: Session, skip: int = 0, limit: int = 50) -> List[Village]:
     return db.query(Village).offset(skip).limit(limit).all()
 
 
+def get_village_confidence(db: Session, village_id: int) -> Optional[str]:
+    """
+    Returns the pre-computed data_confidence level ('High' / 'Medium' / 'Low')
+    for a village, or None if not yet computed.
+    Run compute_confidence.py to populate this field.
+    """
+    v = db.query(Village).filter(Village.id == village_id).first()
+    return v.data_confidence if v else None
+
+
 # ─── Category & Business Queries ──────────────────────────────────────────────
 
 def list_business_categories(db: Session) -> List[BusinessCategory]:
