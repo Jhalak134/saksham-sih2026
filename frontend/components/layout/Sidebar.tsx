@@ -274,6 +274,9 @@ export function Sidebar(): React.JSX.Element {
   function handleConfirmLogOut(): void {
     setShowLogOutModal(false);
     clearAuthUser();
+    import('@/lib/storage').then(({ removeStorageItem }) => {
+      removeStorageItem('auth_token');
+    });
     window.location.href = '/';
   }
 

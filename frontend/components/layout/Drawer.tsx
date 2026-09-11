@@ -173,6 +173,9 @@ export function Drawer(): React.JSX.Element {
     setShowLogOutModal(false);
     closeDrawer();
     clearAuthUser();
+    import('@/lib/storage').then(({ removeStorageItem }) => {
+      removeStorageItem('auth_token');
+    });
     window.location.href = '/';
   }
 
