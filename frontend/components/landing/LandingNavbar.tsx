@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Globe, ChevronDown, Check } from 'lucide-react';
+import { Globe, ChevronDown, Check, Home, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/cn';
 
 interface LanguageOption {
@@ -20,6 +20,20 @@ const LANGUAGES: readonly LanguageOption[] = [
   { code: 'ta', label: 'தமிழ் (Tamil)' },
 ] as const;
 
+interface NavItem {
+  label: string;
+  href: string;
+  isHome?: boolean;
+}
+
+const NAV_ITEMS: readonly NavItem[] = [
+  { label: 'Home', href: '/', isHome: true },
+  { label: 'About Us', href: '/about' },
+  { label: 'How It Works', href: '/how-it-works' },
+  { label: 'Feasibility', href: '/discover' },
+  { label: 'Schemes', href: '/new-assessment' },
+] as const;
+
 export function LandingNavbar(): React.JSX.Element {
   const [selectedLang, setSelectedLang] = useState<string>('English');
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -30,21 +44,53 @@ export function LandingNavbar(): React.JSX.Element {
   }
 
   return (
-    <header className="sticky top-0 z-30 w-full border-b border-slate-100 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/50 bg-[#FAFAF8]/90 backdrop-blur-md">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Brand Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-md"
+          className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-lg group"
           aria-label="SAKSHAM Home"
         >
-          <span className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
-            SAKSHAM
-          </span>
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-xs group-hover:scale-105 transition-transform">
+            <Sparkles size={18} className="text-emerald-400" aria-hidden="true" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
+              SAKSHAM
+            </span>
+          </div>
         </Link>
 
+        {/* Center: Floating Pill Navbar */}
+        <nav
+          aria-label="Primary Navigation"
+          className="hidden md:flex items-center gap-1 rounded-full border border-slate-200 bg-white/80 p-1.5 shadow-2xs backdrop-blur-sm"
+        >
+          {NAV_ITEMS.map((item) =>
+            item.isHome ? (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="flex items-center gap-1.5 rounded-full bg-slate-950 px-4 py-1.5 text-xs font-semibold text-white shadow-xs transition-colors hover:bg-slate-800"
+              >
+                <Home size={13} aria-hidden="true" />
+                <span>{item.label}</span>
+              </Link>
+            ) : (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:text-slate-950 hover:bg-slate-100/70"
+              >
+                {item.label}
+              </Link>
+            )
+          )}
+        </nav>
+
         {/* Right side controls */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-2.5 sm:gap-3.5">
           {/* Language selector */}
           <div className="relative">
             <button
@@ -54,8 +100,8 @@ export function LandingNavbar(): React.JSX.Element {
               aria-haspopup="listbox"
               aria-label="Select language"
               className={cn(
-                'flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs',
-                'hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400'
+                'flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs',
+                'hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900'
               )}
             >
               <Globe size={14} className="text-slate-500 shrink-0" aria-hidden="true" />
@@ -101,16 +147,27 @@ export function LandingNavbar(): React.JSX.Element {
             )}
           </div>
 
-          {/* Login button */}
+          {/* Login link */}
           <Link
             href="/discover"
             className={cn(
-              'rounded-lg border border-slate-200 bg-white px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs',
-              'hover:bg-slate-50 hover:border-slate-300 transition-colors',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400'
+              'px-2 py-1.5 text-xs sm:text-sm font-semibold text-slate-700 transition-colors hover:text-slate-950',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-md'
             )}
           >
             Log in
+          </Link>
+
+          {/* Sign up Free / Launch App button */}
+          <Link
+            href="/new-assessment"
+            className={cn(
+              'rounded-full border border-slate-950 bg-white px-4 py-1.5 text-xs sm:text-sm font-semibold text-slate-950 shadow-2xs',
+              'hover:bg-slate-950 hover:text-white transition-all',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900'
+            )}
+          >
+            Sign up Free
           </Link>
         </div>
       </div>
