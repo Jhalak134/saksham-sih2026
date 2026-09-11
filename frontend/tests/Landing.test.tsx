@@ -58,6 +58,16 @@ describe('LandingNavbar', () => {
     expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
     expect(screen.getByText('हिंदी')).toBeInTheDocument();
   });
+
+  it('renders floating pill nav items and sign up button', () => {
+    render(<LandingNavbar />);
+    expect(screen.getByRole('link', { name: /^home$/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /about us/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /how it works/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /feasibility/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /schemes/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /sign up free/i })).toBeInTheDocument();
+  });
 });
 
 describe('HeroSection', () => {
@@ -65,45 +75,11 @@ describe('HeroSection', () => {
     mockPush.mockClear();
   });
 
-  it('renders context pill, headline, and primary CTA', () => {
+  it('renders headline and subtitle', () => {
     render(<HeroSection />);
-    expect(screen.getByText(/local insights\. real opportunities\./i)).toBeInTheDocument();
+    expect(screen.getByText(/bring fresh growth/i)).toBeInTheDocument();
+    expect(screen.getByText(/to agriculture\./i)).toBeInTheDocument();
     expect(screen.getByText(/make confident business decisions for a better tomorrow/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /start your assessment/i })).toBeInTheDocument();
-  });
-
-  it('renders feature trust highlights', () => {
-    render(<HeroSection />);
-    expect(screen.getByText('Free to use')).toBeInTheDocument();
-    expect(screen.getByText('Works in your language')).toBeInTheDocument();
-    expect(screen.getByText('Built for rural India')).toBeInTheDocument();
-  });
-
-  it('navigates with prefilled idea query parameter on form submit', () => {
-    render(<HeroSection />);
-    const input = screen.getByLabelText(/describe your business idea in plain language/i);
-    fireEvent.change(input, { target: { value: 'organic dairy farming in Agra' } });
-
-    const submitBtn = screen.getByRole('button', { name: /submit your business idea/i });
-    fireEvent.click(submitBtn);
-
-    expect(mockPush).toHaveBeenCalledWith(
-      '/new-assessment?idea=organic%20dairy%20farming%20in%20Agra'
-    );
-  });
-
-  it('navigates to /new-assessment directly if idea is empty on submit', () => {
-    render(<HeroSection />);
-    const submitBtn = screen.getByRole('button', { name: /submit your business idea/i });
-    fireEvent.click(submitBtn);
-
-    expect(mockPush).toHaveBeenCalledWith('/new-assessment');
-  });
-
-  it('renders "See how it works" link', () => {
-    render(<HeroSection />);
-    const link = screen.getByRole('link', { name: /see how it works/i });
-    expect(link).toHaveAttribute('href', '/how-it-works');
   });
 
   it('renders visual card with overlay quote', () => {
@@ -111,6 +87,13 @@ describe('HeroSection', () => {
     expect(screen.getByText('Local data.')).toBeInTheDocument();
     expect(screen.getByText('Real opportunities.')).toBeInTheDocument();
     expect(screen.getByText('Stronger businesses.')).toBeInTheDocument();
+  });
+
+  it('renders Bring Fresh Growth headline and panoramic illustration of rural entrepreneur', () => {
+    render(<HeroSection />);
+    expect(screen.getByText(/bring fresh growth/i)).toBeInTheDocument();
+    expect(screen.getByText(/to agriculture\./i)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /rural entrepreneur in lush crop field/i })).toBeInTheDocument();
   });
 });
 
