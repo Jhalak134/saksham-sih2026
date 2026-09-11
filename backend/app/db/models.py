@@ -88,6 +88,7 @@ class BusinessCategory(Base):
     is_seasonal = Column(Boolean, default=False)
 
     businesses = relationship("Business", back_populates="category")
+    assessments = relationship("Assessment", back_populates="category")
 
 
 class Business(Base):
@@ -152,4 +153,5 @@ class Assessment(Base):
 
     user = relationship("User", back_populates="assessments")
     village = relationship("Village", back_populates="assessments")
+    category = relationship("BusinessCategory", back_populates="assessments")
     scheme = relationship("Scheme", back_populates="assessments")
