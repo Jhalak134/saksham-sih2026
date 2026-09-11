@@ -100,6 +100,8 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         available_margin=margin,
         category_name=cat.name,
         scheme=selected_scheme,
+        village=village,
+        competitor_count=comp_count,
     )
 
     # 6. Explainable Feasibility Evaluation
@@ -167,7 +169,7 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
             "state": "Uttar Pradesh",
             "population": village.population or 0,
             "households": village.household_count or 0,
-            "literacy_rate": village.literacy_rate or 0.0,
+            "literacy_rate": round(village.literacy_rate * 100.0, 1) if (village.literacy_rate is not None and village.literacy_rate <= 1.0) else (village.literacy_rate or 0.0),
         },
         "category": {
             "id": cat.id,
