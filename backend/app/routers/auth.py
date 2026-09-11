@@ -50,6 +50,7 @@ from backend.app.schemas.auth import (
 )
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
+legacy_router = APIRouter(prefix="/auth", tags=["auth"])
 
 _bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -110,6 +111,12 @@ def get_current_user(
     status_code=status.HTTP_201_CREATED,
     summary="Create a new user account",
 )
+@legacy_router.post(
+    "/signup",
+    response_model=TokenResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new user account",
+)
 def signup(
     body: SignupRequest,
     db: Annotated[Session, Depends(get_db)],
@@ -159,6 +166,11 @@ def signup(
     response_model=TokenResponse,
     summary="Log in with phone/email and password",
 )
+@legacy_router.post(
+    "/login",
+    response_model=TokenResponse,
+    summary="Log in with phone/email and password",
+)
 def login(
     body: LoginRequest,
     db: Annotated[Session, Depends(get_db)],
@@ -195,6 +207,11 @@ def login(
     response_model=UserResponse,
     summary="Get the current authenticated user's profile",
 )
+@legacy_router.get(
+    "/me",
+    response_model=UserResponse,
+    summary="Get the current authenticated user's profile",
+)
 def me(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> UserResponse:
@@ -207,6 +224,11 @@ def me(
 
 
 @router.post(
+    "/logout",
+    response_model=MessageResponse,
+    summary="Log out (client-side token invalidation)",
+)
+@legacy_router.post(
     "/logout",
     response_model=MessageResponse,
     summary="Log out (client-side token invalidation)",

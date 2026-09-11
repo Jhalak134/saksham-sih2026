@@ -3,8 +3,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Globe, ChevronDown, Check, Home, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { isAuthenticated } from '@/lib/auth';
 
 interface LanguageOption {
   code: string;
@@ -35,6 +37,7 @@ const NAV_ITEMS: readonly NavItem[] = [
 ] as const;
 
 export function LandingNavbar(): React.JSX.Element {
+  const router = useRouter();
   const [selectedLang, setSelectedLang] = useState<string>('English');
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -42,6 +45,13 @@ export function LandingNavbar(): React.JSX.Element {
     setSelectedLang(label.split(' ')[0]);
     setIsOpen(false);
   }
+
+  const handleNavClick = (e: React.MouseEvent, href: string) => {
+    if ((href === '/discover' || href === '/new-assessment') && !isAuthenticated()) {
+      e.preventDefault();
+      router.push(`/login?redirect=${encodeURIComponent(href)}`);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/50 bg-[#FAFAF8]/90 backdrop-blur-md">
@@ -81,6 +91,7 @@ export function LandingNavbar(): React.JSX.Element {
               <Link
                 key={item.label}
                 href={item.href}
+                onClick={(e) => handleNavClick(e, item.href)}
                 className="rounded-full px-3.5 py-1.5 text-xs font-medium text-slate-600 transition-colors hover:text-slate-950 hover:bg-slate-100/70"
               >
                 {item.label}

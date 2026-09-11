@@ -1,8 +1,8 @@
 // components/assessment/StepLocation.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { ArrowRight, MapPin, X, Search, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { ArrowRight, MapPin, X, Search, AlertCircle, CheckCircle2, Sparkles, Edit2 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useDebounce } from '@/hooks/useDebounce';
 import {
@@ -66,14 +66,15 @@ function ResultItem({ result, onSelect }: ResultItemProps): React.JSX.Element {
 interface SelectedChipProps {
   display: string;
   isPilot: boolean;
+  onChange?: () => void;
   onClear: () => void;
 }
 
-function SelectedChip({ display, isPilot, onClear }: SelectedChipProps): React.JSX.Element {
+function SelectedChip({ display, isPilot, onChange, onClear }: SelectedChipProps): React.JSX.Element {
   return (
     <div
       className={cn(
-        'flex items-center gap-2 rounded-xl border px-3.5 py-3 transition-colors shadow-2xs',
+        'flex items-center gap-2.5 rounded-xl border px-3.5 py-3 transition-colors shadow-2xs',
         isPilot
           ? 'border-emerald-300 bg-emerald-50/70'
           : 'border-amber-300 bg-amber-50/70'
@@ -95,16 +96,22 @@ function SelectedChip({ display, isPilot, onClear }: SelectedChipProps): React.J
       </div>
       <button
         type="button"
-        onClick={onClear}
-        className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 px-2 py-1 rounded-md hover:bg-emerald-100/60 transition-colors cursor-pointer mr-1"
+        onClick={onChange || onClear}
+        className={cn(
+          'text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5 active:scale-95',
+          isPilot
+            ? 'text-emerald-800 hover:text-emerald-950 bg-emerald-100/80 hover:bg-emerald-200/80 border border-emerald-300/80'
+            : 'text-amber-900 hover:text-amber-950 bg-amber-100 hover:bg-amber-200/80 border border-amber-300'
+        )}
       >
-        Change
+        <Edit2 size={12} strokeWidth={2.5} />
+        <span>Change</span>
       </button>
       <button
         type="button"
         onClick={onClear}
         aria-label={`Remove ${display}`}
-        className="rounded-md p-1 text-slate-500 hover:bg-slate-200/60 hover:text-slate-800 transition-colors cursor-pointer"
+        className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-200/70 hover:text-slate-800 transition-colors cursor-pointer active:scale-95"
       >
         <X size={16} strokeWidth={2.5} aria-hidden="true" />
       </button>
@@ -129,25 +136,69 @@ export function StepLocation({
 }: StepLocationProps): React.JSX.Element {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<LocationResult[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
   const debouncedQuery = useDebounce(query, 300);
   const hasSelection = locationId.length > 0;
   const isPilot = hasSelection && isMathuraLocation(locationDisplay || locationId);
 
   useEffect(() => {
-    const found = searchLocations(debouncedQuery);
-    setResults(found);
+    let active = true;
+    const localMatches = searchLocations(debouncedQuery);
+    setResults(localMatches);
+
+    // Also query backend /api/v1/locations to search from the 874 villages when available
+    if (debouncedQuery.trim().length >= 2) {
+      fetch(`/api/v1/locations?q=${encodeURIComponent(debouncedQuery.trim())}&limit=10`)
+        .then((res) => (res.ok ? res.json() : []))
+        .then((data) => {
+          if (!active || !Array.isArray(data) || data.length === 0) return;
+          const remoteResults: LocationResult[] = data.map((item: any) => ({
+            id: `loc_v_${item.id}`,
+            village: item.name,
+            block: item.block_name || 'Mathura',
+            district: item.district_name || 'Mathura',
+            state: item.state_name || 'Uttar Pradesh',
+          }));
+
+          setResults((prev) => {
+            const existingNames = new Set(prev.map((p) => p.village.toLowerCase()));
+            const newOnes = remoteResults.filter((r) => !existingNames.has(r.village.toLowerCase()));
+            return [...prev, ...newOnes];
+          });
+        })
+        .catch(() => {
+          // Ignore network errors, fallback gracefully to local matches
+        });
+    }
+
+    return () => {
+      active = false;
+    };
   }, [debouncedQuery]);
 
-  function handleSelect(r: LocationResult): void {
-    onSelect(r.id, formatLocation(r));
-    setQuery('');
-    setResults([]);
+  function handleChangeLocation(): void {
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 50);
   }
 
   function handleClear(): void {
     onSelect('', '');
     setQuery('');
     setResults([]);
+    setIsEditing(true);
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 50);
+  }
+
+  function handleSelect(r: LocationResult): void {
+    onSelect(r.id, formatLocation(r));
+    setQuery('');
+    setResults([]);
+    setIsEditing(false);
   }
 
   return (
@@ -169,9 +220,14 @@ export function StepLocation({
           </p>
         </div>
 
-        {hasSelection ? (
+        {hasSelection && !isEditing ? (
           <div className="mt-5 flex flex-col gap-3.5">
-            <SelectedChip display={locationDisplay} isPilot={isPilot} onClear={handleClear} />
+            <SelectedChip
+              display={locationDisplay}
+              isPilot={isPilot}
+              onChange={handleChangeLocation}
+              onClear={handleClear}
+            />
 
             {isPilot ? (
               <div className="flex items-center gap-2.5 rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-xs sm:text-sm text-emerald-800 font-medium">
@@ -192,10 +248,19 @@ export function StepLocation({
                   </div>
                 </div>
 
-                <div className="pt-2.5 border-t border-amber-200/80">
-                  <p className="font-medium text-amber-900 text-xs mb-2">
-                    Try one of our active pilot locations to explore the assessment:
-                  </p>
+                <div className="pt-2.5 border-t border-amber-200/80 flex flex-col gap-2.5">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-amber-900 text-xs">
+                      Try one of our active pilot locations to explore the assessment:
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleChangeLocation}
+                      className="text-xs font-semibold text-emerald-800 hover:text-emerald-950 underline underline-offset-2 cursor-pointer"
+                    >
+                      Search other villages
+                    </button>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {POPULAR_MATHURA_PILOT_LOCATIONS.map((loc) => (
                       <button
@@ -214,6 +279,21 @@ export function StepLocation({
           </div>
         ) : (
           <div className="mt-5 flex flex-col gap-5">
+            {hasSelection && isEditing && (
+              <div className="flex items-center justify-between pb-1 text-xs text-slate-500">
+                <span>
+                  Currently selected: <strong className="text-slate-800">{locationDisplay}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="font-medium text-emerald-700 hover:text-emerald-900 cursor-pointer hover:underline"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+
             {/* Search Input Box */}
             <div className="relative">
               <div className="flex items-center gap-3 rounded-xl border border-[var(--color-border)] bg-slate-50/50 hover:bg-white px-3.5 py-3 sm:py-3.5 focus-within:bg-white focus-within:border-[var(--color-primary)] focus-within:ring-3 focus-within:ring-[var(--color-primary)]/20 transition-all shadow-2xs">
@@ -224,6 +304,7 @@ export function StepLocation({
                   aria-hidden="true"
                 />
                 <input
+                  ref={inputRef}
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -234,6 +315,7 @@ export function StepLocation({
                   aria-expanded={results.length > 0}
                   role="combobox"
                   aria-autocomplete="list"
+                  autoFocus={isEditing}
                 />
               </div>
 

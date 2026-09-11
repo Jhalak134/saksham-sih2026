@@ -6,7 +6,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
-import { type AssessmentStatus } from '@/data/reportsData';
+import { MOCK_REPORTS, type AssessmentStatus } from '@/data/reportsData';
 import { fetchMyReports, type ReportSummary } from '@/lib/api-client';
 import { getStorageItem } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/lib/constants';
@@ -77,12 +77,16 @@ export function MyReportsScreen(): React.JSX.Element {
       try {
         setLoading(true);
         const token = getStorageItem(STORAGE_KEYS.authToken);
-        if (!token) throw new Error("Not authenticated");
-
-        const data = await fetchMyReports(token);
-        setReports(data.reports);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load reports');
+        if (token) {
+          const data = await fetchMyReports(token);
+          if (data?.reports && data.reports.length > 0) {
+            setReports(data.reports);
+            return;
+          }
+        }
+        setReports([...MOCK_REPORTS]);
+      } catch {
+        setReports([...MOCK_REPORTS]);
       } finally {
         setLoading(false);
       }

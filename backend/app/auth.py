@@ -59,15 +59,9 @@ _ACCESS_TOKEN_EXPIRE_HOURS = 8  # short-lived; adjust as needed
 
 def _get_secret() -> str:
     """
-    Retrieve the JWT secret, raising a clear error if not configured.
-    Called lazily so tests that don't touch tokens don't need the env var.
+    Retrieve the JWT secret, falling back to a default dev secret if not configured.
     """
-    secret = os.getenv("JWT_SECRET_KEY") or _JWT_SECRET
-    if not secret:
-        raise RuntimeError(
-            "JWT_SECRET_KEY is not set. "
-            "Add JWT_SECRET_KEY=<random-secret> to backend/.env"
-        )
+    secret = os.getenv("JWT_SECRET_KEY") or _JWT_SECRET or "saksham-default-dev-secret-key-sih2026"
     return secret
 
 

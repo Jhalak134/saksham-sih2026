@@ -1,13 +1,15 @@
 // components/profile/ProfileForm.tsx
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useShell } from '@/lib/shell-context';
 import { HomeLocationCard } from './HomeLocationCard';
 import { AvailableCapitalCard } from './AvailableCapitalCard';
 import { LanguageCard } from './LanguageCard';
 import { ActivitySummaryCard } from './ActivitySummaryCard';
 import { LogoutCard } from './LogoutCard';
+import { LogoutModal } from '@/components/ui/LogoutModal';
+import { clearAuthUser } from '@/lib/auth';
 
 export function ProfileForm(): React.JSX.Element {
   const {
@@ -19,6 +21,14 @@ export function ProfileForm(): React.JSX.Element {
     setLanguage,
     savedCategories,
   } = useShell();
+
+  const [showLogOutModal, setShowLogOutModal] = useState(false);
+
+  function handleLogOutConfirm(): void {
+    clearAuthUser();
+    setShowLogOutModal(false);
+    window.location.href = '/';
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -55,8 +65,15 @@ export function ProfileForm(): React.JSX.Element {
           savedAssessments={savedCategories.length}
         />
 
-        <LogoutCard />
+        <LogoutCard onLogout={() => setShowLogOutModal(true)} />
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutModal
+        isOpen={showLogOutModal}
+        onClose={() => setShowLogOutModal(false)}
+        onConfirm={handleLogOutConfirm}
+      />
     </div>
   );
 }
