@@ -46,7 +46,7 @@ export function StateInsightsBar({
   const activeStateName = selectedState ?? 'Uttar Pradesh';
   const profile = getStateOpportunityProfile(activeStateName);
 
-  // Check if active region is Uttar Pradesh / Mathura (Active Pilot)
+  // Check if active region is Uttar Pradesh (Active Pilot)
   const isUP =
     activeStateName.toLowerCase().includes('uttar pradesh') ||
     activeStateName.toLowerCase() === 'up' ||

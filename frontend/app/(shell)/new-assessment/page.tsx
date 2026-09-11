@@ -15,6 +15,8 @@ import { StepLocation } from '@/components/assessment/StepLocation';
 import { StepReview } from '@/components/assessment/StepReview';
 import { createAssessment } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
+import { getSavedUserLocation } from '@/lib/geolocation';
+import { isMathuraLocation, searchLocations } from '@/data/mockLocations';
 
 // ─── Infer suggested category from idea text ──────────────────────────────────
 
@@ -56,12 +58,10 @@ function inferCategory(idea: string): string {
   return '';
 }
 
-
-
 // ─── Page Content ─────────────────────────────────────────────────────────────
 
 function NewAssessmentContent(): React.JSX.Element {
-  const { capital: shellCapital } = useShell();
+  const { capital: shellCapital, homeLocation } = useShell();
   const searchParams = useSearchParams();
   const initialIdea = searchParams ? searchParams.get('idea') ?? '' : '';
   const paramDistrict = searchParams ? searchParams.get('district') ?? '' : '';
@@ -70,6 +70,7 @@ function NewAssessmentContent(): React.JSX.Element {
 
   let initialLocationId = '';
   let initialLocationDisplay = '';
+
   if (paramLoc) {
     initialLocationId = 'loc_param';
     initialLocationDisplay = paramLoc;
@@ -90,6 +91,39 @@ function NewAssessmentContent(): React.JSX.Element {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const hasHydratedRef = React.useRef(false);
+
+  // Hydrate saved user location on client after initial render to avoid SSR mismatch
+  React.useEffect(() => {
+    if (hasHydratedRef.current) return;
+    hasHydratedRef.current = true;
+
+    if (!paramLoc && !paramDistrict && !session.locationId) {
+      const { location: storedLoc, status: geoStatus } = getSavedUserLocation();
+      const candidateLoc = storedLoc || (homeLocation && homeLocation !== 'Uttar Pradesh' ? homeLocation : '');
+
+      if (candidateLoc && geoStatus !== 'denied') {
+        const matches = searchLocations(candidateLoc);
+        const bestMatch = matches.find((m) => isMathuraLocation(m));
+        if (bestMatch) {
+          updateSession({
+            locationId: bestMatch.id,
+            locationDisplay: `${bestMatch.village}, ${bestMatch.district}`,
+          });
+        } else if (isMathuraLocation(candidateLoc)) {
+          updateSession({
+            locationId: 'loc_07',
+            locationDisplay: candidateLoc,
+          });
+        } else {
+          updateSession({
+            locationId: 'loc_saved',
+            locationDisplay: candidateLoc,
+          });
+        }
+      }
+    }
+  }, [paramLoc, paramDistrict, homeLocation, session.locationId, updateSession]);
 
   async function handleSubmit(): Promise<void> {
     setIsSubmitting(true);
@@ -131,9 +165,9 @@ function NewAssessmentContent(): React.JSX.Element {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-4 sm:px-6 sm:py-8">
+    <div className="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 sm:py-10">
       {/* Centered White Card Container */}
-      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-5 sm:p-8 md:p-10 shadow-xs">
+      <div className="rounded-2xl border border-[var(--color-border)] bg-white p-6 sm:p-10 lg:p-12 shadow-xs">
         {/* Back navigation */}
         <button
           type="button"
@@ -149,17 +183,14 @@ function NewAssessmentContent(): React.JSX.Element {
         </button>
 
         {/* Card header */}
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-xl font-bold tracking-tight text-[var(--color-text-dark)] sm:text-2xl">
             New Assessment
           </h1>
-          <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm">
-            Select your location and describe your business idea in plain language — no technical terms needed.
-          </p>
         </div>
 
         {/* Stepper */}
-        <div className="my-6 sm:my-8">
+        <div className="my-5 sm:my-7">
           <StepIndicator activeStepIndex={stepIndex} isComplete={isComplete} />
         </div>
 
@@ -197,7 +228,7 @@ function NewAssessmentContent(): React.JSX.Element {
           )}
 
           {currentStep === 'review' && (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4">
               {submitError && (
                 <div
                   className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800"

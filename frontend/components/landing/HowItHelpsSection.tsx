@@ -3,8 +3,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { BarChart3, Lightbulb, IndianRupee, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { isAuthenticated } from '@/lib/auth';
 
 interface HelpCardItem {
   id: string;
@@ -47,6 +49,15 @@ const HELP_ITEMS: readonly HelpCardItem[] = [
 ] as const;
 
 export function HowItHelpsSection(): React.JSX.Element {
+  const router = useRouter();
+
+  const handleCardClick = (e: React.MouseEvent, href: string) => {
+    if (!isAuthenticated()) {
+      e.preventDefault();
+      router.push(`/login?redirect=${encodeURIComponent(href)}`);
+    }
+  };
+
   return (
     <section className="border-t border-slate-100 bg-slate-50/50 py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -69,6 +80,7 @@ export function HowItHelpsSection(): React.JSX.Element {
               <Link
                 key={item.id}
                 href={item.href}
+                onClick={(e) => handleCardClick(e, item.href)}
                 className={cn(
                   'group flex items-start justify-between gap-4 rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-2xs',
                   'hover:border-slate-300 hover:shadow-sm transition-all duration-200',

@@ -176,6 +176,9 @@ const EXAMPLE_IDEAS: readonly ExampleIdea[] = [
 
 // ─── StepIdea Component ───────────────────────────────────────────────────────
 
+import { Mic, MicOff, AlertCircle } from 'lucide-react';
+import { useSpeechRecognition, type SpeechLanguage } from '@/hooks/useSpeechRecognition';
+
 export function StepIdea({
   value,
   onChange,
@@ -184,6 +187,28 @@ export function StepIdea({
 }: StepIdeaProps): React.JSX.Element {
   const trimmedLength = value.trim().length;
   const canProceed = trimmedLength >= MIN_CHARS;
+
+  const handleSpeechResult = (newChunk: string) => {
+    const combined = value ? `${value.trim()} ${newChunk}` : newChunk;
+    if (combined.length <= MAX_CHARS) {
+      onChange(combined);
+    } else {
+      onChange(combined.slice(0, MAX_CHARS));
+    }
+  };
+
+  const {
+    isListening,
+    interimTranscript,
+    language: speechLang,
+    setLanguage: setSpeechLang,
+    toggleListening,
+    isSupported: speechSupported,
+    error: speechError,
+  } = useSpeechRecognition({
+    initialLanguage: 'hi-IN',
+    onTranscriptChange: handleSpeechResult,
+  });
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>): void {
     if (e.target.value.length <= MAX_CHARS) {
@@ -200,30 +225,135 @@ export function StepIdea({
   return (
     <div className="flex flex-col">
       {/* Title & Subtitle */}
-      <h2 className="text-xl font-bold tracking-tight text-[var(--color-text-dark)] sm:text-2xl">
-        Tell us about your business idea
-      </h2>
-      <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm">
-        Describe it in plain language — no technical terms needed.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight text-[var(--color-text-dark)] sm:text-2xl">
+            Tell us about your business idea
+          </h2>
+          <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm">
+            Describe it in plain language — type or use the mic to speak in Hindi or English.
+          </p>
+        </div>
 
-      {/* Textarea container */}
-      <div className="mt-4 rounded-xl border border-[var(--color-border)] bg-white p-3 sm:p-4 focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/30 transition-all">
+        {/* Dual Language Switcher for Voice */}
+        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200/80 text-xs">
+          <button
+            type="button"
+            onClick={() => setSpeechLang('hi-IN')}
+            className={cn(
+              'px-2.5 py-1 rounded-lg font-semibold transition-all cursor-pointer text-xs',
+              speechLang === 'hi-IN'
+                ? 'bg-white text-emerald-800 shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+            title="Speak in Hindi"
+          >
+            🇮🇳 हिन्दी
+          </button>
+          <button
+            type="button"
+            onClick={() => setSpeechLang('en-IN')}
+            className={cn(
+              'px-2.5 py-1 rounded-lg font-semibold transition-all cursor-pointer text-xs',
+              speechLang === 'en-IN'
+                ? 'bg-white text-emerald-800 shadow-2xs'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+            title="Speak in English"
+          >
+            🇬🇧 English
+          </button>
+        </div>
+      </div>
+
+      {/* Voice error notice if any */}
+      {speechError && (
+        <div className="mt-3 flex items-center gap-2 rounded-xl bg-amber-50 border border-amber-200 px-3.5 py-2 text-xs text-amber-800 animate-in fade-in duration-150">
+          <AlertCircle size={14} className="shrink-0 text-amber-600" />
+          <span>{speechError}</span>
+        </div>
+      )}
+
+      {/* Textarea container with Integrated Mic Action */}
+      <div
+        className={cn(
+          'mt-4 rounded-xl border bg-white p-3 sm:p-4 transition-all relative',
+          isListening
+            ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/20'
+            : 'border-[var(--color-border)] focus-within:border-[var(--color-primary)] focus-within:ring-2 focus-within:ring-[var(--color-primary)]/30'
+        )}
+      >
         <textarea
           id="idea-input"
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           rows={5}
-          placeholder="e.g. I want to start a dairy unit in my village..."
-          className="w-full resize-none bg-transparent text-sm text-[var(--color-text-dark)] placeholder:text-[var(--color-text-muted)] focus:outline-none sm:text-base leading-relaxed"
+          placeholder="e.g. I want to start a dairy unit in my village to supply fresh milk and ghee... (or click the mic to speak)"
+          className="w-full resize-none bg-transparent text-sm text-[var(--color-text-dark)] placeholder:text-[var(--color-text-muted)] focus:outline-none sm:text-base leading-relaxed pr-16"
           aria-label="Describe your business idea"
         />
-        <div className="flex justify-between items-center pt-2 text-xs text-[var(--color-text-muted)]">
-          <span className="hidden sm:inline">Ctrl+Enter to continue</span>
-          <span className="ml-auto font-mono text-[11px] sm:text-xs">
-            {value.length}/{MAX_CHARS}
-          </span>
+
+        {/* Live interim speech preview */}
+        {isListening && interimTranscript && (
+          <div className="mt-1 text-xs italic text-emerald-700 bg-emerald-100/50 rounded px-2 py-1 inline-block animate-pulse">
+            Listening: &ldquo;{interimTranscript}&rdquo;
+          </div>
+        )}
+
+        {/* Textarea Bottom Bar with Speech Mic & Counter */}
+        <div className="flex justify-between items-center pt-2 text-xs text-[var(--color-text-muted)] border-t border-slate-100 mt-2">
+          {/* Active Listening Indicator or Voice Tip */}
+          <div className="flex items-center gap-2">
+            {isListening ? (
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-700 animate-pulse">
+                <span className="flex h-2 w-2 rounded-full bg-red-500 animate-ping" />
+                <span>
+                  Listening ({speechLang === 'hi-IN' ? 'हिन्दी में बोलें' : 'Speak in English'})...
+                </span>
+              </div>
+            ) : (
+              <span className="hidden sm:inline text-slate-400">
+                Type above or click mic to dictate
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Interactive Microphone Button */}
+            <button
+              type="button"
+              onClick={toggleListening}
+              className={cn(
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-2xs',
+                isListening
+                  ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse'
+                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300'
+              )}
+              title={
+                isListening
+                  ? 'Stop listening'
+                  : `Speak idea in ${speechLang === 'hi-IN' ? 'Hindi' : 'English'}`
+              }
+              aria-label={isListening ? 'Stop listening' : 'Start voice input'}
+            >
+              {isListening ? (
+                <>
+                  <MicOff size={13} className="shrink-0 animate-spin" />
+                  <span>Stop</span>
+                </>
+              ) : (
+                <>
+                  <Mic size={13} className="shrink-0 text-emerald-700" />
+                  <span>{speechLang === 'hi-IN' ? 'बोलकर लिखें' : 'Speak'}</span>
+                </>
+              )}
+            </button>
+
+            <span className="font-mono text-[11px] sm:text-xs">
+              {value.length}/{MAX_CHARS}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -264,7 +394,7 @@ export function StepIdea({
       )}
 
       {/* Primary CTA & Helper Note */}
-      <div className="mt-5 flex flex-col items-center gap-2">
+      <div className="mt-8 flex flex-col items-center gap-2">
         <button
           type="button"
           onClick={onContinue}

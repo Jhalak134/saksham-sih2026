@@ -61,3 +61,14 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #0f172a !important;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Hide Next.js floating dev indicator */
+nextjs-portal,
+[data-nextjs-dev-indicator],
+#nextjs-dev-indicator,
+[data-nextjs-toast] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

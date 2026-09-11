@@ -4,6 +4,8 @@
 import React, { useContext } from 'react';
 import { LogOut, ChevronRight } from 'lucide-react';
 import { AuthContext } from '@/lib/auth-context';
+import { removeStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 interface LogoutCardProps {
   onLogout?: () => void;
@@ -15,6 +17,7 @@ export function LogoutCard({ onLogout }: LogoutCardProps): React.JSX.Element {
   const user = auth?.user ?? null;
 
   function handleLogout(): void {
+    removeStorageItem(STORAGE_KEYS.authToken);
     if (onLogout) {
       onLogout();
     } else {
