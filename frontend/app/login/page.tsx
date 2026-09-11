@@ -224,14 +224,14 @@ function LoginFormContent(): React.JSX.Element {
       const { login, signup } = await import('@/lib/api-client');
       const { setStorageItem } = await import('@/lib/storage');
       const { STORAGE_KEYS } = await import('@/lib/constants');
-      
+
       let res;
       if (activeTab === 'signup') {
         res = await signup(cleanAccount, password, '', 'en');
       } else {
         res = await login(cleanAccount, password);
       }
-      
+
       setStorageItem(STORAGE_KEYS.authToken, res.access_token);
       router.push('/discover');
     } catch (err: any) {

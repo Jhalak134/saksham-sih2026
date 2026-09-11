@@ -78,7 +78,7 @@ export function MyReportsScreen(): React.JSX.Element {
         setLoading(true);
         const token = getStorageItem(STORAGE_KEYS.authToken);
         if (!token) throw new Error("Not authenticated");
-        
+
         const data = await fetchMyReports(token);
         setReports(data.reports);
       } catch (err: any) {
