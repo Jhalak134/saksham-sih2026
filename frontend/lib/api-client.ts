@@ -157,7 +157,7 @@ export async function createAssessment(
   const baseUrl = getBackendBaseUrl();
   const url = `${baseUrl}/api/v1/assess`;
 
-  const body = {
+  const body: Record<string, any> = {
     location: payload.location.trim(),
     category: payload.category.trim(),
     capital: Number(payload.capital),
@@ -165,6 +165,13 @@ export async function createAssessment(
     language: payload.language ? payload.language.trim() : 'en',
     phone_or_email: payload.phone_or_email || 'guest_entrepreneur@saksham.gov.in',
   };
+
+  if (payload.village_id) {
+    body.village_id = payload.village_id;
+  }
+  if (payload.location_query) {
+    body.location_query = payload.location_query;
+  }
 
   const res = await fetch(url, {
     method: 'POST',
