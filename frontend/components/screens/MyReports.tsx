@@ -3,10 +3,11 @@
 
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, MapPin, Bookmark, Sparkles } from 'lucide-react';
 import { MOCK_REPORTS, type ReportSummary, type AssessmentStatus } from '@/data/reportsData';
+import { getAssessmentHistory } from '@/lib/api-client';
 import { ReportCard } from '@/components/reports/ReportCard';
 import {
   ReportFilters,
@@ -53,24 +54,67 @@ function groupReportsByLocation(
   return grouped;
 }
 
+function resolveCategoryIcon(category: string): 'dairy' | 'mobile' | 'solar' | 'tailoring' {
+  const c = category.toLowerCase();
+  if (c.includes('dairy') || c.includes('milk')) return 'dairy';
+  if (c.includes('solar') || c.includes('energy')) return 'solar';
+  if (c.includes('tailor') || c.includes('textile') || c.includes('garment')) return 'tailoring';
+  return 'mobile';
+}
+
 export function MyReportsScreen(): React.JSX.Element {
   const [selectedStatus, setSelectedStatus] = useState<AssessmentStatus | 'All'>('All');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
   const [fitFilter, setFitFilter] = useState<FitFilterOption>('all');
+  const [historyReports, setHistoryReports] = useState<ReportSummary[]>([]);
+
+  useEffect(() => {
+    getAssessmentHistory()
+      .then((items) => {
+        if (!items || items.length === 0) return;
+        const mapped: ReportSummary[] = items.map((item) => ({
+          id: String(item.id),
+          title: `${item.category_name} Unit`,
+          location: `${item.village_name}, Mathura`,
+          date: item.created_at
+            ? new Date(item.created_at).toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })
+            : 'Today',
+          status: 'Completed',
+          fitScore: Math.round(item.fit_score),
+          confidence: (item.confidence_level as 'Low' | 'Medium' | 'High') || 'High',
+          estimatedProfit: Math.round(item.project_cost * 0.25),
+          breakEvenMonths: 12,
+          category: item.category_name,
+          iconType: resolveCategoryIcon(item.category_name),
+        }));
+        setHistoryReports(mapped);
+      })
+      .catch(() => {
+        // Fall back to mock reports if history endpoint is unavailable
+      });
+  }, []);
+
+  const combinedReports = useMemo(() => {
+    return [...historyReports, ...MOCK_REPORTS];
+  }, [historyReports]);
 
   const statusCounts = useMemo(() => {
     return {
-      All: MOCK_REPORTS.length,
-      Completed: MOCK_REPORTS.filter((r) => r.status === 'Completed').length,
-      'In Progress': MOCK_REPORTS.filter((r) => r.status === 'In Progress').length,
-      Saved: MOCK_REPORTS.filter((r) => r.status === 'Saved').length,
+      All: combinedReports.length,
+      Completed: combinedReports.filter((r) => r.status === 'Completed').length,
+      'In Progress': combinedReports.filter((r) => r.status === 'In Progress').length,
+      Saved: combinedReports.filter((r) => r.status === 'Saved').length,
     };
-  }, []);
+  }, [combinedReports]);
 
   const displayedReports = useMemo(() => {
-    const filtered = filterReports(MOCK_REPORTS, selectedStatus, fitFilter);
+    const filtered = filterReports(combinedReports, selectedStatus, fitFilter);
     return sortReports(filtered, sortOption);
-  }, [selectedStatus, fitFilter, sortOption]);
+  }, [combinedReports, selectedStatus, fitFilter, sortOption]);
 
   const groupedReports = useMemo(() => {
     return groupReportsByLocation(displayedReports);

@@ -1,10 +1,12 @@
-﻿// components/assessment/AssessmentCompleted.tsx
+// components/assessment/AssessmentCompleted.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { Check, CheckCircle2, Circle, ArrowRight, BarChart2 } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/cn';
+import { getAssessmentById, type BackendAssessmentResponse } from '@/lib/api-client';
 
 // ─── Checklist config ─────────────────────────────────────────────────────────
 
@@ -68,7 +70,18 @@ function ChecklistRow({ item, done, active }: ChecklistRowProps): React.JSX.Elem
 
 // ─── Summary card ─────────────────────────────────────────────────────────────
 
-function SummaryCard(): React.JSX.Element {
+interface SummaryCardProps {
+  data: BackendAssessmentResponse | null;
+  assessmentId: string;
+}
+
+function SummaryCard({ data, assessmentId }: SummaryCardProps): React.JSX.Element {
+  const categoryName = data?.category?.name || 'Dairy Processing';
+  const locationText = data?.village
+    ? `${data.village.name}, ${data.village.district}`
+    : 'Kheragarh, Agra';
+  const fitScore = typeof data?.fitScore === 'number' ? Math.round(data.fitScore) : 78;
+
   return (
     <div className="flex w-full items-center gap-3.5 rounded-xl border border-slate-200/90 bg-slate-50/80 p-3.5">
       {/* Thumbnail placeholder */}
@@ -76,14 +89,14 @@ function SummaryCard(): React.JSX.Element {
         <span className="text-2xl" aria-hidden="true">🐄</span>
       </div>
       <div className="flex flex-1 flex-col gap-1">
-        <p className="text-sm font-bold text-slate-900">Dairy Processing Unit</p>
-        <p className="text-xs text-slate-500">📍 Kheragarh, Agra</p>
+        <p className="text-sm font-bold text-slate-900">{categoryName} Unit</p>
+        <p className="text-xs text-slate-500">📍 {locationText}</p>
         <div className="mt-0.5 flex items-center gap-2">
           <span className="rounded-md border border-emerald-200/60 bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
-            Completed
+            {data ? `Report #${assessmentId}` : 'Completed'}
           </span>
           <span className="rounded-md bg-[#F2B705] px-2 py-0.5 text-[11px] font-bold text-slate-950">
-            Fit 78
+            Fit {fitScore}
           </span>
         </div>
       </div>
@@ -93,12 +106,26 @@ function SummaryCard(): React.JSX.Element {
 
 // ─── AssessmentCompleted ──────────────────────────────────────────────────────
 
-/** The fake report ID used for the "View your report" CTA until real IDs exist. */
-const FAKE_REPORT_ID = 'assess_001';
+/** The fallback report ID used when no query parameter is provided. */
+const DEFAULT_REPORT_ID = 'assess_001';
 
 export function AssessmentCompleted(): React.JSX.Element {
+  const searchParams = useSearchParams();
+  const assessmentId = searchParams ? searchParams.get('id') || DEFAULT_REPORT_ID : DEFAULT_REPORT_ID;
+
   const [completedCount, setCompletedCount] = useState(0);
+  const [assessmentData, setAssessmentData] = useState<BackendAssessmentResponse | null>(null);
   const allDone = completedCount >= CHECKLIST.length;
+
+  useEffect(() => {
+    if (assessmentId && assessmentId !== DEFAULT_REPORT_ID) {
+      getAssessmentById(assessmentId)
+        .then((data) => setAssessmentData(data))
+        .catch(() => {
+          // Graceful fallback if background fetch fails on transition screen
+        });
+    }
+  }, [assessmentId]);
 
   useEffect(() => {
     if (completedCount >= CHECKLIST.length) return;
@@ -140,7 +167,7 @@ export function AssessmentCompleted(): React.JSX.Element {
 
       {/* View report CTA */}
       <Link
-        href={`/reports/${FAKE_REPORT_ID}`}
+        href={`/reports/${encodeURIComponent(assessmentId)}`}
         className={cn(
           'flex w-full items-center justify-center gap-2 rounded-xl',
           'bg-[#F2B705] px-6 py-3.5 text-sm font-bold text-slate-950 shadow-2xs',
@@ -154,7 +181,7 @@ export function AssessmentCompleted(): React.JSX.Element {
       </Link>
 
       {/* Summary card */}
-      <SummaryCard />
+      <SummaryCard data={assessmentData} assessmentId={assessmentId} />
 
       {/* Animated checklist */}
       <div
@@ -182,7 +209,8 @@ export function AssessmentCompleted(): React.JSX.Element {
           aria-hidden="true"
         />
         <p className="text-xs text-slate-600">
-          Based on available local data · <strong>Confidence: Medium</strong>
+          Based on available local data ·{' '}
+          <strong>Confidence: {assessmentData?.confidence || 'Medium'}</strong>
         </p>
       </div>
 
