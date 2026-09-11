@@ -5,6 +5,7 @@ import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import { useAssessmentFlow } from '@/hooks/useAssessmentFlow';
 import { ASSESSMENT_STEPS } from '@/lib/assessment-session';
 import { StepIndicator } from '@/components/assessment/StepIndicator';
@@ -86,6 +87,7 @@ function NewAssessmentContent(): React.JSX.Element {
   );
   const { currentStep, stepIndex, session, next, back, updateSession, isComplete } = flow;
   const suggestedCategory = inferCategory(session.idea);
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
 
@@ -93,13 +95,16 @@ function NewAssessmentContent(): React.JSX.Element {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
+      const isNumericId = /^\d+$/.test(session.locationId);
       const locationValue = session.locationDisplay || session.locationId;
       const res = await createAssessment({
         location: locationValue,
+        village_id: isNumericId ? Number(session.locationId) : undefined,
         category: session.category,
         capital: session.capital,
         idea: session.idea.trim() || undefined,
         language: 'en',
+        phone_or_email: user?.phone_or_email ?? undefined,
       });
       router.push(`/assessment/completed?id=${res.id}`);
     } catch (err: unknown) {

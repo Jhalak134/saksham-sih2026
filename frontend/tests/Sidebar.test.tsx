@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 
 // Mock next/navigation before importing Sidebar
@@ -58,6 +58,18 @@ describe('Sidebar — structure', () => {
 
   it('renders the Log out button', () => {
     expect(screen.getByText('Log out')).toBeInTheDocument();
+  });
+
+  it('triggers logout and redirects when Log out button is clicked', () => {
+    const originalLocation = window.location;
+    // @ts-expect-error Mocking window.location
+    delete window.location;
+    window.location = { href: '' } as unknown as Location;
+
+    fireEvent.click(screen.getByText('Log out'));
+    expect(window.location.href).toBe('/');
+
+    window.location = originalLocation;
   });
 
   it('renders the version footer', () => {

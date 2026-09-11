@@ -207,7 +207,7 @@ def seed_villages(session, blocks_by_code: dict[int, Block]) -> None:
 
             population = int(row["population_total"])
             literate = int(row["literate_total"])
-            literacy_rate = round(literate / population, 4) if population > 0 else None
+            literacy_rate = round((literate / population) * 100, 2) if population > 0 else None
 
             village = Village(
                 id=v_code if v_code > 0 else None,

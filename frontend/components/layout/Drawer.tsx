@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import {
   SIDEBAR_PRIMARY_ITEMS,
   SIDEBAR_SECONDARY_ITEMS,
@@ -134,6 +135,7 @@ function DrawerLanguageRow({
 export function Drawer(): React.JSX.Element {
   const { drawerOpen, closeDrawer, compareCount, language, setLanguage } =
     useShell();
+  const { logout } = useAuth();
   const pathname = usePathname();
 
   // Close drawer when route changes (navigation completed).
@@ -157,6 +159,7 @@ export function Drawer(): React.JSX.Element {
   }
 
   function handleLogOut(): void {
+    logout();
     closeDrawer();
     window.location.href = '/';
   }

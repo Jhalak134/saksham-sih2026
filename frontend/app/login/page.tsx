@@ -1,14 +1,24 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User } from 'lucide-react';
+import {
+  Smartphone,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  User,
+  AlertCircle,
+} from 'lucide-react';
+import { useAuth, AuthProvider, AuthContext } from '@/lib/auth-context';
 
 function LoginFormContent(): React.JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login, signup } = useAuth();
 
   const initialMode = searchParams.get('mode') || searchParams.get('tab');
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>(
@@ -21,6 +31,7 @@ function LoginFormContent(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [googleNotice, setGoogleNotice] = useState<string | null>(null);
   const [isShaking, setIsShaking] = useState(false);
 
   // Sync tab with query parameters if they change
@@ -46,9 +57,10 @@ function LoginFormContent(): React.JSX.Element {
     setTimeout(() => setIsShaking(false), 450);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setGoogleNotice(null);
 
     const cleanAccount = mobileNumber.trim();
     if (!cleanAccount) {
@@ -77,18 +89,32 @@ function LoginFormContent(): React.JSX.Element {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      if (activeTab === 'login') {
+        await login(cleanAccount);
+      } else {
+        await signup({
+          phone_or_email: cleanAccount,
+          preferred_language: 'en',
+        });
+      }
       router.push('/discover');
-    }, 600);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : 'Authentication failed. Please check your details.';
+      triggerError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      router.push('/discover');
-    }, 600);
+    setError(null);
+    setGoogleNotice(
+      'Google Sign-In is not configured in this pilot environment. Please sign in with your mobile number or email, or continue as guest.'
+    );
   };
 
   return (
@@ -190,6 +216,7 @@ function LoginFormContent(): React.JSX.Element {
               onClick={() => {
                 setActiveTab('login');
                 setError(null);
+                setGoogleNotice(null);
               }}
               className={`flex-1 text-center pb-2 text-base sm:text-[17px] font-semibold transition-colors cursor-pointer ${
                 activeTab === 'login'
@@ -207,6 +234,7 @@ function LoginFormContent(): React.JSX.Element {
               onClick={() => {
                 setActiveTab('signup');
                 setError(null);
+                setGoogleNotice(null);
               }}
               className={`flex-1 text-center pb-2 text-base sm:text-[17px] font-semibold transition-colors cursor-pointer ${
                 activeTab === 'signup'
@@ -369,6 +397,24 @@ function LoginFormContent(): React.JSX.Element {
             </svg>
             <span>Continue with Google</span>
           </button>
+
+          {/* Honest Google Notice Banner */}
+          {googleNotice && (
+            <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 flex items-start gap-2 animate-in fade-in duration-200">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>{googleNotice}</span>
+            </div>
+          )}
+
+          {/* Continue as Guest Link */}
+          <div className="mt-5 text-center">
+            <Link
+              href="/discover"
+              className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-[#167844] transition-colors"
+            >
+              Continue as guest →
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -395,6 +441,18 @@ function LoginFormContent(): React.JSX.Element {
   );
 }
 
+function LoginFormWrapper(): React.JSX.Element {
+  const existingCtx = useContext(AuthContext);
+  if (existingCtx) {
+    return <LoginFormContent />;
+  }
+  return (
+    <AuthProvider>
+      <LoginFormContent />
+    </AuthProvider>
+  );
+}
+
 export default function LoginPage(): React.JSX.Element {
   return (
     <Suspense
@@ -404,7 +462,7 @@ export default function LoginPage(): React.JSX.Element {
         </div>
       }
     >
-      <LoginFormContent />
+      <LoginFormWrapper />
     </Suspense>
   );
 }

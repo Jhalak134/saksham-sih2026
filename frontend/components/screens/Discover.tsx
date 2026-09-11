@@ -92,6 +92,7 @@ export function DiscoverScreen(): React.JSX.Element {
         {/* 2. BOTTOM HALF: Space for Live News Carousel / Category Details (Left) + 4 Categories with "See all" scroll (Right) */}
         <ArticleCategorySection
           stateName={selectedState ?? 'Uttar Pradesh'}
+          selectedDistrict={selectedDistrict}
           availableCapital={formattedCapital}
         />
 
