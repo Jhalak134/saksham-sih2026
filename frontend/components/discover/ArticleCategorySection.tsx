@@ -17,6 +17,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { StateArticles } from './StateArticles';
 import {
   ALL_CATEGORY_DETAILS,
@@ -128,7 +129,13 @@ export function ArticleCategorySection({
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-xs font-bold text-emerald-600 flex items-center">
                         <TrendingUp size={13} className="mr-1" />
-                        +{selectedCategory.trendPercent}% YoY in {stateName}
+                        <AnimatedCounter
+                          key={selectedCategory.id}
+                          value={selectedCategory.trendPercent}
+                          prefix="+"
+                          suffix="%"
+                        />
+                        <span className="ml-1">YoY in {stateName}</span>
                       </span>
                     </div>
                   </div>
@@ -261,7 +268,12 @@ export function ArticleCategorySection({
 
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className="inline-flex items-center rounded-md bg-emerald-50 px-1.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-200/60">
-                      <span className="mr-0.5 text-[9px]">↑</span>{cat.trendPercent}%
+                      <span className="mr-0.5 text-[9px]">↑</span>
+                      <AnimatedCounter
+                        key={cat.id}
+                        value={cat.trendPercent}
+                        suffix="%"
+                      />
                     </span>
                     <div
                       className={cn(
