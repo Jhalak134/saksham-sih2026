@@ -7,9 +7,9 @@ import { cn } from '@/lib/cn';
 import { ASSESSMENT_STEPS, type AssessmentStep } from '@/lib/assessment-session';
 
 const STEP_LABELS: Record<AssessmentStep, string> = {
+  location: 'Location',
   idea: 'Idea',
   details: 'Details',
-  location: 'Location',
   review: 'Review',
 };
 

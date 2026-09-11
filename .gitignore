@@ -16,6 +16,7 @@ build/
 dist/
 *.tsbuildinfo
 next-env.d.ts.bak
+*frontend/package-lock.json
 
 # Test coverage & test caches
 coverage/
