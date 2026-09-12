@@ -7,6 +7,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
 import { MOCK_REPORTS, type AssessmentStatus, type ReportSummary, type ConfidenceLevel } from '@/data/reportsData';
+
 import { fetchMyReports } from '@/lib/api-client';
 import { getStorageItem } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/lib/constants';
@@ -82,16 +83,18 @@ export function MyReportsScreen(): React.JSX.Element {
           if (data?.reports && data.reports.length > 0) {
             const mapped: ReportSummary[] = data.reports.map((r) => ({
               id: r.id,
-              title: `${r.category} Unit`,
-              category: r.category,
-              location: r.location,
-              status: (r.status as AssessmentStatus) || 'Completed',
-              date: r.date,
-              estimatedProfit: r.estimatedProfit,
-              breakEvenMonths: 6,
-              fitScore: r.fitScore,
-              confidence: (r.fitScore >= 75 ? 'High' : r.fitScore >= 50 ? 'Medium' : 'Low') as ConfidenceLevel,
-              iconType: resolveCategoryIcon(r.category),
+              title: r.category ? `${r.category} Unit` : 'Rural Enterprise',
+              category: r.category || 'General',
+              location: r.location || 'Local Catchment',
+              status: ((r.status === 'Completed' || r.status === 'In Progress' || r.status === 'Saved')
+                ? r.status
+                : 'Completed') as AssessmentStatus,
+              date: r.date || 'Recent',
+              estimatedProfit: r.estimatedProfit ?? 25000,
+              breakEvenMonths: 8,
+              fitScore: r.fitScore ?? 75,
+              confidence: ((r.fitScore ?? 75) >= 75 ? 'High' : (r.fitScore ?? 75) >= 50 ? 'Medium' : 'Low') as ConfidenceLevel,
+              iconType: resolveCategoryIcon(r.category || ''),
             }));
             setReports(mapped);
             return;
