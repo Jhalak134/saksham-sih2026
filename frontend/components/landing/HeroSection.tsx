@@ -67,18 +67,18 @@ export function HeroSection(): React.JSX.Element {
           {/* Left-Aligned Text Content in the open left area */}
           <div className="relative z-20 flex min-h-[480px] sm:min-h-[540px] md:min-h-[580px] lg:min-h-[620px] flex-col justify-center px-6 sm:px-10 md:px-12 lg:px-16 py-8 sm:py-12 max-w-xl md:max-w-2xl text-left">
             {/* Main Headline */}
-            <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl leading-[1.12]">
+            <h1 className="animate-slide-up-1 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl leading-[1.12]">
               Bring Fresh Growth
               <span className="block mt-1 sm:mt-2 text-slate-950">To Agriculture.</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="mt-4 sm:mt-5 max-w-lg text-sm sm:text-base md:text-lg text-slate-700 leading-relaxed font-normal">
+            <p className="animate-slide-up-2 mt-4 sm:mt-5 max-w-lg text-sm sm:text-base md:text-lg text-slate-700 leading-relaxed font-normal">
               Make confident business decisions for a better tomorrow. Experience the ultimate entrepreneurial journey with expert feasibility, tailored financial schemes, and hyper-local insights.
             </p>
 
             {/* Subtle Provenance Data Chips */}
-            <div className="mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-sm font-semibold text-slate-600">
+            <div className="animate-slide-up-3 mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-sm font-semibold text-slate-600">
               <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
                 Local data.
               </span>

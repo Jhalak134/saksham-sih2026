@@ -20,6 +20,7 @@ import { cn } from '@/lib/cn';
 import { getStateOpportunityProfile } from '@/data/stateOpportunitiesData';
 import { getInsights, getSchemes } from '@/lib/api-client';
 import type { InsightsResponse, OfficialScheme } from '@/lib/api-types';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 interface StateInsightsBarProps {
   readonly selectedState: string | null;
@@ -160,7 +161,12 @@ export function StateInsightsBar({
             {profile.topMovers.map((mover) => (
               <div key={mover.title} className="flex flex-col">
                 <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
-                  +{mover.percent}%
+                  <AnimatedCounter
+                    key={`${activeStateName}-${mover.title}`}
+                    value={mover.percent}
+                    prefix="+"
+                    suffix="%"
+                  />
                 </span>
                 <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
                   {mover.title}
@@ -213,21 +219,33 @@ export function StateInsightsBar({
               </span>
             </div>
             <div className="grid grid-cols-3 gap-2">
-              {liveInsights.categories.slice(0, 3).map((mover) => (
-                <div key={mover.name} className="flex flex-col">
-                  <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
-                    +{mover.trend}%
-                  </span>
-                  <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
-                    {mover.name}
-                  </span>
-                  {mover.seasonality && (
-                    <span className="text-[9.5px] text-slate-400 line-clamp-1">
-                      {mover.seasonality}
+              {liveInsights.categories.slice(0, 3).map((mover) => {
+                const numericTrend =
+                  typeof mover.trend === 'number'
+                    ? mover.trend
+                    : parseFloat(String(mover.trend)) || 0;
+
+                return (
+                  <div key={mover.name} className="flex flex-col">
+                    <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
+                      <AnimatedCounter
+                        key={`${activeStateName}-${mover.name}`}
+                        value={numericTrend}
+                        prefix={numericTrend >= 0 ? '+' : ''}
+                        suffix="%"
+                      />
                     </span>
-                  )}
-                </div>
-              ))}
+                    <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
+                      {mover.name}
+                    </span>
+                    {mover.seasonality && (
+                      <span className="text-[9.5px] text-slate-400 line-clamp-1">
+                        {mover.seasonality}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ) : (
@@ -283,7 +301,16 @@ export function StateInsightsBar({
                     <span className="truncate font-medium">{scheme.name}</span>
                   </div>
                   <span className="text-[10.5px] font-bold text-emerald-700 shrink-0 ml-2">
-                    {scheme.interest_rate}% p.a.
+                    <AnimatedCounter
+                      key={`scheme-${scheme.id}`}
+                      value={
+                        typeof scheme.interest_rate === 'number'
+                          ? scheme.interest_rate
+                          : parseFloat(String(scheme.interest_rate)) || 7
+                      }
+                      decimals={1}
+                      suffix="% p.a."
+                    />
                   </span>
                 </div>
               ))}
@@ -310,8 +337,25 @@ export function StateInsightsBar({
             <span className="text-[10.5px] font-medium text-emerald-800">
               {isUP ? 'Census Village Clusters' : 'Feasible Clusters'}
             </span>
-            <p className="text-sm font-bold text-emerald-950 mt-0.5">
-              {isUP ? '874 micro locations' : `${profile.feasibleUnitsCount}+ micro locations`}
+            <p className="text-sm font-bold text-emerald-950 mt-0.5 flex items-center">
+              {isUP ? (
+                <>
+                  <AnimatedCounter
+                    key="up-census-clusters"
+                    value={874}
+                  />{' '}
+                  <span className="ml-1">micro locations</span>
+                </>
+              ) : (
+                <>
+                  <AnimatedCounter
+                    key={`${activeStateName}-clusters`}
+                    value={profile.feasibleUnitsCount}
+                    suffix="+"
+                  />{' '}
+                  <span className="ml-1">micro locations</span>
+                </>
+              )}
             </p>
             {isUP && (
               <span className="text-[9.5px] text-emerald-700/80 block mt-0.5">
