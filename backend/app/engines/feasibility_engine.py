@@ -100,12 +100,18 @@ def evaluate_feasibility(
     Produces Fit Score, Confidence Level, Rating, and Rationales grounded in
     Census 2011 demographic data, category purchasing power, and competition density.
     """
-    pop = village.population or 0
-    households = village.household_count or (round(pop / 6.0) if pop > 0 else 0)
-    raw_lit = village.literacy_rate if village.literacy_rate is not None else 0.55
-    lit_pct = (raw_lit * 100.0) if raw_lit <= 1.0 else raw_lit
+    v_name = village.name if village else "Catchment Area"
+    pop = getattr(village, "population", 0) or 0
+    raw_hh = getattr(village, "household_count", None)
+    households = raw_hh or (round(pop / 6.0) if pop > 0 else 0)
+    raw_lit = getattr(village, "literacy_rate", None)
+    if raw_lit is None:
+        lit_pct = 55.0
+    else:
+        lit_pct = (raw_lit * 100.0) if raw_lit <= 1.0 else raw_lit
 
-    cat_key = (category.name or "").lower().strip()
+    cat_label = category.name if category else "enterprise"
+    cat_key = (cat_label or "").lower().strip()
     bench = CATEGORY_BENCHMARKS.get(
         cat_key,
         CATEGORY_BENCHMARKS.get("dairy", {
@@ -131,7 +137,7 @@ def evaluate_feasibility(
 
     if pop == 0:
         market_score = 30.0
-        market_rationale = f"Unpopulated or unmapped census catchment in {village.name}. Minimal direct consumer market."
+        market_rationale = f"Unpopulated or unmapped census catchment in {v_name}. Minimal direct consumer market."
     else:
         if coverage >= 8.0:
             base_market = 78.0 + min(10.0, (coverage - 8.0) * 0.4)
@@ -158,10 +164,10 @@ def evaluate_feasibility(
     if comp_count == 0:
         if cat_key in ["retail", "grocery/retail"] and pop > 3000:
             comp_score = 78.0
-            comp_rationale = f"Active commercial hub in {village.name} with existing unorganized kirana presence."
+            comp_rationale = f"Active commercial hub in {v_name} with existing unorganized kirana presence."
         else:
             comp_score = 95.0
-            comp_rationale = f"Zero direct {category.name} competitors mapped in {village.name}. Strong unmet local demand."
+            comp_rationale = f"Zero direct {cat_label} competitors mapped in {v_name}. Strong unmet local demand."
     else:
         hh_per_comp = (households / comp_count) if comp_count > 0 else households
         if hh_per_comp >= 400:
@@ -189,7 +195,7 @@ def evaluate_feasibility(
     elif margin_ratio >= 1.2:
         cap_score = 80.0
         cap_rationale = (
-            f"Capital of INR {capital_input:,.0f} comfortably satisfies {category.name} margin requirements with reserve buffer."
+            f"Capital of INR {capital_input:,.0f} comfortably satisfies {cat_label} margin requirements with reserve buffer."
         )
     elif margin_ratio >= 0.9:
         cap_score = 70.0
@@ -199,18 +205,19 @@ def evaluate_feasibility(
     elif margin_ratio >= 0.5:
         cap_score = 52.0
         cap_rationale = (
-            f"Capital of INR {capital_input:,.0f} is tight for {category.name} (benchmark ₹{min_margin:,.0f} margin needed). Lean scale required."
+            f"Capital of INR {capital_input:,.0f} is tight for {cat_label} (benchmark ₹{min_margin:,.0f} margin needed). Lean scale required."
         )
     else:
         cap_score = 35.0
         cap_rationale = (
-            f"Capital of INR {capital_input:,.0f} is critically low for {category.name} (min margin ₹{min_margin:,.0f}). High equity deficit."
+            f"Capital of INR {capital_input:,.0f} is critically low for {cat_label} (min margin ₹{min_margin:,.0f}). High equity deficit."
         )
 
     # ─────────────────────────────────────────────────────────────────────────
     # 4. Infrastructure Factor (20%) — Block Connectivity & Village Scale
     # ─────────────────────────────────────────────────────────────────────────
-    block_name = (village.block.name if village.block else "").lower()
+    block_obj = getattr(village, "block", None) if village else None
+    block_name = getattr(block_obj, "name", "").lower() if block_obj else ""
     if any(b in block_name for b in ["chhata", "mathura", "govardhan"]):
         base_infra = 80.0
     elif any(b in block_name for b in ["nandgaon", "baldeo", "raya", "farah"]):
@@ -226,7 +233,7 @@ def evaluate_feasibility(
         infra_adj = 0.0
 
     infra_score = max(40.0, min(90.0, base_infra + infra_adj))
-    infra_rationale = f"Sub-district connectivity verified under Block {village.block.name if village.block else 'Mathura'}."
+    infra_rationale = f"Sub-district connectivity verified under Block {getattr(block_obj, 'name', 'Mathura')}."
 
     # ─────────────────────────────────────────────────────────────────────────
     # Weighted Composite Fit Score
@@ -260,10 +267,11 @@ def evaluate_feasibility(
             "mitigation": "Differentiate with home delivery, credit loyalty, or higher purity grading.",
             "severity": "Medium",
         })
-    if category.is_seasonal:
+    is_seasonal = getattr(category, "is_seasonal", False) if category else False
+    if is_seasonal:
         risks.append({
             "category": "Seasonality",
-            "risk": f"{category.name} experiences seasonal crop/harvest demand fluctuations.",
+            "risk": f"{cat_label} experiences seasonal crop/harvest demand fluctuations.",
             "mitigation": "Maintain a 30-day operating reserve during lean months.",
             "severity": "Medium",
         })
@@ -277,7 +285,7 @@ def evaluate_feasibility(
     if pop < bench.get("min_pop", 1500) and pop > 0:
         risks.append({
             "category": "Demographic",
-            "risk": f"Village population of {pop:,} is below typical threshold of {bench.get('min_pop', 1500):,} for {category.name}.",
+            "risk": f"Village population of {pop:,} is below typical threshold of {bench.get('min_pop', 1500):,} for {cat_label}.",
             "mitigation": "Expand delivery/sales radius to adjoining hamlets or establish wholesale off-take.",
             "severity": "Medium",
         })

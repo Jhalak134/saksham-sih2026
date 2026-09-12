@@ -53,6 +53,9 @@ venv.bak/
 *.db
 ai/vector_store/indices/
 ai/vector_store/chroma/
+*.joblib
+*.pkl
+backend/app/ml/artifacts/
 
 # Large raw datasets
 backend/data_pipeline/raw/*.csv
