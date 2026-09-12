@@ -1,9 +1,11 @@
 // components/assessment/StepIdea.tsx
 'use client';
 
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useRef } from 'react';
+import { ArrowRight, Mic, MicOff, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { useSpeechRecognition, languageCodeToSpeechLang } from '@/hooks/useSpeechRecognition';
+import { useShell } from '@/lib/shell-context';
 
 const MIN_CHARS = 10;
 const MAX_CHARS = 300;
@@ -176,8 +178,6 @@ const EXAMPLE_IDEAS: readonly ExampleIdea[] = [
 
 // ─── StepIdea Component ───────────────────────────────────────────────────────
 
-import { Mic, MicOff, AlertCircle } from 'lucide-react';
-import { useSpeechRecognition, type SpeechLanguage } from '@/hooks/useSpeechRecognition';
 
 export function StepIdea({
   value,
@@ -185,11 +185,16 @@ export function StepIdea({
   onContinue,
   onSkip,
 }: StepIdeaProps): React.JSX.Element {
+  const { language } = useShell();
   const trimmedLength = value.trim().length;
   const canProceed = trimmedLength >= MIN_CHARS;
 
-  const handleSpeechResult = (newChunk: string) => {
-    const combined = value ? `${value.trim()} ${newChunk}` : newChunk;
+  const baseValueRef = useRef<string>('');
+
+  const handleSpeechResult = (fullTranscript: string) => {
+    const base = baseValueRef.current.trim();
+    const cleanSpeech = fullTranscript.trim();
+    const combined = base ? `${base} ${cleanSpeech}` : cleanSpeech;
     if (combined.length <= MAX_CHARS) {
       onChange(combined);
     } else {
@@ -203,12 +208,21 @@ export function StepIdea({
     language: speechLang,
     setLanguage: setSpeechLang,
     toggleListening,
+    resetTranscript,
     isSupported: speechSupported,
     error: speechError,
   } = useSpeechRecognition({
-    initialLanguage: 'hi-IN',
+    initialLanguage: languageCodeToSpeechLang(language),
     onTranscriptChange: handleSpeechResult,
   });
+
+  const handleToggleListening = () => {
+    if (!isListening) {
+      baseValueRef.current = value;
+      resetTranscript();
+    }
+    toggleListening();
+  };
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>): void {
     if (e.target.value.length <= MAX_CHARS) {
@@ -323,7 +337,7 @@ export function StepIdea({
             {/* Interactive Microphone Button */}
             <button
               type="button"
-              onClick={toggleListening}
+              onClick={handleToggleListening}
               className={cn(
                 'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-2xs',
                 isListening

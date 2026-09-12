@@ -69,7 +69,7 @@ export function HeroSection(): React.JSX.Element {
             {/* Main Headline */}
             <h1 className="animate-slide-up-1 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl leading-[1.12]">
               Bring Fresh Growth
-              <span className="block mt-1 sm:mt-2 text-slate-950">To Agriculture.</span>
+              <span className="block mt-1 sm:mt-2 text-slate-950">To Agriculture</span>
             </h1>
 
             {/* Subtitle */}
@@ -80,13 +80,13 @@ export function HeroSection(): React.JSX.Element {
             {/* Subtle Provenance Data Chips */}
             <div className="animate-slide-up-3 mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-sm font-semibold text-slate-600">
               <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
-                Local data.
+                Local data
               </span>
               <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
-                Real opportunities.
+                Real opportunities
               </span>
               <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
-                Stronger businesses.
+                Stronger businesses
               </span>
             </div>
           </div>

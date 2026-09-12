@@ -11,6 +11,7 @@ import { IndiaMap } from '@/components/discover/IndiaMap';
 import { StateInsightsBar } from '@/components/discover/StateInsightsBar';
 import { ArticleCategorySection } from '@/components/discover/ArticleCategorySection';
 import { CompareBar } from '@/components/discover/CompareBar';
+import type { CategoryDetailsResponse } from '@/lib/api-types';
 
 export function DiscoverScreen(): React.JSX.Element {
   const {
@@ -26,6 +27,10 @@ export function DiscoverScreen(): React.JSX.Element {
   // Selected district on the state map (e.g. Mathura)
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
 
+  // Selected category state shared between ArticleCategorySection and StateInsightsBar
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const [selectedCategoryData, setSelectedCategoryData] = useState<CategoryDetailsResponse | null>(null);
+
   // Compared categories
   const [compared, setCompared] = useState<ReadonlySet<string>>(new Set());
 
@@ -37,6 +42,8 @@ export function DiscoverScreen(): React.JSX.Element {
     (state: string | null) => {
       setSelectedState(state);
       setSelectedDistrict(null);
+      setSelectedCategoryId(null);
+      setSelectedCategoryData(null);
       if (state) {
         setBrowsingLocation(state);
       } else {
@@ -85,6 +92,7 @@ export function DiscoverScreen(): React.JSX.Element {
               selectedDistrict={selectedDistrict}
               browsingLocation={browsingLocation}
               availableCapital={formattedCapital}
+              selectedCategory={selectedCategoryData}
             />
           </div>
         </div>
@@ -94,6 +102,9 @@ export function DiscoverScreen(): React.JSX.Element {
           stateName={selectedState ?? 'Uttar Pradesh'}
           selectedDistrict={selectedDistrict}
           availableCapital={formattedCapital}
+          selectedCategoryId={selectedCategoryId}
+          onSelectCategory={setSelectedCategoryId}
+          onCategoryChange={setSelectedCategoryData}
         />
 
         {/* 3. Bottom comparison bar if items are compared */}

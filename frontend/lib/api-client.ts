@@ -93,7 +93,7 @@ import type {
   InsightsResponse, AssessmentResponse, VillageLocation,
   AIQueryRequest, AIQueryResponse, OfficialScheme,
   EMICalculationRequest, EMICalculationResponse, SchemeMatchRequest, SchemeMatchResponse,
-  UserProfile, UserProfileInput,
+  UserProfile, UserProfileInput, CategoryDetailsResponse,
 } from './api-types';
 
 // ─── Base URL Resolution ──────────────────────────────────────────────────────
@@ -461,6 +461,52 @@ export async function getInsights(location: string): Promise<InsightsResponse> {
   }
 
   return (await res.json()) as InsightsResponse;
+}
+
+/**
+ * Retrieves dynamic category details and database businesses (GET /api/categories/{id} or /api/v1/categories/{id}).
+ */
+export async function getCategoryDetails(
+  categoryId: string,
+  location?: string
+): Promise<CategoryDetailsResponse> {
+  const cleanId = categoryId.trim();
+  if (!cleanId) {
+    throw new Error('Category ID cannot be empty');
+  }
+
+  const locParam = location ? `?location=${encodeURIComponent(location.trim())}` : '';
+
+  // 1. Try Next.js API route first
+  try {
+    const res = await fetch(`/api/categories/${encodeURIComponent(cleanId)}${locParam}`, {
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+    if (res.ok) {
+      return (await res.json()) as CategoryDetailsResponse;
+    }
+  } catch {
+    // Fall back to direct backend URL
+  }
+
+  // 2. Direct backend call
+  const baseUrl = getBackendBaseUrl();
+  const backendRes = await fetch(
+    `${baseUrl}/api/v1/categories/${encodeURIComponent(cleanId)}${locParam}`,
+    {
+      headers: {
+        Accept: 'application/json',
+      },
+    }
+  );
+
+  if (!backendRes.ok) {
+    throw new Error(`Failed to fetch category details for "${cleanId}" (HTTP ${backendRes.status})`);
+  }
+
+  return (await backendRes.json()) as CategoryDetailsResponse;
 }
 
 // ─── Legacy & Backwards-Compatibility Stubs ───────────────────────────────────

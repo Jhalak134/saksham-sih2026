@@ -105,6 +105,19 @@ export interface RiskItem {
   severity: string;
 }
 
+export interface MLAnalysisData {
+  method: string;
+  cluster_id: number;
+  cluster_name: string;
+  tier?: string;
+  cluster_description?: string;
+  peer_villages_count?: number;
+  opportunity_index?: number;
+  relative_saturation?: string;
+  centroid_distance?: number;
+  ml_insights?: string;
+}
+
 export interface FeasibilityData {
   fit_score: number;
   rating: string;
@@ -112,6 +125,7 @@ export interface FeasibilityData {
   breakdown: FeasibilityBreakdown;
   scoring_rationale: Record<string, string>;
   risks: RiskItem[];
+  ml_analysis?: MLAnalysisData;
 }
 
 export interface SchemeData {
@@ -163,6 +177,7 @@ export interface BackendAssessmentResponse {
   category?: CategoryData;
   financial?: FinancialData;
   feasibility?: FeasibilityData;
+  ml_analysis?: MLAnalysisData;
   scheme?: SchemeData;
   ai_insights?: AIInsights;
   competitor_count?: number;
@@ -265,4 +280,41 @@ export interface UserProfileInput {
   home_location?: string | null;
   default_capital?: number | null;
   preferred_language?: string | null;
+}
+
+export interface CategoryBusinessItem {
+  id: number;
+  name: string;
+  village_name: string;
+  location_precision?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+export interface CategoryDetailsResponse {
+  id: string;
+  numeric_id: number;
+  name: string;
+  slug: string;
+  icon_type: string;
+  is_seasonal: boolean;
+  demand_trend: number;
+  trend_percent: number;
+  demand_summary: string;
+  description: string;
+  capital_bracket: string;
+  profit_margin: string;
+  feasible_locations_count: number;
+  total_businesses: number;
+  sample_businesses: CategoryBusinessItem[];
+  applicable_schemes: Array<{
+    id?: number;
+    name: string;
+    interest_rate?: number;
+    description?: string;
+  }>;
+  raw_materials: string;
+  location: string;
+  district_name: string;
+  state_name: string;
 }

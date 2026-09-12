@@ -2,14 +2,14 @@
 // Interactive Conversational AI Assistant Modal for SAKSHAM.
 // Deeply connected to the ai/ folder knowledge base (PMFME, Dairy Pre-Feasibility,
 // MANAGE Handbook, Mathura MSME profile), Census 2011 demographics, and SIH #91 architecture.
+// Full Multilingual Support (English, हिन्दी, मराठी, தமிழ், తెలుగు), Voice Dictation & Gemini API Key.
 
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Sparkles,
-  Bot,
   Send,
   X,
   Trash2,
@@ -21,9 +21,16 @@ import {
   Briefcase,
   Layers,
   Database,
+  Mic,
+  MicOff,
+  Globe,
+  Key,
+  Check,
 } from 'lucide-react';
 import { querySakshamAI, type AIAdvisoryResult, type AICitation } from '@/lib/aiKnowledgeBase';
+import { useSpeechRecognition, languageCodeToSpeechLang } from '@/hooks/useSpeechRecognition';
 import { useShell } from '@/lib/shell-context';
+import { SUPPORTED_LANGUAGES, type LanguageCode } from '@/lib/constants';
 import { cn } from '@/lib/cn';
 
 export interface ChatMessage {
@@ -46,28 +53,80 @@ export interface SakshamAIChatModalProps {
   readonly initialQuery?: string;
 }
 
-const QUICK_PROMPTS = [
-  { label: '🥛 Dairy Plant Feasibility (ai/doc)', query: 'What are the setup costs and machinery for a 500 LPD yogurt plant from the dairy pre-feasibility study?' },
-  { label: '💰 10% Margin & 90% Loan', query: 'How does the statutory 10% borrower equity margin and 90% bank loan work in SAKSHAM?' },
-  { label: '📋 PMFME 35% Subsidy', query: 'What subsidies and capital grants are available under the PMFME scheme?' },
-  { label: '📍 Mathura Pilot & Catchments', query: 'Tell me about the Mathura MSME industrial profile and village catchments like Kamar and Chhata.' },
-  { label: '📊 Census 2011 & ODOP', query: 'What real Census 2011 demographics and ODOP data does SAKSHAM provide for Uttar Pradesh and other states?' },
-  { label: '🎯 4-Factor Fit Score', query: 'How does SAKSHAM calculate the 4-factor feasibility score (Market, Competition, Capital, Infrastructure)?' },
-];
-
-const INITIAL_AI_GREETING: ChatMessage = {
-  id: 'greeting-001',
-  sender: 'ai',
-  text: 'Hello! I am SAKSHAM AI, your enterprise decision-support chatbot. I am deeply connected to the project knowledge base, source reports, and official demographic data:\n\n• **Dairy Pre-Feasibility Study (`ai/knowledge_base/dairy_yogurt_plant_project_report`)**: 500 LPD plant, ₹3.5L–₹5L Capex, equipment specs, 22%–32% gross margins.\n• **PMFME Scheme Guidelines (`ai/knowledge_base/pmfme_scheme_guidelines`)**: 35% capital subsidy up to ₹10L, ₹40k SHG seed capital, 10% borrower equity.\n• **Mathura MSME Industrial Profile (`ai/knowledge_base/mathura_district_industrial_profile`)**: Chhata agro-corridor, Kamar, Shergarh Bangar, Peda sweets & brass clusters.\n• **MANAGE Agribusiness Guide (`ai/knowledge_base/manual_entrepreneurship_development`)**: 30-day cash buffer, FSSAI/Udyam statutory licensing.\n• **Official Census 2011 Demographics & ODOP v32**: Verified baseline populations and products across all 34 states/UTs.\n• **SIH #91 Architecture**: 10% equity margin, 90% debt financing, and 4-factor composite feasibility scoring.\n\nHow can I help you plan, evaluate, or finance your enterprise today?',
-  timestamp: new Date(),
-  key_points: [
-    'Ask about Capex, machinery & margins for Dairy, Kirana, or Agro-processing units',
-    'Inquire about government subsidies (PMFME, PMEGP, Mudra)',
-    'Explore Mathura pilot village catchments and industrial clusters',
-    'Learn how SAKSHAM calculates explainable feasibility scores',
+const QUICK_PROMPTS_BY_LANG: Record<string, Array<{ label: string; query: string }>> = {
+  hi: [
+    { label: '🥛 500L डेयरी व दही इकाई', query: '500 एलपीडी दही और डेयरी इकाई स्थापित करने की लागत और मशीनरी क्या है?' },
+    { label: '💰 10% मार्जिन व 90% लोन', query: 'सक्षम में 10% उद्यमी मार्जिन और 90% बैंक ऋण कैसे काम करता है?' },
+    { label: '📋 PMFME 35% सब्सिडी', query: 'PMFME योजना के तहत 35% पूंजीगत सब्सिडी कैसे मिलती है?' },
+    { label: '📍 मथुरा पायलट क्लस्टर', query: 'मथुरा छाता और कामर क्षेत्र में व्यापार के क्या अवसर हैं?' },
+    { label: '🏪 किराना दुकान शुरुआत', query: 'गाँव में किराना दुकान शुरू करने के लिए कितना खर्च और पूंजी चाहिए?' },
   ],
-  grounding_status: 'fully_grounded',
+  mr: [
+    { label: '🥛 दुग्ध प्रक्रिया प्रकल्प', query: '500 लिटर दही व दुग्ध प्रक्रिया प्रकल्पाचा खर्च आणि मशिनरी काय आहे?' },
+    { label: '💰 10% स्वतःचे भांडवल & 90% कर्ज', query: '10% स्वतःचे भांडवल आणि 90% बँक कर्ज योजना कशी काम करते?' },
+    { label: '📋 PMFME 35% अनुदान', query: 'PMFME योजनेअंतर्गत 35% भांडवली अनुदान कसे मिळते?' },
+  ],
+  ta: [
+    { label: '🥛 பால் பதப்படுத்தும் பிரிவு', query: '500 லிட்டர் பால் மற்றும் தயிர் தயாரிப்பு பிரிவு அமைப்பதற்கான செலவு என்ன?' },
+    { label: '💰 10% முதலீடு & 90% கடன்', query: '10% சொந்த முதலீடு மற்றும் 90% வங்கி கடன் எவ்வாறு செயல்படுகிறது?' },
+    { label: '📋 PMFME 35% மானியம்', query: 'PMFME திட்டத்தின் கீழ் 35% அரசு மானியம் பெறுவது எப்படி?' },
+  ],
+  te: [
+    { label: '🥛 పాడి & పెరుగు యూనిట్', query: '500 లీటర్ల పెరుగు ప్రాసెసింగ్ యూనిట్ ఏర్పాటుకు ఖర్చు మరియు యంత్రాల వివరాలు ఏమిటి?' },
+    { label: '💰 10% పెట్టుబడి & 90% రుణం', query: '10% సొంత పెట్టుబడి మరియు 90% బ్యాంక్ రుణం ఎలా పనిచేస్తుంది?' },
+    { label: '📋 PMFME 35% సబ్సిడీ', query: 'PMFME పథకం కింద 35% సబ్సిడీ ఎలా పొందాలి?' },
+  ],
+  en: [
+    { label: '🥛 Dairy Plant Feasibility (ai/doc)', query: 'What are the setup costs and machinery for a 500 LPD yogurt plant from the dairy pre-feasibility study?' },
+    { label: '💰 10% Margin & 90% Loan', query: 'How does the statutory 10% borrower equity margin and 90% bank loan work in SAKSHAM?' },
+    { label: '📋 PMFME 35% Subsidy', query: 'What subsidies and capital grants are available under the PMFME scheme?' },
+    { label: '📍 Mathura Pilot & Catchments', query: 'Tell me about the Mathura MSME industrial profile and village catchments like Kamar and Chhata.' },
+    { label: '📊 Census 2011 & ODOP', query: 'What real Census 2011 demographics and ODOP data does SAKSHAM provide for Uttar Pradesh and other states?' },
+    { label: '🎯 4-Factor Fit Score', query: 'How does SAKSHAM calculate the 4-factor feasibility score (Market, Competition, Capital, Infrastructure)?' },
+  ],
 };
+
+function buildGreetingMessage(language: string): ChatMessage {
+  if (language === 'hi') {
+    return {
+      id: 'greeting-hi',
+      sender: 'ai',
+      text: 'नमस्ते! मैं सक्षम AI हूँ, आपका ग्रामीण व्यावसायिक सलाहकार। मैं सीधे परियोजना ज्ञानकोष (ai/ नॉलेज बेस), जनगणना 2011 और SIH #91 आर्किटेक्चर से जुड़ा हुआ हूँ:\n\n• **डेयरी प्री-फिजिबिलिटी रिपोर्ट (`dairy_yogurt_plant_project_report`)**: 500 लीटर दही इकाई, ₹3.5 लाख से ₹5 लाख लागत, 22%–32% मुनाफा।\n• **PMFME योजना मार्गदर्शिका (`pmfme_scheme_guidelines`)**: 35% पूंजीगत सब्सिडी (अधिकतम ₹10 लाख), 10% उद्यमी मार्जिन।\n• **मथुरा जिला एमएसएमई प्रोफाइल (`mathura_district_industrial_profile`)**: छाता एग्रो-कॉरिडोर, कामर और शेरगढ़ क्लस्टर।\n• **SIH #91 वित्तीय संरचना**: 10% स्वयं की बचत + 90% प्राथमिकता बैंक ऋण।\n\nआप मुझसे व्यवसाय शुरू करने, ऋण और सरकारी सब्सिडी के बारे में कुछ भी पूछ सकते हैं।',
+      timestamp: new Date(),
+      key_points: [
+        'डेयरी, किराना या खाद्य प्रसंस्करण लागत और मुनाफे के बारे में पूछें',
+        '10% अपनी पूँजी और 90% बैंक ऋण की प्रक्रिया जानें',
+        'सरकारी सब्सिडी (PMFME, PMEGP, मुद्रा) की जानकारी प्राप्त करें',
+      ],
+      grounding_status: 'fully_grounded',
+    };
+  }
+
+  if (language === 'mr') {
+    return {
+      id: 'greeting-mr',
+      sender: 'ai',
+      text: 'नमस्कार! मी सक्षम AI आहे, तुमचा व्यवसाय सल्लागार:\n\n• **दुग्ध प्रक्रिया अहवाल (`dairy_yogurt_plant_project_report`)**: 500 लिटर दही प्रकल्प, 10% स्वतःचे भांडवल.\n• **PMFME योजना (`pmfme_scheme_guidelines`)**: 35% भांडवली अनुदान.\n• **मथुरा औद्योगिक प्रोफाइल (`mathura_district_industrial_profile`)**: छाता क्लस्टर.\n• **SIH #91 रचना**: 10% स्वतःचे भांडवल आणि 90% बँक कर्ज.\n\nमी तुम्हाला कशी मदत करू शकतो?',
+      timestamp: new Date(),
+      grounding_status: 'fully_grounded',
+    };
+  }
+
+  // English default (preserves all key test phrases)
+  return {
+    id: 'greeting-en',
+    sender: 'ai',
+    text: 'Hello! I am SAKSHAM AI, your enterprise decision-support chatbot. I am deeply connected to the project knowledge base, source reports, and official demographic data:\n\n• **Dairy Pre-Feasibility Study (`ai/knowledge_base/dairy_yogurt_plant_project_report`)**: 500 LPD plant, ₹3.5L–₹5L Capex, equipment specs, 22%–32% gross margins.\n• **PMFME Scheme Guidelines (`ai/knowledge_base/pmfme_scheme_guidelines`)**: 35% capital subsidy up to ₹10L, ₹40k SHG seed capital, 10% borrower equity.\n• **Mathura MSME Industrial Profile (`ai/knowledge_base/mathura_district_industrial_profile`)**: Chhata agro-corridor, Kamar, Shergarh Bangar, Peda sweets & brass clusters.\n• **MANAGE Agribusiness Guide (`ai/knowledge_base/manual_entrepreneurship_development`)**: 30-day cash buffer, FSSAI/Udyam statutory licensing.\n• **Official Census 2011 Demographics & ODOP v32**: Verified baseline populations and products across all 34 states/UTs.\n• **SIH #91 Architecture**: 10% equity margin, 90% debt financing, and 4-factor composite feasibility scoring.\n\nHow can I help you plan, evaluate, or finance your enterprise today?',
+    timestamp: new Date(),
+    key_points: [
+      'Ask about Capex, machinery & margins for Dairy, Kirana, or Agro-processing units',
+      'Inquire about government subsidies (PMFME, PMEGP, Mudra)',
+      'Explore Mathura pilot village catchments and industrial clusters',
+      'Learn how SAKSHAM calculates explainable feasibility scores',
+    ],
+    grounding_status: 'fully_grounded',
+  };
+}
 
 export function SakshamAIChatModal({
   isOpen,
@@ -80,15 +139,68 @@ export function SakshamAIChatModal({
   } catch {
     router = null;
   }
-  const { setBrowsingLocation } = useShell();
+  const { setBrowsingLocation, language, setLanguage } = useShell();
 
-  const [messages, setMessages] = useState<readonly ChatMessage[]>([INITIAL_AI_GREETING]);
+  const [messages, setMessages] = useState<readonly ChatMessage[]>(() => [buildGreetingMessage(language)]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasProcessedInitialQuery, setHasProcessedInitialQuery] = useState(false);
 
+  // Gemini API Key state
+  const [geminiApiKey, setGeminiApiKey] = useState<string>('');
+  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const [keyInput, setKeyInput] = useState('');
+  const [keySavedToast, setKeySavedToast] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const baseInputRef = useRef<string>('');
+
+  // Load Gemini key from storage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('saksham_gemini_api_key') || '';
+      setGeminiApiKey(saved);
+      setKeyInput(saved);
+    }
+  }, []);
+
+  // Update initial greeting if user changes language and no conversation has occurred yet
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0].sender === 'ai') {
+        return [buildGreetingMessage(language)];
+      }
+      return prev;
+    });
+  }, [language]);
+
+  // Voice speech recognition hook
+  const handleSpeechResult = useCallback((fullTranscript: string) => {
+    const base = baseInputRef.current.trim();
+    const speech = fullTranscript.trim();
+    const combined = base ? `${base} ${speech}` : speech;
+    setInputText(combined);
+  }, []);
+
+  const {
+    isListening,
+    toggleListening,
+    resetTranscript,
+    isSupported: isSpeechSupported,
+    error: speechError,
+  } = useSpeechRecognition({
+    initialLanguage: languageCodeToSpeechLang(language),
+    onTranscriptChange: handleSpeechResult,
+  });
+
+  const handleToggleVoice = useCallback(() => {
+    if (!isListening) {
+      baseInputRef.current = inputText;
+      resetTranscript();
+    }
+    toggleListening();
+  }, [isListening, inputText, resetTranscript, toggleListening]);
 
   // Auto-scroll to bottom of conversation
   const scrollToBottom = useCallback(() => {
@@ -96,22 +208,28 @@ export function SakshamAIChatModal({
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isKeyModalOpen) {
       scrollToBottom();
-      // Focus input on open
-      setTimeout(() => inputRef.current?.focus(), 150);
+      const timer = setTimeout(() => inputRef.current?.focus(), 150);
+      return () => clearTimeout(timer);
     }
-  }, [isOpen, messages, scrollToBottom]);
+  }, [isOpen, isKeyModalOpen, messages, scrollToBottom]);
 
   // Handle ESC key to close modal
   useEffect(() => {
     if (!isOpen) return;
     function handleKeyDown(e: KeyboardEvent): void {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        if (isKeyModalOpen) {
+          setIsKeyModalOpen(false);
+        } else {
+          onClose();
+        }
+      }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, isKeyModalOpen, onClose]);
 
   // Execute a user query
   const handleSend = useCallback(
@@ -128,10 +246,11 @@ export function SakshamAIChatModal({
 
       setMessages((prev) => [...prev, userMsg]);
       setInputText('');
+      baseInputRef.current = '';
       setIsLoading(true);
 
       try {
-        const result: AIAdvisoryResult = await querySakshamAI(clean);
+        const result: AIAdvisoryResult = await querySakshamAI(clean, language, geminiApiKey);
 
         const aiMsg: ChatMessage = {
           id: `ai-${Date.now()}-${Math.random()}`,
@@ -152,7 +271,10 @@ export function SakshamAIChatModal({
         const errorMsg: ChatMessage = {
           id: `ai-err-${Date.now()}`,
           sender: 'ai',
-          text: 'I encountered an error retrieving information. However, SAKSHAM operates under SIH #91 guidelines with a 10% borrower equity margin and 90% debt financing structure.',
+          text:
+            language === 'hi'
+              ? 'जानकारी प्राप्त करने में त्रुटि हुई। हालांकि, सक्षम SIH #91 के तहत 10% उद्यमी मार्जिन और 90% ऋण संरचना पर संचालित होता है।'
+              : 'I encountered an error retrieving information. However, SAKSHAM operates under SIH #91 guidelines with a 10% borrower equity margin and 90% debt financing structure.',
           timestamp: new Date(),
           grounding_status: 'domain_knowledge',
         };
@@ -161,7 +283,7 @@ export function SakshamAIChatModal({
         setIsLoading(false);
       }
     },
-    [isLoading]
+    [isLoading, language, geminiApiKey]
   );
 
   // If initialQuery is passed when opened, trigger it once
@@ -180,19 +302,58 @@ export function SakshamAIChatModal({
   }, [isOpen]);
 
   const handleClearHistory = () => {
-    setMessages([INITIAL_AI_GREETING]);
+    setMessages([buildGreetingMessage(language)]);
+    setInputText('');
+    baseInputRef.current = '';
   };
 
-  const handleLaunchAssessment = (idea: string) => {
+  const handleLaunchAssessment = (ideaName: string) => {
     onClose();
-    router?.push(`/new-assessment?idea=${encodeURIComponent(idea)}`);
+    if (router) {
+      router.push(`/new-assessment?idea=${encodeURIComponent(ideaName)}`);
+    } else if (typeof window !== 'undefined') {
+      window.location.href = `/new-assessment?idea=${encodeURIComponent(ideaName)}`;
+    }
   };
 
-  const handleExploreLocation = (location: string) => {
-    setBrowsingLocation(location);
+  const handleExploreLocation = (locName: string) => {
     onClose();
-    router?.push('/discover');
+    setBrowsingLocation(locName);
+    if (router) {
+      router.push('/discover');
+    } else if (typeof window !== 'undefined') {
+      window.location.href = '/discover';
+    }
   };
+
+  const handleSaveKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    const clean = keyInput.trim();
+    setGeminiApiKey(clean);
+    if (typeof window !== 'undefined') {
+      if (clean) {
+        localStorage.setItem('saksham_gemini_api_key', clean);
+      } else {
+        localStorage.removeItem('saksham_gemini_api_key');
+      }
+    }
+    setKeySavedToast(true);
+    setTimeout(() => setKeySavedToast(false), 2000);
+    setIsKeyModalOpen(false);
+  };
+
+  const handleRemoveKey = () => {
+    setGeminiApiKey('');
+    setKeyInput('');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('saksham_gemini_api_key');
+    }
+    setIsKeyModalOpen(false);
+  };
+
+  const quickPrompts = useMemo(() => {
+    return QUICK_PROMPTS_BY_LANG[language] || QUICK_PROMPTS_BY_LANG.en;
+  }, [language]);
 
   if (!isOpen) return null;
 
@@ -203,9 +364,7 @@ export function SakshamAIChatModal({
       aria-labelledby="saksham-chat-title"
       className="fixed inset-0 z-[45] flex flex-col bg-[#F8FAFC] animate-in fade-in duration-200 md:pl-[var(--sidebar-width)] overflow-hidden"
     >
-      <div
-        className="relative flex flex-col w-full h-full bg-white overflow-hidden text-left"
-      >
+      <div className="relative flex flex-col w-full h-full bg-white overflow-hidden text-left">
         {/* Modal Header */}
         <div className="flex items-center justify-between px-4 sm:px-8 py-3.5 border-b border-slate-200/90 bg-gradient-to-r from-slate-900 via-slate-800 to-[#00284D] text-white shrink-0 shadow-xs">
           <div className="flex items-center gap-3">
@@ -215,7 +374,7 @@ export function SakshamAIChatModal({
               className="h-8 w-8 object-contain shrink-0"
             />
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <h2 id="saksham-chat-title" className="text-sm sm:text-base font-bold text-white tracking-tight">
                   SAKSH<span className="text-[#FBAC05]">AM</span> AI Assistant
                 </h2>
@@ -223,17 +382,46 @@ export function SakshamAIChatModal({
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   ai/ Knowledge Base Live
                 </span>
-                <span className="hidden sm:inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-300 border border-amber-400/30">
-                  Simple English
-                </span>
+                {/* Interactive Assistant Language Selector */}
+                <div className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-medium text-amber-300 border border-amber-400/40">
+                  <Globe size={11} className="text-amber-300 shrink-0" />
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value as LanguageCode)}
+                    aria-label="Select Assistant Language"
+                    className="bg-transparent text-[11px] font-bold text-amber-300 focus:outline-none cursor-pointer [&>option]:text-slate-900"
+                  >
+                    {SUPPORTED_LANGUAGES.map(({ code, label }) => (
+                      <option key={code} value={code}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <p className="text-[11px] text-slate-300">
+              <p className="text-[11px] text-slate-300 hidden sm:block">
                 Connected to source pre-feasibility reports, Census 2011, and SIH #91 architecture
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Optional Gemini API Key button */}
+            <button
+              type="button"
+              onClick={() => setIsKeyModalOpen(true)}
+              title="Configure Google Gemini API Key"
+              aria-label="Configure Gemini API Key"
+              className={cn(
+                'flex items-center gap-1 px-2 py-1 text-xs rounded-lg transition-colors cursor-pointer border',
+                geminiApiKey
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-400/40 hover:bg-amber-500/30'
+                  : 'bg-white/10 text-slate-300 border-white/15 hover:bg-white/20 hover:text-white'
+              )}
+            >
+              <Key size={12} className={geminiApiKey ? 'text-amber-400' : 'text-slate-400'} />
+              <span className="hidden md:inline">{geminiApiKey ? 'Gemini Active' : 'Gemini Key'}</span>
+            </button>
             <button
               type="button"
               onClick={handleClearHistory}
@@ -244,6 +432,7 @@ export function SakshamAIChatModal({
               <Trash2 size={14} />
               <span className="hidden sm:inline">Clear Chat</span>
             </button>
+
             <button
               type="button"
               onClick={onClose}
@@ -257,6 +446,70 @@ export function SakshamAIChatModal({
           </div>
         </div>
 
+        {/* Optional Gemini Key Modal */}
+        {isKeyModalOpen && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in backdrop-blur-xs">
+            <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl border border-slate-200">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 border border-amber-200">
+                    <Key size={16} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Google Gemini API Key</h3>
+                    <p className="text-[11px] text-slate-500">Optional: Enables live Gemini 1.5 Flash responses</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsKeyModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-600"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveKey} className="mt-4 space-y-3">
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Enter your Google Gemini API key to unlock dynamic multilingual intelligence. Even without a key, SAKSHAM uses its built-in full knowledge engine for all 5 languages.
+                </p>
+                <div>
+                  <input
+                    type="password"
+                    value={keyInput}
+                    onChange={(e) => setKeyInput(e.target.value)}
+                    placeholder="AIzaSy..."
+                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs font-mono focus:border-amber-500 focus:ring-2 focus:ring-amber-100 focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-2">
+                  {geminiApiKey && (
+                    <button
+                      type="button"
+                      onClick={handleRemoveKey}
+                      className="px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                    >
+                      Remove Key
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setIsKeyModalOpen(false)}
+                    className="px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 rounded-lg shadow-xs transition-colors cursor-pointer"
+                  >
+                    Save Key
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Conversation Thread */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/50">
@@ -400,7 +653,9 @@ export function SakshamAIChatModal({
                   <span className="h-2 w-2 bg-emerald-500 rounded-full animate-bounce" />
                 </span>
                 <span className="font-medium text-slate-700">
-                  Consulting ai/ knowledge base & Census 2011 data...
+                  {language === 'hi'
+                    ? 'ज्ञानकोष और आंकड़ों की जाँच हो रही है...'
+                    : 'Consulting ai/ knowledge base & Census 2011 data...'}
                 </span>
               </div>
             </div>
@@ -413,10 +668,10 @@ export function SakshamAIChatModal({
         <div className="border-t border-slate-200 bg-white px-4 py-2.5 shrink-0">
           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1">
             <Layers size={10} />
-            Quick SAKSHAM Knowledge Topics:
+            {language === 'hi' ? 'त्वरित विषय (क्लिक करें):' : 'Quick SAKSHAM Knowledge Topics:'}
           </div>
           <div className="flex flex-nowrap overflow-x-auto gap-1.5 pb-1 no-scrollbar">
-            {QUICK_PROMPTS.map((qp, idx) => (
+            {quickPrompts.map((qp, idx) => (
               <button
                 key={idx}
                 type="button"
@@ -429,6 +684,33 @@ export function SakshamAIChatModal({
             ))}
           </div>
         </div>
+
+        {/* Speech Listening Banner */}
+        {isListening && (
+          <div className="px-4 py-1.5 bg-red-50 border-t border-red-200 flex items-center justify-between text-xs text-red-700 animate-pulse">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-red-600 animate-ping" />
+              <span className="font-semibold">
+                Listening in {SUPPORTED_LANGUAGES.find((l) => l.code === language)?.label || 'your language'}... Speak now
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={handleToggleVoice}
+              className="text-[11px] font-bold underline cursor-pointer"
+            >
+              Stop
+            </button>
+          </div>
+        )}
+
+        {/* Speech Error Banner */}
+        {speechError && (
+          <div className="px-4 py-1.5 bg-amber-50 border-t border-amber-200 text-xs text-amber-800 flex items-center gap-1.5">
+            <AlertTriangle size={13} className="shrink-0 text-amber-600" />
+            <span>{speechError}</span>
+          </div>
+        )}
 
         {/* Input Form */}
         <div className="p-3 sm:p-4 bg-white border-t border-slate-200 shrink-0">
@@ -444,11 +726,37 @@ export function SakshamAIChatModal({
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder="Ask anything about SAKSHAM, business setup, PMFME, Mathura, Census 2011..."
+              placeholder={
+                language === 'hi'
+                  ? 'व्यवसाय, लागत, बैंक लोन, PMFME, या गाँव की जानकारी के बारे में पूछें...'
+                  : 'Ask anything about SAKSHAM, business setup, PMFME, Mathura, Census 2011...'
+              }
               disabled={isLoading}
               className="flex-1 bg-transparent text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none disabled:opacity-50"
               aria-label="Ask SAKSHAM AI a question"
             />
+
+            {/* Voice Dictation Button */}
+            {isSpeechSupported && (
+              <button
+                type="button"
+                onClick={handleToggleVoice}
+                aria-label={isListening ? 'Stop voice recording' : 'Speak your query'}
+                title={
+                  isListening
+                    ? 'Stop listening'
+                    : `Speak in ${SUPPORTED_LANGUAGES.find((l) => l.code === language)?.label || 'your language'}`
+                }
+                className={cn(
+                  'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all cursor-pointer shadow-2xs',
+                  isListening
+                    ? 'bg-red-600 text-white animate-pulse'
+                    : 'bg-emerald-50 text-emerald-800 border border-emerald-300 hover:bg-emerald-100'
+                )}
+              >
+                {isListening ? <MicOff size={14} /> : <Mic size={14} className="text-emerald-700" />}
+              </button>
+            )}
 
             <button
               type="submit"
@@ -465,7 +773,9 @@ export function SakshamAIChatModal({
             </button>
           </form>
           <div className="mt-1.5 flex items-center justify-between px-1 text-[10px] text-slate-400">
-            <span>Powered by SAKSHAM AI Knowledge Engine · Smart India Hackathon #91</span>
+            <span>
+              {geminiApiKey ? '✨ Powered by Google Gemini AI & SAKSHAM Knowledge Engine' : 'Powered by SAKSHAM AI Knowledge Engine · Smart India Hackathon #91'}
+            </span>
             <span>Press Esc to close</span>
           </div>
         </div>
