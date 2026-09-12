@@ -11,11 +11,9 @@
 [![Backend](https://img.shields.io/badge/backend-FastAPI-009688)](backend)
 [![Frontend](https://img.shields.io/badge/frontend-Next.js%2016%20%2F%20React%2019-black)](frontend)
 [![AI Service](https://img.shields.io/badge/AI%2FRAG-ChromaDB-6f42c1)](ai)
-[![Tests](https://img.shields.io/badge/tests-234%20backend%2Fai%20%2B%20427%20frontend-brightgreen)](#-testing--quality-gates)
-[![Code Quality](https://img.shields.io/badge/complexity%20gate-%3C22%20enforced-informational)](RULES.md)
-[![Status](https://img.shields.io/badge/status-active%20development-yellow)](#-current-status--roadmap)
+[![Status](https://img.shields.io/badge/status-active%20development-yellow)](#-getting-started)
 
-[Problem](#-the-problem) · [What we built](#-what-saksham-is) · [Why SAKSHAM](#-why-saksham) · [Architecture](#-system-architecture) · [Product Walkthrough](#-product-walkthrough) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API](#-api-overview) · [Quality](#-testing--quality-gates) · [Roadmap](#-current-status--roadmap)
+[Problem](#-the-problem) · [What we built](#-what-saksham-is) · [Why SAKSHAM](#-why-saksham) · [Architecture](#-system-architecture) · [Product Walkthrough](#-product-walkthrough) · [Tech Stack](#-tech-stack) · [Getting Started](#-getting-started) · [API](#-api-overview)
 
 </div>
 
@@ -79,25 +77,6 @@ DATA PROVIDES EVIDENCE  ->  DETERMINISTIC ENGINES CALCULATE  ->  AI EXPLAINS
 Aggregators calculate but don't localize; chatbots localize but can't cite; portals inform but don't advise. SAKSHAM: **deterministic finance + local evidence + a language layer that only explains.**
 
 ## 🏗️ System Architecture
-
-```
-                         SAKSHAM
-                            |
-              +-------------+-------------+
-       BUSINESS INTELLIGENCE       FINANCIAL INTELLIGENCE
-       (Market / Risk / Competition)  (Project / Scheme / Repayment)
-              +-------------+-------------+
-                            v
-                     EVIDENCE LAYER  (numbers + confidence, never invented)
-                            v
-                    RAG / KNOWLEDGE BASE  (ChromaDB, 4 curated documents)
-                            v
-                  AI ADVISOR / EXPLANATION LAYER  (grounded, cited, never calculates)
-                            v
-                   MULTILINGUAL ADVISORY REPORT
-                            v
-                       USER DECISION
-```
 
 <p align="center"><img src="diagrams/SystemArchitecture_flowchart.png" alt="System architecture flowchart" width="720"></p>
 
@@ -334,41 +313,6 @@ Fit Score = (Market × 0.30) + (Competition × 0.25) + (Capital Fit × 0.25) + (
 ```
 
 Live in [`backend/app/engines`](backend/app/engines) — the AI layer never touches them.
-
-## ✅ Testing & Quality Gates
-
-Hard thresholds in [`RULES.md`](RULES.md):
-
-| Metric | Gate |
-|---|---|
-| Cyclomatic complexity (per function) | < 22 |
-| Cognitive complexity (per function) | < 22 |
-| Halstead difficulty (per module) | < 80 |
-| Lines of code (per file) | < 500 |
-| Test coverage (new/modified code) | 100% line + branch |
-| `any` / `unknown` (TypeScript) | 0 |
-| Dead / duplicated code | 0 |
-
-**234/234** Python tests passing (backend + AI), **427/427** frontend tests across 40 suites, clean `npm run build` and `tsc --noEmit`. Per-milestone logs: [`AGENTS.md`](AGENTS.md).
-
-```bash
-# Backend + AI tests
-PYTHONPATH=. pytest backend/tests/ ai/tests/ --cov
-
-# Frontend tests
-cd frontend && npm run test:coverage
-```
-
-## 🎯 Current Status & Roadmap
-
-Full audit: [`ai/problems.txt`](ai/problems.txt). Headlines:
-
-- **Generation is deterministic, not LLM-generated.** Retrieval via ChromaDB is real; explanation text is currently template-assembled. Clean injection seam (`llm_callable`) ready for a live LLM — not wired yet.
-- **Citation IDs are validated, full content isn't (yet).** Claims check against real chunk/doc IDs; token-level grounding against source text is planned before LLM wiring.
-- **Hallucination test suite in progress** (`ai/tests/test_hallucination.py`) — required gate before LLM wiring.
-- **Knowledge base scoped to MVP**: 4 documents, one pilot district (Mathura) — not nationwide coverage.
-
-**Next:** wire a real LLM behind `llm_callable`, finish the hallucination/grounding suite, expand beyond the pilot district.
 
 ## 👥 Team
 
