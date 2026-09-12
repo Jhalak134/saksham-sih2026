@@ -1,26 +1,12 @@
 // components/landing/LandingNavbar.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Globe, ChevronDown, Check, Home, Sparkles } from 'lucide-react';
+import { Home, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { isAuthenticated } from '@/lib/auth';
-
-interface LanguageOption {
-  code: string;
-  label: string;
-}
-
-const LANGUAGES: readonly LanguageOption[] = [
-  { code: 'en', label: 'English' },
-  { code: 'hi', label: 'हिंदी (Hindi)' },
-  { code: 'mr', label: 'मराठी (Marathi)' },
-  { code: 'gu', label: 'ગુજરાતી (Gujarati)' },
-  { code: 'te', label: 'తెలుగు (Telugu)' },
-  { code: 'ta', label: 'தமிழ் (Tamil)' },
-] as const;
 
 interface NavItem {
   label: string;
@@ -31,21 +17,11 @@ interface NavItem {
 const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Home', href: '/', isHome: true },
   { label: 'About Us', href: '/about' },
-  { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Feasibility', href: '/#feasibility' },
-  { label: 'Schemes', href: '/#schemes' },
-  { label: 'Discover', href: '/discover' },
+  { label: 'How It Works', href: '/how-it-works' },
 ] as const;
 
 export function LandingNavbar(): React.JSX.Element {
   const router = useRouter();
-  const [selectedLang, setSelectedLang] = useState<string>('English');
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  function handleSelect(label: string): void {
-    setSelectedLang(label.split(' ')[0]);
-    setIsOpen(false);
-  }
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     if ((href === '/discover' || href === '/new-assessment') && !isAuthenticated()) {
@@ -106,61 +82,6 @@ export function LandingNavbar(): React.JSX.Element {
 
         {/* Right side controls */}
         <div className="flex items-center gap-2.5 sm:gap-3.5">
-          {/* Language selector */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setIsOpen((prev) => !prev)}
-              aria-expanded={isOpen}
-              aria-haspopup="listbox"
-              aria-label="Select language"
-              className={cn(
-                'flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 shadow-2xs',
-                'hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900'
-              )}
-            >
-              <Globe size={14} className="text-slate-500 shrink-0" aria-hidden="true" />
-              <span>{selectedLang}</span>
-              <ChevronDown
-                size={14}
-                className={cn('text-slate-400 transition-transform duration-200', isOpen && 'rotate-180')}
-                aria-hidden="true"
-              />
-            </button>
-
-            {isOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setIsOpen(false)}
-                  aria-hidden="true"
-                />
-                <ul
-                  role="listbox"
-                  className="absolute right-0 top-full mt-1.5 z-20 w-44 rounded-xl border border-slate-200 bg-white py-1 shadow-lg animate-in fade-in zoom-in-95 duration-100"
-                >
-                  {LANGUAGES.map((lang) => {
-                    const isCurrent = selectedLang === lang.label.split(' ')[0];
-                    return (
-                      <li
-                        key={lang.code}
-                        role="option"
-                        aria-selected={isCurrent}
-                        onClick={() => handleSelect(lang.label)}
-                        className={cn(
-                          'flex cursor-pointer items-center justify-between px-3.5 py-2 text-xs sm:text-sm text-slate-700 hover:bg-slate-50 hover:text-slate-950',
-                          isCurrent && 'bg-amber-50/70 font-semibold text-amber-900'
-                        )}
-                      >
-                        <span>{lang.label}</span>
-                        {isCurrent && <Check size={14} className="text-amber-600" aria-hidden="true" />}
-                      </li>
-                    );
-                  })}
-                </ul>
-              </>
-            )}
-          </div>
 
           {/* Login button */}
           <Link
