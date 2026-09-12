@@ -25,7 +25,6 @@ const STATUS_TABS: readonly (AssessmentStatus | 'All')[] = [
   'All',
   'In Progress',
   'Completed',
-  'Saved',
 ];
 
 export function ReportFilters({
