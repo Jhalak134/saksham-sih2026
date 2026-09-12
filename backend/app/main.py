@@ -83,63 +83,35 @@ def run_database_migrations(target_engine):
         logger.warning(f"Database migration check encountered an error: {e}")
 
 
-def run_database_migrations(target_engine):
-    """Safely adds any missing columns to existing database tables."""
+def ensure_reference_data_seeded(target_engine):
+    """Automatically seeds reference data (874 villages, categories, schemes) if database is empty."""
     try:
-        with target_engine.begin() as conn:
-            inspector = inspect(conn)
-            tables = inspector.get_table_names()
-
-            if "assessments" in tables:
-                existing_cols = {col["name"] for col in inspector.get_columns("assessments")}
-                is_pg = conn.dialect.name == "postgresql"
-                json_type = "JSON" if is_pg else "TEXT"
-
-                col_definitions = [
-                    ("capital_input", "FLOAT"),
-                    ("fit_score", "FLOAT"),
-                    ("confidence_level", "VARCHAR"),
-                    ("rating", "VARCHAR"),
-                    ("competitor_count", "INTEGER DEFAULT 0"),
-                    ("business_idea", "VARCHAR"),
-                    ("project_cost", "FLOAT"),
-                    ("max_loan_amount", "FLOAT"),
-                    ("recommended_project_size", "FLOAT"),
-                    ("scheme_id", "INTEGER"),
-                    ("interest_rate", "FLOAT"),
-                    ("tenure_months", "INTEGER"),
-                    ("moratorium_months", "INTEGER"),
-                    ("monthly_emi", "FLOAT"),
-                    ("total_repayment", "FLOAT"),
-                    ("total_interest", "FLOAT"),
-                    ("estimated_monthly_revenue", "FLOAT"),
-                    ("estimated_monthly_profit", "FLOAT"),
-                    ("repayment_burden_ratio", "FLOAT"),
-                    ("repayment_burden_category", "VARCHAR"),
-                    ("feasibility_breakdown", json_type),
-                    ("ai_insights", json_type),
-                    ("status", "VARCHAR DEFAULT 'Completed'"),
-                    ("updated_at", "TIMESTAMP"),
-                ]
-                for col_name, col_type in col_definitions:
-                    if col_name not in existing_cols:
-                        try:
-                            if is_pg:
-                                conn.execute(text(f"ALTER TABLE assessments ADD COLUMN IF NOT EXISTS {col_name} {col_type}"))
-                            else:
-                                conn.execute(text(f"ALTER TABLE assessments ADD COLUMN {col_name} {col_type}"))
-                        except Exception as ex:
-                            logger.warning(f"Could not add column {col_name}: {ex}")
-
-            if "users" in tables:
-                existing_user_cols = {col["name"] for col in inspector.get_columns("users")}
-                if "password_hash" not in existing_user_cols:
-                    try:
-                        conn.execute(text("ALTER TABLE users ADD COLUMN password_hash VARCHAR"))
-                    except Exception:
-                        pass
+        from sqlalchemy.orm import Session
+        from backend.app.db.models import Village, BusinessCategory, Scheme
+        with Session(target_engine) as session:
+            v_count = session.query(Village).count()
+            if v_count == 0:
+                logger.info("Villages table is empty. Auto-seeding 874 Mathura villages and reference data...")
+                from backend.data_pipeline.load_to_postgres import (
+                    seed_state, seed_district, seed_blocks,
+                    seed_business_categories, seed_schemes,
+                    seed_villages, seed_osm_businesses,
+                )
+                state = seed_state(session)
+                district = seed_district(session, state)
+                blocks_by_code = seed_blocks(session, district)
+                seed_business_categories(session)
+                seed_schemes(session)
+                seed_villages(session, blocks_by_code)
+                seed_osm_businesses(session)
+                logger.info("Successfully seeded 874 villages and reference data.")
+            else:
+                if session.query(BusinessCategory).count() == 0 or session.query(Scheme).count() == 0:
+                    from backend.data_pipeline.load_to_postgres import seed_business_categories, seed_schemes
+                    seed_business_categories(session)
+                    seed_schemes(session)
     except Exception as e:
-        logger.warning(f"Database migration check encountered an error: {e}")
+        logger.warning(f"Auto-seeding check encountered an error: {e}")
 
 
 @asynccontextmanager
@@ -147,6 +119,7 @@ async def lifespan(app: FastAPI):
     # Ensure database schema is created and upgraded on startup
     models.Base.metadata.create_all(bind=engine)
     run_database_migrations(engine)
+    ensure_reference_data_seeded(engine)
     yield
 
 

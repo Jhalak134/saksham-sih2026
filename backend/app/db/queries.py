@@ -33,16 +33,27 @@ def get_village_by_name(db: Session, name: str) -> Optional[Village]:
     return db.query(Village).filter(func.lower(Village.name) == name.strip().lower()).first()
 
 
+LOCATION_ALIASES: Dict[str, str] = {
+    "vrindavan": "vrindaban",
+    "brindavan": "vrindaban",
+    "brindaban": "vrindaban",
+}
+
+
 def search_villages(db: Session, query: str, limit: int = 10) -> List[Village]:
-    q = f"%{query.strip()}%"
+    clean = query.strip()
+    q = f"%{clean}%"
+    filters = [
+        Village.name.ilike(q),
+        cast(Village.id, String).ilike(q),
+    ]
+    alias = LOCATION_ALIASES.get(clean.lower())
+    if alias and alias != clean.lower():
+        filters.append(Village.name.ilike(f"%{alias}%"))
+
     return (
         db.query(Village)
-        .filter(
-            or_(
-                Village.name.ilike(q),
-                cast(Village.id, String).ilike(q),
-            )
-        )
+        .filter(or_(*filters))
         .limit(limit)
         .all()
     )
