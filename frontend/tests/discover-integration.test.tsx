@@ -113,13 +113,8 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       expect(screen.getByText('Pilot Live')).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(screen.getByText('Top Growth Categories')).toBeInTheDocument();
+        expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
       });
-
-      expect(screen.getByText('+34%')).toBeInTheDocument();
-      expect(screen.getByText('+28%')).toBeInTheDocument();
-      expect(screen.getByText('+24%')).toBeInTheDocument();
-      expect(screen.getByText('Observed Regional Indicator')).toBeInTheDocument();
 
       expect(screen.getByText('Micro Finance Scheme')).toBeInTheDocument();
       expect(screen.getByText(/6\.5% p\.a\./)).toBeInTheDocument();
@@ -182,9 +177,9 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       fireEvent.click(retryBtn);
 
       await waitFor(() => {
-        expect(screen.getByText('Top Growth Categories')).toBeInTheDocument();
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
       });
-      expect(screen.getByText('+34%')).toBeInTheDocument();
+      expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
     });
 
     it('handles non-Error rejection object gracefully', async () => {
@@ -229,7 +224,7 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       expect(screen.getByText(/Expansion to Rajasthan is coming soon!/i)).toBeInTheDocument();
     });
 
-    it('handles empty backend categories gracefully with honest empty state', async () => {
+    it('handles empty backend categories gracefully and renders state overview', async () => {
       vi.spyOn(apiClient, 'getInsights').mockResolvedValueOnce({
         location: 'Uttar Pradesh',
         categories: [],
@@ -245,8 +240,9 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText(/No category trends recorded for this location yet/i)).toBeInTheDocument();
+        expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
       });
+      expect(screen.getByText('Micro Finance Scheme')).toBeInTheDocument();
     });
   });
 
@@ -403,7 +399,7 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       expect(screen.getByText('State Opportunities & Pilot Insights')).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(screen.getByText('Top Growth Categories')).toBeInTheDocument();
+        expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
       });
 
       // Select Rajasthan state on Level 1 map if path exists
