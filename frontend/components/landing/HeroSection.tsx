@@ -104,7 +104,7 @@ export function HeroSection(): React.JSX.Element {
             {/* Main Headline */}
             <h1 className="animate-slide-up-1 text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-slate-950 leading-[1.12]">
               Know if your 
-              <span className="block">business idea work</span>
+              <span className="block">business idea works</span>
             </h1>
 
             {/* Subtitle */}
