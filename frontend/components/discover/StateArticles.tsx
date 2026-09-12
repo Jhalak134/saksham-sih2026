@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Newspaper, ChevronLeft, ChevronRight, ExternalLink, RefreshCw, Pause, Play } from 'lucide-react';
+import { Newspaper, ChevronLeft, ChevronRight, RefreshCw, Pause, Play } from 'lucide-react';
 import { useShell } from '@/lib/shell-context';
 import { cn } from '@/lib/cn';
 import type { ArticleItem } from '@/app/api/articles/route';
@@ -129,7 +129,7 @@ export function StateArticles({
       {/* Header with Title + Slide Controls */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-[#2E6FF2]">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
             <Newspaper size={16} />
           </div>
           <div>
@@ -243,7 +243,7 @@ export function StateArticles({
               href={currentArticle.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-1 flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2E6FF2]"
+              className="group flex flex-1 flex-col justify-between focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer"
             >
               {/* 1. Article Image Thumbnail */}
               <div className="relative h-44 sm:h-48 md:h-52 w-full bg-slate-100 overflow-hidden shrink-0">
@@ -267,7 +267,7 @@ export function StateArticles({
                 {!isPaused && articles.length > 1 && (
                   <div
                     key={`bar-${currentIndex}`}
-                    className="absolute bottom-0 left-0 h-1 bg-[#2E6FF2]/80 animate-[progress_3s_linear]"
+                    className="absolute bottom-0 left-0 h-1 bg-slate-700/80 animate-[progress_3s_linear]"
                     style={{
                       animation: 'shrinkProgress 3000ms linear infinite',
                     }}
@@ -280,7 +280,7 @@ export function StateArticles({
                 <div>
                   {/* Meta Row: Source on Left + Date on Right */}
                   <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
-                    <span className="font-bold text-[#2E6FF2] truncate max-w-[200px]">
+                    <span className="font-bold text-slate-700 truncate max-w-[200px]">
                       {currentArticle.source}
                     </span>
                     <span className="text-slate-400 shrink-0">
@@ -289,25 +289,16 @@ export function StateArticles({
                   </div>
 
                   {/* Bold Headline Title */}
-                  <h4 className="mt-2 text-sm sm:text-base font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-[#2E6FF2] transition-colors">
+                  <h4 className="mt-2 text-sm sm:text-base font-bold text-slate-900 line-clamp-2 leading-snug group-hover:underline group-hover:text-slate-700 transition-colors">
                     {currentArticle.title}
                   </h4>
 
                   {/* Snippet / Description */}
                   {currentArticle.snippet && (
-                    <p className="mt-1.5 text-xs sm:text-[12.5px] text-slate-600 line-clamp-2 leading-relaxed">
+                    <p className="mt-2 text-xs sm:text-[12.5px] text-slate-600 line-clamp-3 leading-relaxed">
                       {currentArticle.snippet}
                     </p>
                   )}
-                </div>
-
-                {/* 3. Read More Link */}
-                <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 text-xs sm:text-[13px] font-bold text-[#2E6FF2] group-hover:underline">
-                    <span>Read more</span>
-                    <span className="text-xs">→</span>
-                  </span>
-                  <ExternalLink size={14} className="text-slate-400 group-hover:text-[#2E6FF2] transition-colors" />
                 </div>
               </div>
             </a>
@@ -325,7 +316,7 @@ export function StateArticles({
                   className={cn(
                     'h-1.5 rounded-full transition-all cursor-pointer',
                     idx === currentIndex
-                      ? 'w-5 bg-[#2E6FF2]'
+                      ? 'w-5 bg-slate-800'
                       : 'w-1.5 bg-slate-300 hover:bg-slate-400'
                   )}
                 />

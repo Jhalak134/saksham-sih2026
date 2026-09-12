@@ -25,10 +25,8 @@ import { cn } from '@/lib/cn';
 import {
   SIDEBAR_PRIMARY_ITEMS,
   SIDEBAR_SECONDARY_ITEMS,
-  SUPPORTED_LANGUAGES,
   type IconName,
   type NavItemConfig,
-  type LanguageCode,
 } from '@/lib/constants';
 import { useShell } from '@/lib/shell-context';
 import { useAuth } from '@/lib/auth-context';
@@ -107,41 +105,6 @@ function NavRow({ config, active, badge }: NavRowProps): React.JSX.Element {
   );
 }
 
-interface LanguageRowProps {
-  language: LanguageCode;
-  onChange: (code: LanguageCode) => void;
-}
-
-function LanguageRow({
-  language,
-  onChange,
-}: LanguageRowProps): React.JSX.Element {
-  return (
-    <div className="flex items-center gap-3 rounded-md px-3 py-2.5">
-      <Languages
-        size={18}
-        strokeWidth={1.75}
-        className="text-[var(--color-text-muted)]"
-        aria-hidden="true"
-      />
-      <span className="flex-1 text-sm font-medium text-[var(--color-text-muted)]">
-        Language
-      </span>
-      <select
-        value={language}
-        onChange={(e) => onChange(e.target.value as LanguageCode)}
-        className="rounded border border-[var(--color-border)] bg-white px-1.5 py-0.5 text-xs text-[var(--color-text-dark)] focus:outline-none focus:ring-1 focus:ring-[var(--color-accent)]"
-        aria-label="Select language"
-      >
-        {SUPPORTED_LANGUAGES.map(({ code, label }) => (
-          <option key={code} value={code}>
-            {label}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
 
 interface LogOutRowProps {
   onLogOut: () => void;
@@ -262,7 +225,7 @@ function useSidebarResize() {
  */
 export function Sidebar(): React.JSX.Element {
   const pathname = usePathname();
-  const { compareCount, language, setLanguage } = useShell();
+  const { compareCount } = useShell();
   const { user: authUser, isAuthenticated, logout } = useAuth();
   const { width, startResize, resetWidth } = useSidebarResize();
 
@@ -365,8 +328,6 @@ export function Sidebar(): React.JSX.Element {
             badge={item.href === '/compare' ? compareCount : undefined}
           />
         ))}
-
-        <LanguageRow language={language} onChange={setLanguage} />
       </nav>
 
       {/* Bottom Profile & Log Out Section */}
