@@ -10,18 +10,12 @@ import {
   MapPin,
   Sparkles,
   ArrowRight,
-  ShieldCheck,
   AlertCircle,
-  CheckCircle2,
   RefreshCw,
-  Info,
   Users,
   TrendingUp,
   Briefcase,
   Sprout,
-  Landmark,
-  Target,
-  ChevronRight,
   BarChart3,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
@@ -126,7 +120,7 @@ export function StateInsightsBar({
   };
 
   return (
-    <div className="flex h-full w-full flex-col justify-between space-y-4">
+    <div className="flex w-full flex-col gap-2.5 sm:gap-3">
       
       {/* ── Top Header: State Location & Pilot Status ── */}
       <div className="flex items-center justify-between gap-2">
@@ -288,126 +282,53 @@ export function StateInsightsBar({
       )}
 
 
-      {/* ── SUBGRID: State Priority Sectors + Active Schemes ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* ── SINGLE MERGED CARD: State Priority Sectors + Long Flat Start Assessment CTA ── */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 space-y-4 shadow-2xs">
+        <div>
+          <div className="flex items-center gap-1.5">
+            <Sprout size={16} className="text-emerald-700" />
+            <h4 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+              State Priority Sectors
+            </h4>
+          </div>
+          <p className="text-xs text-slate-500 font-medium mt-0.5">
+            Key sectors driving growth in {activeStateName}.
+          </p>
 
-        {/* Card A: State Priority Sectors with Shining Effect */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-2.5 flex flex-col justify-between shadow-2xs">
-          <div>
-            <div className="flex items-center gap-1.5">
-              <Sprout size={15} className="text-emerald-700" />
-              <h4 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
-                State Priority Sectors
-              </h4>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium">
-              Key sectors driving growth in {activeStateName}.
-            </p>
-
-            {/* Sector Pills with Shining Effect */}
-            <div className="flex flex-wrap gap-1.5 pt-2.5">
-              {[
-                'Dairy & Allied',
-                'Food Processing',
-                'Agri-Business',
-                'ODOP (One District One Product)',
-                'Handicrafts & Textiles',
-                'Rural Services',
-              ].map((sector) => (
-                <button
-                  key={sector}
-                  type="button"
-                  className="shining-sector-pill rounded-lg bg-[#EEF4FA] hover:bg-[#E2EDF7] border border-slate-200/70 px-2.5 py-1 text-[11px] font-semibold text-slate-800 shadow-2xs transition-colors cursor-pointer"
-                >
-                  {sector}
-                </button>
-              ))}
-            </div>
+          {/* Sector Pills with Shining Effect */}
+          <div className="flex flex-wrap gap-2 pt-2.5">
+            {[
+              'Dairy & Allied',
+              'Food Processing',
+              'Agri-Business',
+              'ODOP (One District One Product)',
+              'Handicrafts & Textiles',
+              'Rural Services',
+            ].map((sector) => (
+              <button
+                key={sector}
+                type="button"
+                className="shining-sector-pill rounded-lg bg-[#EEF4FA] hover:bg-[#E2EDF7] border border-slate-200/70 px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs transition-colors cursor-pointer"
+              >
+                {sector}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Card B: Active Schemes & Credit Facilities */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-2.5 flex flex-col justify-between shadow-2xs">
-          <div>
-            <div className="flex items-center gap-1.5">
-              <Landmark size={15} className="text-slate-800" />
-              <h4 className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
-                Active Schemes &amp; Credit Facilities
-              </h4>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium">
-              Government support available in {activeStateName}.
-            </p>
-
-            {/* Schemes List with Swapped Color Accent (Mustard Yellow -> Vibrant Blue #1D70B8) */}
-            <div className="space-y-2 pt-2">
-              <div className="flex items-center justify-between text-xs py-0.5">
-                <div className="flex items-center gap-1.5 text-slate-800 font-medium truncate">
-                  <Target size={13} className="text-slate-700 shrink-0" />
-                  <span className="truncate text-[11.5px]">Micro Finance Scheme</span>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 ml-2">
-                  <span className="font-bold text-[#1D70B8] text-[11.5px]">
-                    {liveSchemes?.[0]?.interest_rate ? `${liveSchemes[0].interest_rate}% p.a.` : '6.5% p.a.'}
-                  </span>
-                  <ChevronRight size={13} className="text-slate-400" />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-xs py-0.5">
-                <div className="flex items-center gap-1.5 text-slate-800 font-medium truncate">
-                  <Target size={13} className="text-slate-700 shrink-0" />
-                  <span className="truncate text-[11.5px]">Term Loan Scheme</span>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 ml-2">
-                  <span className="font-bold text-[#1D70B8] text-[11.5px]">
-                    {liveSchemes?.[1]?.interest_rate ? `${liveSchemes[1].interest_rate}% p.a.` : '8.0% p.a.'}
-                  </span>
-                  <ChevronRight size={13} className="text-slate-400" />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between text-xs py-0.5">
-                <div className="flex items-center gap-1.5 text-slate-800 font-medium truncate">
-                  <Target size={13} className="text-slate-700 shrink-0" />
-                  <span className="truncate text-[11.5px]">PMFME Scheme</span>
-                </div>
-                <div className="flex items-center gap-1 shrink-0 ml-2">
-                  <span className="font-bold text-[#1D70B8] text-[11.5px]">35% Capital Subsidy</span>
-                  <ChevronRight size={13} className="text-slate-400" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Primary Action Button (Swapped Color Palette: Yellow -> Blue #1D70B8) */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={handleStartAssessment}
-              aria-label={`Start assessment for ${activeStateName}`}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#1D70B8] hover:bg-[#185E9B] active:scale-[0.99] text-white px-4 py-2.5 text-xs sm:text-[13px] font-bold shadow-xs transition-all cursor-pointer"
-            >
-              <span>{`Start Assessment for ${activeStateName}`}</span>
-              <ArrowRight size={14} strokeWidth={2.2} />
-            </button>
-          </div>
+        {/* Long Flat Full-Width CTA Button */}
+        <div className="pt-1">
+          <button
+            type="button"
+            onClick={handleStartAssessment}
+            aria-label={`Start assessment for ${activeStateName}`}
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#1D70B8] hover:bg-[#185E9B] active:scale-[0.99] text-white px-4 py-3 text-sm font-bold shadow-xs transition-all cursor-pointer"
+          >
+            <span>{`Start Assessment for ${activeStateName}`}</span>
+            <ArrowRight size={15} strokeWidth={2.2} />
+          </button>
         </div>
-
       </div>
-
-      {/* Baseline Demographics & Provenance */}
-      {isUP && (
-        <div className="flex items-center justify-between rounded-xl bg-slate-50/90 px-3 py-2 border border-slate-200/70 text-[11px] text-slate-500">
-          <span className="flex items-center gap-1 text-slate-600 font-medium">
-            <Info size={12} className="text-slate-400" />
-            <span>Census 2011 Baseline (Mathura)</span>
-          </span>
-          <span className="font-bold text-slate-700">
-            <AnimatedCounter value={874} /> <span className="font-normal text-slate-500">micro locations</span>
-          </span>
-        </div>
-      )}
 
       {/* Coming Soon Notice Alert (Shown when non-UP state is clicked for assessment) */}
       {comingSoonMessage && (

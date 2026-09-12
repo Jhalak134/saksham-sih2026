@@ -29,8 +29,8 @@ export function IndiaMap({
   // Hover state for India SVG states
   const [hoveredState, setHoveredState] = useState<MapLocation | null>(null);
 
-  // Zoom for All-India SVG
-  const [svgZoomLevel, setSvgZoomLevel] = useState<number>(1);
+  // Zoom for All-India SVG - default 1.2x so it fills container completely
+  const [svgZoomLevel, setSvgZoomLevel] = useState<number>(1.2);
 
   // Click handler for states on the national map
   const handleStateClick = (state: MapLocation) => {
@@ -54,7 +54,7 @@ export function IndiaMap({
   };
 
   const handleResetZoom = () => {
-    setSvgZoomLevel(1);
+    setSvgZoomLevel(1.2);
   };
 
   return (
@@ -70,7 +70,7 @@ export function IndiaMap({
                 onClick={() => {
                   onStateSelect(null);
                   if (onDistrictSelect) onDistrictSelect(null);
-                  setSvgZoomLevel(1);
+                  setSvgZoomLevel(1.2);
                 }}
                 className="flex items-center gap-1 rounded-lg border border-slate-200/90 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 shadow-2xs cursor-pointer"
                 aria-label="Back to India Map"
