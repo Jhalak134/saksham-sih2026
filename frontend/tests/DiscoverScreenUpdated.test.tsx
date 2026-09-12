@@ -125,7 +125,7 @@ describe('Discover Page Layout and Interactions', () => {
       expect(screen.queryByRole('button', { name: /See all categories/i })).not.toBeInTheDocument();
     });
 
-    it('clicking a category card shows that category info in the left space', async () => {
+    it('clicking a category card opens category details in the same section with real data and keeps live news intact', async () => {
       const user = userEvent.setup();
       render(
         <ShellProvider>
@@ -140,17 +140,22 @@ describe('Discover Page Layout and Interactions', () => {
       const textilesCard = screen.getByRole('button', { name: /Textiles & Handloom category/i });
       await user.click(textilesCard);
 
-      // Left area now displays Textiles & Handloom details
+      // Live news remains intact on the left
+      expect(screen.getByText(/News · Uttar Pradesh/i)).toBeInTheDocument();
+
+      // Right section now displays Textiles & Handloom details in the same section
       expect(screen.getByRole('heading', { level: 3, name: 'Textiles & Handloom' })).toBeInTheDocument();
       expect(screen.getByText(/YoY in Uttar Pradesh/i)).toBeInTheDocument();
       expect(screen.getByText(/ODOP Textile Cluster Support/i)).toBeInTheDocument();
+      expect(screen.getByText(/Market Demand:/i)).toBeInTheDocument();
+      expect(screen.getByText(/Initial Capital:/i)).toBeInTheDocument();
 
-      // Click "Back to Live News"
-      const backBtn = screen.getByRole('button', { name: /Back to Live News/i });
+      // Click "Back to Categories"
+      const backBtn = screen.getByRole('button', { name: /Back to Categories/i });
       await user.click(backBtn);
 
-      // Returns to live news
-      expect(screen.getByText(/News · Uttar Pradesh/i)).toBeInTheDocument();
+      // Returns to all categories grid
+      expect(screen.getByRole('button', { name: /Textiles & Handloom category/i })).toBeInTheDocument();
     });
   });
 });
