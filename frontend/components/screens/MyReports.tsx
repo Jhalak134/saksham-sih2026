@@ -5,9 +5,11 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, MapPin, Bookmark, Sparkles } from 'lucide-react';
-import { MOCK_REPORTS, type ReportSummary, type AssessmentStatus } from '@/data/reportsData';
-import { getAssessmentHistory } from '@/lib/api-client';
+import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
+import { MOCK_REPORTS, type AssessmentStatus, type ReportSummary, type ConfidenceLevel } from '@/data/reportsData';
+import { fetchMyReports } from '@/lib/api-client';
+import { getStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
 import { ReportCard } from '@/components/reports/ReportCard';
 import {
   ReportFilters,
@@ -63,64 +65,83 @@ function resolveCategoryIcon(category: string): 'dairy' | 'mobile' | 'solar' | '
 }
 
 export function MyReportsScreen(): React.JSX.Element {
+  const [reports, setReports] = useState<ReportSummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [selectedStatus, setSelectedStatus] = useState<AssessmentStatus | 'All'>('All');
   const [sortOption, setSortOption] = useState<SortOption>('date-desc');
   const [fitFilter, setFitFilter] = useState<FitFilterOption>('all');
-  const [historyReports, setHistoryReports] = useState<ReportSummary[]>([]);
-
   useEffect(() => {
-    getAssessmentHistory()
-      .then((items) => {
-        if (!items || items.length === 0) return;
-        const mapped: ReportSummary[] = items.map((item) => ({
-          id: String(item.id),
-          title: `${item.category_name} Unit`,
-          location: `${item.village_name}, Mathura`,
-          date: item.created_at
-            ? new Date(item.created_at).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-              })
-            : 'Today',
-          status: 'Completed',
-          fitScore: Math.round(item.fit_score),
-          confidence: (item.confidence_level as 'Low' | 'Medium' | 'High') || 'High',
-          estimatedProfit: Math.round(item.project_cost * 0.25),
-          breakEvenMonths: 12,
-          category: item.category_name,
-          iconType: resolveCategoryIcon(item.category_name),
-        }));
-        setHistoryReports(mapped);
-      })
-      .catch(() => {
-        // Fall back to mock reports if history endpoint is unavailable
-      });
+    async function loadReports() {
+      try {
+        setLoading(true);
+        const token = getStorageItem(STORAGE_KEYS.authToken);
+        if (token) {
+          const data = await fetchMyReports(token);
+          if (data?.reports && data.reports.length > 0) {
+            const mapped: ReportSummary[] = data.reports.map((r) => ({
+              id: r.id,
+              title: `${r.category} Unit`,
+              category: r.category,
+              location: r.location,
+              status: (r.status as AssessmentStatus) || 'Completed',
+              date: r.date,
+              estimatedProfit: r.estimatedProfit,
+              breakEvenMonths: 6,
+              fitScore: r.fitScore,
+              confidence: (r.fitScore >= 75 ? 'High' : r.fitScore >= 50 ? 'Medium' : 'Low') as ConfidenceLevel,
+              iconType: resolveCategoryIcon(r.category),
+            }));
+            setReports(mapped);
+            return;
+          }
+        }
+        setReports([...MOCK_REPORTS]);
+      } catch {
+        setReports([...MOCK_REPORTS]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadReports();
   }, []);
-
-  const combinedReports = useMemo(() => {
-    return [...historyReports, ...MOCK_REPORTS];
-  }, [historyReports]);
 
   const statusCounts = useMemo(() => {
     return {
-      All: combinedReports.length,
-      Completed: combinedReports.filter((r) => r.status === 'Completed').length,
-      'In Progress': combinedReports.filter((r) => r.status === 'In Progress').length,
-      Saved: combinedReports.filter((r) => r.status === 'Saved').length,
+      All: reports.length,
+      Completed: reports.filter((r) => r.status === 'Completed').length,
+      'In Progress': reports.filter((r) => r.status === 'In Progress').length,
+      Saved: reports.filter((r) => r.status === 'Saved').length,
     };
-  }, [combinedReports]);
+  }, [reports]);
 
   const displayedReports = useMemo(() => {
-    const filtered = filterReports(combinedReports, selectedStatus, fitFilter);
+    const filtered = filterReports(reports, selectedStatus, fitFilter);
     return sortReports(filtered, sortOption);
-  }, [combinedReports, selectedStatus, fitFilter, sortOption]);
+  }, [reports, selectedStatus, fitFilter, sortOption]);
 
   const groupedReports = useMemo(() => {
     return groupReportsByLocation(displayedReports);
   }, [displayedReports]);
 
   const locationKeys = Object.keys(groupedReports);
+
+  if (loading) {
+    return (
+      <div className="flex h-full min-h-[50vh] w-full items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-[#167844]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-full min-h-[50vh] w-full items-center justify-center">
+        <div className="text-center text-red-600 font-medium">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-6 md:px-8 md:py-7">

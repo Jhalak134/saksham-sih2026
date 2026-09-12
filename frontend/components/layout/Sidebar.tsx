@@ -28,7 +28,11 @@ import {
   type LanguageCode,
 } from '@/lib/constants';
 import { useShell } from '@/lib/shell-context';
-import { getStorageItem, setStorageItem } from '@/lib/storage';
+import { useAuth } from '@/lib/auth-context';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/storage';
+import { LogoutModal } from '@/components/ui/LogoutModal';
+import { getAuthUser, clearAuthUser, type AuthUser } from '@/lib/auth';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 // ─── Resize constants ─────────────────────────────────────────────────────────
 
@@ -256,12 +260,43 @@ function useSidebarResize() {
 export function Sidebar(): React.JSX.Element {
   const pathname = usePathname();
   const { compareCount, language, setLanguage } = useShell();
+  const { user: authUser, isAuthenticated, logout } = useAuth();
   const { width, startResize, resetWidth } = useSidebarResize();
 
-  function handleLogOut(): void {
-    // Auth sign-out placeholder — will be wired in authentication sprint.
+  const [showLogOutModal, setShowLogOutModal] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
+    setUser(getAuthUser());
+  }, []);
+
+  function handleLogOutClick(): void {
+    setShowLogOutModal(true);
+  }
+
+  function handleConfirmLogOut(): void {
+    setShowLogOutModal(false);
+    logout();
+    clearAuthUser();
+    removeStorageItem(STORAGE_KEYS.authToken);
     window.location.href = '/';
   }
+
+  const displayName = authUser?.phone_or_email || user?.name || (user?.phone ? `+91 ${user.phone}` : 'Rural Entrepreneur');
+  const displaySub = isAuthenticated && authUser
+    ? (authUser.home_location || 'Verified Profile')
+    : user?.email || (user?.phone ? 'Verified Profile' : 'My Profile');
+  const userInitials = authUser?.phone_or_email
+    ? authUser.phone_or_email.slice(0, 2).toUpperCase()
+    : user?.name
+      ? user.name
+          .split(' ')
+          .filter(Boolean)
+          .map((n) => n[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase()
+      : 'RE';
 
   return (
     <aside
@@ -304,21 +339,41 @@ export function Sidebar(): React.JSX.Element {
         ))}
 
         <LanguageRow language={language} onChange={setLanguage} />
-
-        <div className="my-2 border-t border-[var(--color-border)]" />
-
-        <LogOutRow onLogOut={handleLogOut} />
       </nav>
 
-      {/* Footer */}
-      <div className="px-4 py-3 border-t border-[var(--color-border)]">
-        <p className="text-[11px] font-medium text-[var(--color-text-dark)]">
-          SAKSHAM v1.0.0
-        </p>
-        <p className="text-[10px] text-[var(--color-text-muted)]">
-          Built for rural entrepreneurs.
-        </p>
+      {/* Bottom Profile & Log Out Section */}
+      <div className="border-t border-[var(--color-border)] p-2 bg-slate-50/70 space-y-1">
+        {/* Profile Card */}
+        <Link
+          href="/profile"
+          className="flex items-center gap-2.5 rounded-md p-1.5 hover:bg-white hover:shadow-xs transition-all group"
+          title="Manage Profile"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-xs">
+            {userInitials}
+          </div>
+          <div className="min-w-0 flex-1 text-left">
+            <p className="truncate text-xs font-semibold text-slate-800 group-hover:text-[var(--color-accent)]">
+              {displayName}
+            </p>
+            <p className="truncate text-[10px] text-slate-500">
+              {displaySub}
+            </p>
+          </div>
+        </Link>
+
+        {/* Log Out button positioned directly under the profile */}
+        <div className="pt-0.5">
+          <LogOutRow onLogOut={handleLogOutClick} />
+        </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutModal
+        isOpen={showLogOutModal}
+        onClose={() => setShowLogOutModal(false)}
+        onConfirm={handleConfirmLogOut}
+      />
     </aside>
   );
 }

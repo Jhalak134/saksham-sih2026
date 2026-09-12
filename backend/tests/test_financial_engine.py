@@ -55,3 +55,66 @@ def test_financial_structuring_micro_finance():
     assert fin["interest_rate"] == 6.5
     assert fin["tenure_months"] == 36
     assert fin["moratorium_months"] == 3
+
+
+def test_financial_structuring_with_census_village():
+    """Verify financial structuring uses real village census metrics."""
+    from backend.app.db.models import Village
+
+    village = Village(
+        id=123579,
+        name="Kamar",
+        population=7031,
+        household_count=1153,
+        literacy_rate=0.5362,
+    )
+    fin = structure_finances(
+        available_margin=100000.0,
+        category_name="Dairy",
+        village=village,
+        competitor_count=0,
+    )
+
+    assert fin["catchment_households"] == 1153
+    assert fin["catchment_population"] == 7031
+    assert fin["monthly_catchment_tam"] == 1153 * 2500.0  # ₹28,82,500
+    assert fin["estimated_monthly_revenue"] > 150000.0
+    assert fin["estimated_monthly_profit"] > 30000.0
+    assert "Low" in fin["repayment_burden_category"] or "Manageable" in fin["repayment_burden_category"]
+
+
+def test_financial_structuring_small_vs_large_village():
+    """Verify small hamlet has lower revenue and higher repayment burden than large village."""
+    from backend.app.db.models import Village
+
+    small_v = Village(
+        id=1,
+        name="Small Hamlet",
+        population=30,
+        household_count=5,
+        literacy_rate=0.50,
+    )
+    large_v = Village(
+        id=2,
+        name="Large Village",
+        population=8000,
+        household_count=1300,
+        literacy_rate=0.65,
+    )
+
+    fin_small = structure_finances(
+        available_margin=15000.0,
+        category_name="Retail",
+        village=small_v,
+        competitor_count=1,
+    )
+    fin_large = structure_finances(
+        available_margin=15000.0,
+        category_name="Retail",
+        village=large_v,
+        competitor_count=1,
+    )
+
+    assert fin_small["estimated_monthly_revenue"] < fin_large["estimated_monthly_revenue"]
+    assert fin_small["repayment_burden_ratio"] > fin_large["repayment_burden_ratio"]
+

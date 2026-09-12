@@ -7,7 +7,7 @@ Assessment links User + Village + Category + Scheme.
 """
 
 from sqlalchemy import (
-    Column, Integer, String, Float, Boolean, DateTime, ForeignKey
+    Column, Integer, String, Float, Boolean, DateTime, ForeignKey, JSON
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -88,6 +88,7 @@ class BusinessCategory(Base):
     is_seasonal = Column(Boolean, default=False)
 
     businesses = relationship("Business", back_populates="category")
+    assessments = relationship("Assessment", back_populates="category")
 
 
 class Business(Base):
@@ -100,6 +101,8 @@ class Business(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     source = Column(String)
+    osm_id = Column(String)
+    location_precision = Column(String)
 
     village = relationship("Village", back_populates="businesses")
     category = relationship("BusinessCategory", back_populates="businesses")
@@ -124,6 +127,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     phone_or_email = Column(String, unique=True, nullable=False)
+    password_hash = Column(String, nullable=True)  # nullable=True: existing users predate password auth
     home_location = Column(String)
     default_capital = Column(Float)
     preferred_language = Column(String)
@@ -141,14 +145,30 @@ class Assessment(Base):
     capital_input = Column(Float)
     fit_score = Column(Float)
     confidence_level = Column(String)
+    rating = Column(String)
+    competitor_count = Column(Integer, default=0)
+    business_idea = Column(String)
     project_cost = Column(Float)
     max_loan_amount = Column(Float)
     recommended_project_size = Column(Float)
     scheme_id = Column(Integer, ForeignKey("schemes.id"))
+    interest_rate = Column(Float)
+    tenure_months = Column(Integer)
+    moratorium_months = Column(Integer)
+    monthly_emi = Column(Float)
+    total_repayment = Column(Float)
+    total_interest = Column(Float)
+    estimated_monthly_revenue = Column(Float)
+    estimated_monthly_profit = Column(Float)
+    repayment_burden_ratio = Column(Float)
+    repayment_burden_category = Column(String)
+    feasibility_breakdown = Column(JSON)
+    ai_insights = Column(JSON)
     status = Column(String, default="Exploring")
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
     user = relationship("User", back_populates="assessments")
     village = relationship("Village", back_populates="assessments")
+    category = relationship("BusinessCategory", back_populates="assessments")
     scheme = relationship("Scheme", back_populates="assessments")
