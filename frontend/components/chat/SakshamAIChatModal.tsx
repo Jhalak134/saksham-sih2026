@@ -328,9 +328,47 @@ export function SakshamAIChatModal({
     return 'D';
   }, []);
 
+const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
+
   // Determine if user has initiated a conversation
   const hasUserSentMessage = useMemo(() => {
     return messages.some((m) => m.sender === 'user');
+  }, [messages]);
+
+  // Load chat history from storage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedHistory = localStorage.getItem(STORAGE_KEY_AI_CHAT_HISTORY);
+        if (savedHistory) {
+          const parsed = JSON.parse(savedHistory);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setMessages(
+              parsed.map((m: any) => ({
+                ...m,
+                timestamp: new Date(m.timestamp),
+              }))
+            );
+          }
+        }
+      } catch {
+        // Safe fallback
+      }
+    }
+  }, []);
+
+  // Persist chat history whenever messages change with user interaction
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasUserMsg = messages.some((m) => m.sender === 'user');
+      if (hasUserMsg) {
+        try {
+          localStorage.setItem(STORAGE_KEY_AI_CHAT_HISTORY, JSON.stringify(messages));
+        } catch {
+          // Safe fallback
+        }
+      }
+    }
   }, [messages]);
 
   // Load Gemini key from storage or default
@@ -484,6 +522,13 @@ export function SakshamAIChatModal({
   }, [isOpen]);
 
   const handleClearHistory = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem(STORAGE_KEY_AI_CHAT_HISTORY);
+      } catch {
+        // Safe fallback
+      }
+    }
     setMessages([buildGreetingMessage(language)]);
     setInputText('');
     setAttachedFileName(null);

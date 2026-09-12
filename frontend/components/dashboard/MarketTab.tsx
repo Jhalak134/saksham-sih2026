@@ -33,97 +33,185 @@ interface SparklineProps {
 
 function Sparkline({ type, className }: SparklineProps): React.JSX.Element {
   if (type === 'fluctuating-up') {
-    // Upward fluctuating trend ending with mustard-yellow dot (#E8A93D)
+    // Total Demand Graph Chart with grid lines, smooth trajectory, data points and gradient fill
     return (
-      <svg
-        viewBox="0 0 170 48"
-        className={cn('w-full h-11 overflow-visible', className)}
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id="grad-sparkline-blue-1" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#2B4C6F" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#2B4C6F" stopOpacity="0.0" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M 0,36 L 22,30 L 42,38 L 64,24 L 84,28 L 105,18 L 126,22 L 146,12 L 166,6 L 166,48 L 0,48 Z"
-          fill="url(#grad-sparkline-blue-1)"
-        />
-        <path
-          d="M 0,36 L 22,30 L 42,38 L 64,24 L 84,28 L 105,18 L 126,22 L 146,12 L 166,6"
-          fill="none"
-          stroke="#2B4C6F"
-          strokeWidth="2.4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <circle cx="166" cy="6" r="3.5" fill="#E8A93D" stroke="#ffffff" strokeWidth="1.5" />
-      </svg>
+      <div className={cn('w-full space-y-1.5', className)}>
+        <svg
+          viewBox="0 0 280 80"
+          className="w-full h-16 sm:h-20 overflow-visible"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="grad-demand-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#2B4C6F" stopOpacity="0.28" />
+              <stop offset="50%" stopColor="#2B4C6F" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#2B4C6F" stopOpacity="0.00" />
+            </linearGradient>
+          </defs>
+
+          {/* Reference Grid Lines */}
+          <line x1="0" y1="20" x2="280" y2="20" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="0" y1="44" x2="280" y2="44" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="0" y1="68" x2="280" y2="68" stroke="#F1F5F9" strokeWidth="1" />
+          <line x1="0" y1="78" x2="280" y2="78" stroke="#E2E8F0" strokeWidth="1" />
+
+          {/* Gradient Area Fill */}
+          <path
+            d="M 0,64 C 30,62 45,50 70,52 C 95,54 110,38 140,40 C 170,42 185,22 215,20 C 240,18 260,10 280,6 L 280,78 L 0,78 Z"
+            fill="url(#grad-demand-blue)"
+          />
+
+          {/* Demand Curve */}
+          <path
+            d="M 0,64 C 30,62 45,50 70,52 C 95,54 110,38 140,40 C 170,42 185,22 215,20 C 240,18 260,10 280,6"
+            fill="none"
+            stroke="#2B4C6F"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Key Milestone Nodes */}
+          <circle cx="70" cy="52" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+          <circle cx="140" cy="40" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+          <circle cx="215" cy="20" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+
+          {/* Glowing Active End Node */}
+          <circle cx="280" cy="6" r="6" fill="#E8A93D" fillOpacity="0.25" />
+          <circle cx="280" cy="6" r="3.5" fill="#E8A93D" stroke="#ffffff" strokeWidth="1.5" />
+        </svg>
+
+        {/* X-Axis Timeline Markers */}
+        <div className="flex items-center justify-between text-[10px] font-medium text-slate-400 px-0.5 pt-0.5">
+          <span>Q1</span>
+          <span>Q2</span>
+          <span>Q3</span>
+          <span>Q4</span>
+          <span className="font-semibold text-emerald-700">Projected</span>
+        </div>
+      </div>
     );
   }
 
   if (type === 'stable') {
-    // Relatively stable trend ending with mustard-yellow dot (#E8A93D)
+    // Market Size Projection Graph Chart
     return (
+      <div className={cn('w-full space-y-1.5', className)}>
+        <svg
+          viewBox="0 0 280 80"
+          className="w-full h-16 sm:h-20 overflow-visible"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="grad-size-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#2B4C6F" stopOpacity="0.24" />
+              <stop offset="50%" stopColor="#2B4C6F" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#2B4C6F" stopOpacity="0.00" />
+            </linearGradient>
+          </defs>
+
+          {/* Reference Grid Lines */}
+          <line x1="0" y1="20" x2="280" y2="20" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="0" y1="44" x2="280" y2="44" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="0" y1="68" x2="280" y2="68" stroke="#F1F5F9" strokeWidth="1" />
+          <line x1="0" y1="78" x2="280" y2="78" stroke="#E2E8F0" strokeWidth="1" />
+
+          {/* Gradient Area Fill */}
+          <path
+            d="M 0,52 C 40,50 75,44 115,42 C 155,40 190,32 230,28 C 255,25 270,22 280,20 L 280,78 L 0,78 Z"
+            fill="url(#grad-size-blue)"
+          />
+
+          {/* Market Size Trend Line */}
+          <path
+            d="M 0,52 C 40,50 75,44 115,42 C 155,40 190,32 230,28 C 255,25 270,22 280,20"
+            fill="none"
+            stroke="#2B4C6F"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+
+          {/* Milestone Nodes */}
+          <circle cx="115" cy="42" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+          <circle cx="230" cy="28" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+
+          {/* Glowing Active End Node */}
+          <circle cx="280" cy="20" r="6" fill="#E8A93D" fillOpacity="0.25" />
+          <circle cx="280" cy="20" r="3.5" fill="#E8A93D" stroke="#ffffff" strokeWidth="1.5" />
+        </svg>
+
+        {/* X-Axis Timeline Markers */}
+        <div className="flex items-center justify-between text-[10px] font-medium text-slate-400 px-0.5 pt-0.5">
+          <span>Y1</span>
+          <span>Y2</span>
+          <span>Y3</span>
+          <span>Y4</span>
+          <span className="font-semibold text-slate-700">Target</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Growth Trend Graph Chart
+  return (
+    <div className={cn('w-full space-y-1.5', className)}>
       <svg
-        viewBox="0 0 170 48"
-        className={cn('w-full h-11 overflow-visible', className)}
+        viewBox="0 0 280 80"
+        className="w-full h-16 sm:h-20 overflow-visible"
         preserveAspectRatio="none"
         aria-hidden="true"
       >
         <defs>
-          <linearGradient id="grad-sparkline-blue-2" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#2B4C6F" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#2B4C6F" stopOpacity="0.0" />
+          <linearGradient id="grad-growth-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#2B4C6F" stopOpacity="0.28" />
+            <stop offset="50%" stopColor="#2B4C6F" stopOpacity="0.10" />
+            <stop offset="100%" stopColor="#2B4C6F" stopOpacity="0.00" />
           </linearGradient>
         </defs>
+
+        {/* Reference Grid Lines */}
+        <line x1="0" y1="20" x2="280" y2="20" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" />
+        <line x1="0" y1="44" x2="280" y2="44" stroke="#E2E8F0" strokeWidth="1" strokeDasharray="4 4" />
+        <line x1="0" y1="68" x2="280" y2="68" stroke="#F1F5F9" strokeWidth="1" />
+        <line x1="0" y1="78" x2="280" y2="78" stroke="#E2E8F0" strokeWidth="1" />
+
+        {/* Gradient Area Fill */}
         <path
-          d="M 0,24 L 30,22 L 60,25 L 90,23 L 120,21 L 145,23 L 166,22 L 166,48 L 0,48 Z"
-          fill="url(#grad-sparkline-blue-2)"
+          d="M 0,68 C 35,66 70,55 105,48 C 140,42 175,28 210,20 C 245,12 265,9 280,7 L 280,78 L 0,78 Z"
+          fill="url(#grad-growth-blue)"
         />
+
+        {/* Growth Trend Line */}
         <path
-          d="M 0,24 L 30,22 L 60,25 L 90,23 L 120,21 L 145,23 L 166,22"
+          d="M 0,68 C 35,66 70,55 105,48 C 140,42 175,28 210,20 C 245,12 265,9 280,7"
           fill="none"
           stroke="#2B4C6F"
-          strokeWidth="2.4"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <circle cx="166" cy="22" r="3.5" fill="#E8A93D" stroke="#ffffff" strokeWidth="1.5" />
-      </svg>
-    );
-  }
 
-  // Growth trend - upward trending with subtle fluctuations
-  return (
-    <svg
-      viewBox="0 0 170 48"
-      className={cn('w-full h-11 overflow-visible', className)}
-      preserveAspectRatio="none"
-      aria-hidden="true"
-    >
-      <defs>
-        <linearGradient id="grad-sparkline-blue-3" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#2B4C6F" stopOpacity="0.22" />
-          <stop offset="100%" stopColor="#2B4C6F" stopOpacity="0.0" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M 0,38 L 24,34 L 48,36 L 72,28 L 96,26 L 120,16 L 144,18 L 166,8 L 166,48 L 0,48 Z"
-        fill="url(#grad-sparkline-blue-3)"
-      />
-      <path
-        d="M 0,38 L 24,34 L 48,36 L 72,28 L 96,26 L 120,16 L 144,18 L 166,8"
-        fill="none"
-        stroke="#2B4C6F"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="166" cy="8" r="3.5" fill="#E8A93D" stroke="#ffffff" strokeWidth="1.5" />
-    </svg>
+        {/* Milestone Nodes */}
+        <circle cx="105" cy="48" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+        <circle cx="210" cy="20" r="3" fill="#ffffff" stroke="#2B4C6F" strokeWidth="2" />
+
+        {/* Glowing Active End Node */}
+        <circle cx="280" cy="7" r="6" fill="#E8A93D" fillOpacity="0.25" />
+        <circle cx="280" cy="7" r="3.5" fill="#E8A93D" stroke="#ffffff" strokeWidth="1.5" />
+      </svg>
+
+      {/* X-Axis Timeline Markers */}
+      <div className="flex items-center justify-between text-[10px] font-medium text-slate-400 px-0.5 pt-0.5">
+        <span>M1</span>
+        <span>M3</span>
+        <span>M6</span>
+        <span>M9</span>
+        <span className="font-semibold text-emerald-700">M12</span>
+      </div>
+    </div>
   );
 }
 

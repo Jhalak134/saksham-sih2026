@@ -223,7 +223,7 @@ export function Drawer(): React.JSX.Element {
         }}
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
+        <div className="flex items-center justify-between px-4 py-3">
           <Link
             href="/discover"
             onClick={closeDrawer}
