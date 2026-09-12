@@ -189,6 +189,12 @@ function LoginFormContent(): React.JSX.Element {
       }
     }
 
+    try {
+      await login(userProfile.email);
+    } catch {
+      setStorageItem(STORAGE_KEYS.authUser, userProfile.email);
+    }
+
     setLoading(false);
 
     // Prompt for live location if signing up, newly created Google user, or no location saved yet
@@ -237,6 +243,7 @@ function LoginFormContent(): React.JSX.Element {
           auto_select: false,
           cancel_on_tap_outside: true,
         });
+        window.google.accounts.id.prompt();
       } catch (err) {
         console.warn('GSI initialize note:', err);
       }
@@ -316,6 +323,61 @@ function LoginFormContent(): React.JSX.Element {
 
   const handleGoogleAuth = () => {
     setError(null);
+    setGoogleNotice(null);
+
+    // If Google OAuth client is loaded in the browser, trigger Google popup
+    if (typeof window !== 'undefined' && window.google?.accounts?.oauth2) {
+      try {
+        setLoading(true);
+        const tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'email profile openid',
+          callback: async (tokenResponse) => {
+            if (tokenResponse?.access_token) {
+              try {
+                const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                });
+                const profile = await userInfoRes.json();
+                if (profile?.email) {
+                  await onGoogleSuccess({
+                    email: profile.email,
+                    name: profile.name,
+                    picture: profile.picture,
+                    google_id: profile.sub,
+                    token: tokenResponse.access_token,
+                  });
+                } else {
+                  triggerError('Unable to retrieve Google profile information.');
+                  setLoading(false);
+                }
+              } catch (fetchErr) {
+                console.error('Failed to fetch Google profile info:', fetchErr);
+                triggerError('Failed to fetch Google profile details. Please try again.');
+                setLoading(false);
+              }
+            } else if (tokenResponse?.error) {
+              setLoading(false);
+              triggerError('Google Sign-In was cancelled or encountered an error.');
+            } else {
+              setLoading(false);
+            }
+          },
+          error_callback: (err: unknown) => {
+            setLoading(false);
+            console.error('Google OAuth client error:', err);
+            triggerError('Google Sign-In popup could not be opened.');
+          },
+        });
+        tokenClient.requestAccessToken({ prompt: 'select_account' });
+        return;
+      } catch (oauthErr) {
+        setLoading(false);
+        console.error('Google OAuth initialization error:', oauthErr);
+      }
+    }
+
+    // Fallback for pilot/mock/test environments where window.google is not available
     if (activeTab === 'signup') {
       setShowLocationModal(true);
       return;
