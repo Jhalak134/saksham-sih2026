@@ -193,7 +193,10 @@ function formatDocTitle(id: string): string {
 }
 
 function renderInlineMarkdown(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+  if (!text) return null;
+  const tokenRegex = /(\*\*.*?\*\*|`.*?`|\[.*?\]\(.*?\)|\*.*?\*)/g;
+  const parts = text.split(tokenRegex);
+
   return parts.map((part, i) => {
     if (part.startsWith('**') && part.endsWith('**')) {
       return (
@@ -209,86 +212,184 @@ function renderInlineMarkdown(text: string): React.ReactNode {
         </code>
       );
     }
+    const linkMatch = part.match(/^\[(.*?)\]\((.*?)\)$/);
+    if (linkMatch) {
+      return (
+        <a
+          key={i}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-emerald-700 underline font-medium hover:text-emerald-800"
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      return (
+        <em key={i} className="italic text-slate-700">
+          {part.slice(1, -1)}
+        </em>
+      );
+    }
     return part;
   });
 }
 
-interface ParsedAIContent {
-  leadParagraphs: string[];
-  keyInsight: string | null;
-  middleParagraphs: string[];
-  keyOpportunities: string[];
-}
+export type ContentBlock =
+  | { type: 'heading'; level: number; text: string }
+  | { type: 'divider' }
+  | { type: 'insight'; text: string }
+  | { type: 'table'; headers: string[]; rows: string[][] }
+  | { type: 'list'; items: string[]; isOrdered?: boolean }
+  | { type: 'paragraph'; text: string };
 
-function parseAIMessage(msg: ChatMessage): ParsedAIContent {
-  const rawText = msg.text || '';
+export function parseAIMessageBlocks(rawText: string): ContentBlock[] {
   const lines = rawText.split('\n');
+  const blocks: ContentBlock[] = [];
+  let i = 0;
 
-  const leadParagraphs: string[] = [];
-  const middleParagraphs: string[] = [];
-  const extractedBullets: string[] = [];
-  let explicitInsight: string | null = null;
-  let currentParagraph = '';
+  while (i < lines.length) {
+    const rawLine = lines[i];
+    const trimmed = rawLine.trim();
 
-  for (const line of lines) {
-    const trimmed = line.trim();
+    // 1. Blank line
     if (!trimmed) {
-      if (currentParagraph) {
-        leadParagraphs.push(currentParagraph);
-        currentParagraph = '';
-      }
+      i++;
       continue;
     }
 
-    // Check for explicit Key Insight prefix
-    if (trimmed.toLowerCase().startsWith('key insight:') || trimmed.toLowerCase().startsWith('**key insight:**')) {
-      const insightText = trimmed.replace(/^(\*\*key insight:\*\*|key insight:)\s*/i, '');
-      if (insightText) {
-        explicitInsight = insightText;
-      }
+    // 2. Horizontal Divider (---, ***, ___)
+    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      blocks.push({ type: 'divider' });
+      i++;
       continue;
     }
 
-    // Check for bullet list items
-    if (trimmed.startsWith('•') || trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-      if (currentParagraph) {
-        leadParagraphs.push(currentParagraph);
-        currentParagraph = '';
-      }
-      const bulletText = trimmed.replace(/^[•\-\*]\s*/, '').trim();
-      if (bulletText) extractedBullets.push(bulletText);
+    // 3. Headings (#, ##, ###, ####)
+    const headingMatch = trimmed.match(/^(#{1,4})\s+(.+)$/);
+    if (headingMatch) {
+      blocks.push({
+        type: 'heading',
+        level: headingMatch[1].length,
+        text: headingMatch[2],
+      });
+      i++;
       continue;
     }
 
-    if (currentParagraph) {
-      currentParagraph += ' ' + trimmed;
-    } else {
-      currentParagraph = trimmed;
+    // 4. Key Insight prefix or blockquote (> Key Insight...)
+    if (
+      trimmed.toLowerCase().startsWith('key insight:') ||
+      trimmed.toLowerCase().startsWith('**key insight:**') ||
+      trimmed.startsWith('> ')
+    ) {
+      const insightClean = trimmed
+        .replace(/^>\s*/, '')
+        .replace(/^(\*\*key insight:\*\*|key insight:)\s*/i, '')
+        .trim();
+      blocks.push({
+        type: 'insight',
+        text: insightClean,
+      });
+      i++;
+      continue;
     }
+
+    // 5. Table (lines starting and ending with |)
+    if (trimmed.startsWith('|') && trimmed.endsWith('|') && trimmed.split('|').length >= 3) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('|') && lines[i].trim().endsWith('|')) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+
+      if (tableLines.length >= 2) {
+        const parseRow = (line: string) =>
+          line
+            .slice(1, -1)
+            .split('|')
+            .map((c) => c.trim());
+
+        const headers = parseRow(tableLines[0]);
+        const isSeparator = (line: string) => {
+          const cells = parseRow(line);
+          return cells.every((c) => /^:?-+:?$/.test(c));
+        };
+
+        const rows: string[][] = [];
+        const startIdx = isSeparator(tableLines[1]) ? 2 : 1;
+        for (let r = startIdx; r < tableLines.length; r++) {
+          rows.push(parseRow(tableLines[r]));
+        }
+
+        blocks.push({
+          type: 'table',
+          headers,
+          rows,
+        });
+        continue;
+      }
+    }
+
+    // 6. Bullet Lists (•, -, *) or Numbered Lists (1., 2.)
+    const isBullet = /^[•\-\*]\s+/.test(trimmed);
+    const isNumbered = /^\d+\.\s+/.test(trimmed);
+    if (isBullet || isNumbered) {
+      const listItems: string[] = [];
+      const isOrdered = isNumbered;
+
+      while (i < lines.length) {
+        const lineTrim = lines[i].trim();
+        if (isOrdered ? /^\d+\.\s+/.test(lineTrim) : /^[•\-\*]\s+/.test(lineTrim)) {
+          const cleanItem = lineTrim.replace(isOrdered ? /^\d+\.\s+/ : /^[•\-\*]\s+/, '').trim();
+          listItems.push(cleanItem);
+          i++;
+        } else if (!lineTrim) {
+          break;
+        } else {
+          break;
+        }
+      }
+
+      blocks.push({
+        type: 'list',
+        items: listItems,
+        isOrdered,
+      });
+      continue;
+    }
+
+    // 7. Regular paragraph (combines contiguous text lines)
+    let paraText = trimmed;
+    i++;
+    while (i < lines.length) {
+      const nextTrim = lines[i].trim();
+      if (
+        !nextTrim ||
+        nextTrim.startsWith('#') ||
+        nextTrim === '---' ||
+        nextTrim === '***' ||
+        nextTrim.startsWith('|') ||
+        /^[•\-\*]\s+/.test(nextTrim) ||
+        /^\d+\.\s+/.test(nextTrim) ||
+        nextTrim.startsWith('> ') ||
+        nextTrim.toLowerCase().startsWith('key insight:')
+      ) {
+        break;
+      }
+      paraText += ' ' + nextTrim;
+      i++;
+    }
+
+    blocks.push({
+      type: 'paragraph',
+      text: paraText,
+    });
   }
 
-  if (currentParagraph) {
-    leadParagraphs.push(currentParagraph);
-  }
-
-  // Key insight resolution: explicit first, then 1st item of key_points if present
-  let finalInsight: string | null = explicitInsight;
-  const keyPoints = msg.key_points ? [...msg.key_points] : [];
-
-  if (!finalInsight && keyPoints.length > 0) {
-    finalInsight = keyPoints[0];
-    keyPoints.shift();
-  }
-
-  // Opportunities / Highlights
-  const allOpportunities = [...extractedBullets, ...keyPoints];
-
-  return {
-    leadParagraphs,
-    keyInsight: finalInsight,
-    middleParagraphs,
-    keyOpportunities: allOpportunities,
-  };
+  return blocks;
 }
 
 export function SakshamAIChatModal({
@@ -603,7 +704,7 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
       role="dialog"
       aria-modal="true"
       aria-labelledby="saksham-chat-title"
-      className="fixed inset-0 z-[45] flex flex-col bg-[#F8FAFC] animate-in fade-in duration-200 md:pl-[var(--sidebar-width)] overflow-hidden"
+      className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,200px)] z-[45] flex flex-col bg-white animate-in fade-in duration-200 border-l border-slate-200/80 overflow-hidden"
     >
       <div className="relative flex flex-col w-full h-full bg-white overflow-hidden text-left">
         {/* Modal Top Header - Clean Minimal SaaS Bar */}
@@ -839,51 +940,132 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
                   );
                 }
 
-                // AI Assistant Message (Left Aligned, Natural Editorial Paragraphs)
-                const parsed = parseAIMessage(msg);
+                // AI Assistant Message (Left Aligned, Natural Editorial Paragraphs, Tables, Lists, Headings)
+                const blocks = parseAIMessageBlocks(msg.text || '');
 
                 return (
-                  <div key={msg.id} className="space-y-4 max-w-[92%] sm:max-w-[88%] mr-auto text-left">
+                  <div key={msg.id} className="space-y-3.5 max-w-[96%] sm:max-w-[90%] mr-auto text-left">
                     {/* Input Not Recognized Alert */}
                     {msg.grounding_status === 'invalid_input' && (
-                      <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200">
+                      <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200 mb-1">
                         <AlertTriangle size={13} className="shrink-0 text-amber-600" />
                         <span>Input Not Recognized</span>
                       </div>
                     )}
 
-                    {/* Lead Paragraphs */}
-                    {parsed.leadParagraphs.map((para, i) => (
-                      <p key={i} className="text-slate-800 text-sm sm:text-base leading-relaxed">
-                        {renderInlineMarkdown(para)}
-                      </p>
-                    ))}
+                    {/* Render Formatted Markdown Blocks */}
+                    {blocks.map((block, bIdx) => {
+                      switch (block.type) {
+                        case 'heading': {
+                          if (block.level <= 2) {
+                            return (
+                              <h3 key={bIdx} className="text-base sm:text-lg font-bold text-slate-900 pt-2 pb-1 border-b border-slate-100">
+                                {renderInlineMarkdown(block.text)}
+                              </h3>
+                            );
+                          }
+                          return (
+                            <h4 key={bIdx} className="text-sm sm:text-base font-bold text-slate-900 pt-1.5">
+                              {renderInlineMarkdown(block.text)}
+                            </h4>
+                          );
+                        }
 
-                    {/* Dedicated Key Insight Callout Box (Panel 3 Style) */}
-                    {parsed.keyInsight && (
-                      <div className="my-4 rounded-xl bg-[#F0FDF4] border border-emerald-200/80 p-4 sm:p-5">
-                        <h4 className="text-sm font-bold text-slate-900 mb-1.5">Key Insight</h4>
-                        <p className="text-sm text-slate-800 leading-relaxed font-normal">
-                          {renderInlineMarkdown(parsed.keyInsight)}
-                        </p>
-                      </div>
-                    )}
+                        case 'divider':
+                          return <hr key={bIdx} className="my-3 border-slate-200/80" />;
 
-                    {/* Middle Paragraphs */}
-                    {parsed.middleParagraphs.map((para, i) => (
-                      <p key={i} className="text-slate-800 text-sm sm:text-base leading-relaxed">
-                        {renderInlineMarkdown(para)}
-                      </p>
-                    ))}
+                        case 'insight':
+                          return (
+                            <div key={bIdx} className="my-3 rounded-xl bg-[#F0FDF4] border border-emerald-200/90 p-4 sm:p-5 shadow-2xs">
+                              <h4 className="text-xs sm:text-sm font-bold text-emerald-900 mb-1 flex items-center gap-1.5">
+                                <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+                                Key Insight
+                              </h4>
+                              <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+                                {renderInlineMarkdown(block.text)}
+                              </p>
+                            </div>
+                          );
 
-                    {/* Key Opportunities / Structured Highlights (Panel 3 Style) */}
-                    {parsed.keyOpportunities.length > 0 && (
-                      <div className="mt-4 space-y-2">
-                        <h4 className="text-sm font-bold text-slate-900">Key Opportunities</h4>
+                        case 'table':
+                          return (
+                            <div key={bIdx} className="my-3.5 overflow-x-auto rounded-xl border border-slate-200/90 bg-white shadow-2xs">
+                              <table className="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+                                <thead className="bg-slate-50 font-semibold text-slate-900">
+                                  <tr>
+                                    {block.headers.map((head, hIdx) => (
+                                      <th
+                                        key={hIdx}
+                                        className="px-3.5 py-2.5 text-left font-bold text-slate-900 border-r last:border-r-0 border-slate-200/80"
+                                      >
+                                        {renderInlineMarkdown(head)}
+                                      </th>
+                                    ))}
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100 text-slate-700">
+                                  {block.rows.map((row, rIdx) => (
+                                    <tr key={rIdx} className={rIdx % 2 === 1 ? 'bg-slate-50/40 hover:bg-slate-50' : 'bg-white hover:bg-slate-50/60'}>
+                                      {row.map((cell, cIdx) => (
+                                        <td
+                                          key={cIdx}
+                                          className="px-3.5 py-2.5 leading-relaxed border-r last:border-r-0 border-slate-100 align-top"
+                                        >
+                                          {renderInlineMarkdown(cell)}
+                                        </td>
+                                      ))}
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          );
+
+                        case 'list': {
+                          if (block.isOrdered) {
+                            return (
+                              <ol key={bIdx} className="space-y-1.5 my-2 pl-1">
+                                {block.items.map((item, lIdx) => (
+                                  <li key={lIdx} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-800 leading-relaxed">
+                                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-700 mt-0.5">
+                                      {lIdx + 1}
+                                    </span>
+                                    <span className="flex-1">{renderInlineMarkdown(item)}</span>
+                                  </li>
+                                ))}
+                              </ol>
+                            );
+                          }
+                          return (
+                            <ul key={bIdx} className="space-y-1.5 my-2 pl-1">
+                              {block.items.map((item, lIdx) => (
+                                <li key={lIdx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800 leading-relaxed">
+                                  <span className="text-emerald-600 font-bold shrink-0 mt-0.5">•</span>
+                                  <span className="flex-1">{renderInlineMarkdown(item)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          );
+                        }
+
+                        case 'paragraph':
+                        default:
+                          return (
+                            <p key={bIdx} className="text-slate-800 text-xs sm:text-sm leading-relaxed">
+                              {renderInlineMarkdown(block.text)}
+                            </p>
+                          );
+                      }
+                    })}
+
+                    {/* Key Points / Highlights */}
+                    {msg.key_points && msg.key_points.length > 0 && (
+                      <div className="mt-3.5 space-y-1.5 border-t border-slate-100 pt-3">
+                        <h5 className="text-xs font-bold uppercase tracking-wider text-slate-500">Key Points</h5>
                         <ul className="space-y-1.5 pl-1">
-                          {parsed.keyOpportunities.map((point, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-800">
-                              <span className="text-slate-400 mt-0.5 shrink-0">•</span>
+                          {msg.key_points.map((point, idx) => (
+                            <li key={idx} className="flex items-start gap-2 text-xs sm:text-sm text-slate-800">
+                              <span className="text-emerald-600 font-bold shrink-0 mt-0.5">•</span>
                               <span>{renderInlineMarkdown(point)}</span>
                             </li>
                           ))}
