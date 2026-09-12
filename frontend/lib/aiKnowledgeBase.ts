@@ -866,7 +866,6 @@ function generateDeepProjectAnswer(query: string, language: string = 'en'): AIAd
     const popStr = targetState.census_2011.population
       ? `${(targetState.census_2011.population / 10000000).toFixed(2)} Crore`
       : 'large population';
-
     if (language === 'hi') {
       return {
         answer: `राज्य के व्यावसायिक तथ्य सरल हिंदी में:\n\n• सक्षम (SAKSHAM) ${targetState.state_name} के लिए आधिकारिक जनगणना 2011 और एक जिला एक उत्पाद (ODOP) डेटा का उपयोग करता है।\n• ${popStr} आबादी और ${targetState.census_2011.literacy_percent || 70}% साक्षरता के साथ, यहाँ खाद्य, खुदरा और सेवाओं की भारी मांग है।\n• प्रमुख जिला उत्पाद: ${targetState.odop.leading_odop_sector} (उत्पाद: "${targetState.odop.flagship_example_district_product}")।\n• केवल 10% स्वयं की बचत के साथ PMFME के तहत 35% सरकारी अनुदान का लाभ उठाया जा सकता है।`,
@@ -997,3 +996,4 @@ function generateDeepProjectAnswer(query: string, language: string = 'en'): AIAd
     is_valid: false,
   };
 }
+

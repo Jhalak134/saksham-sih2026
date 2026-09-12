@@ -35,7 +35,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-white antialiased">
+      <body className={`${inter.className} bg-white text-[var(--color-text-dark)] antialiased`}>
         <ShellProvider>{children}</ShellProvider>
       </body>
     </html>
