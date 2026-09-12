@@ -1,0 +1,179 @@
+
+
+
+PROBLEM 1 [CRITICAL / SCOPE-DEFINING] — No live LLM is connected anywhere
+---------------------------------------------------------------------------
+Status   : CONFIRMED
+Impact   : Product-defining — affects how the whole "AI" layer should be
+           described to judges/users.
+
+Evidence:
+- ai/requirements.txt contains exactly 3 packages: pdfplumber, chromadb,
+  fastapi. No openai, anthropic, google-generativeai, requests, or httpx.
+- Full-repo grep across every .py file for
+  openai|anthropic|claude|gpt-|gemini|api_key|chat.completions|messages.create
+  returns ZERO matches.
+- Embeddings (ai/ingestion/embed_and_store.py) use
+  chromadb.utils.embedding_functions.DefaultEmbeddingFunction — ChromaDB's
+  bundled local sentence-transformer. No API call, no key, fully offline.
+- ai/prompts/explanation_prompt.py, class GroundedExplainer.explain()
+  (line ~381-405) has exactly two code paths:
+    1. if self.llm_callable is not None: call it   <- injection seam, unused
+    2. else: generate_deterministic_explanation(...) <- plain f-string
+       template, e.g.:
+       f"From {title_hint} (pages {item.page_start}-{item.page_end}): "
+       f"{item.text[:120]}..."
+- Nowhere in the codebase is an llm_callable ever constructed or passed in.
+  No config value, env var, or factory does this.
+
+Conclusion:
+  RAG (retrieval) is real and working — ChromaDB semantic search over the
+  4 knowledge-base documents. GENERATION is not real — the "explanation"
+  text is retrieved-chunk text assembled by string formatting, not produced
+  by any language model. As shipped, this is "retrieval + templating," not
+  "retrieval + generation," despite being named "SAKSHAM AI / RAG Service."
+
+Recommendation:
+  Before presenting this as an "AI-powered" advisory system, either (a)
+  wire a real llm_callable (e.g. Anthropic/OpenAI client function matching
+  the Callable[[str, str], str | dict] signature already expected), or (b)
+  be explicit in documentation/demo narration that current output is
+  deterministic template text over retrieved evidence, not model-generated.
+
+
+PROBLEM 2 [HIGH] — Hallucination test suite is missing
+---------------------------------------------------------------------------
+Status   : CONFIRMED (0-byte file)
+File     : ai/tests/test_hallucination.py
+Evidence : File is literally empty (0 lines). ai/AGENTS.md line 77 states:
+           "ai/tests/test_hallucination.py — NOT IMPLEMENTED YET. Future task."
+
+Why it matters:
+  Given Problem 1, this is not yet a live risk (nothing generative runs
+  today). But it is explicitly the gap that must close BEFORE a real LLM
+  is plugged into llm_callable — otherwise the first live-LLM integration
+  ships with zero regression protection.
+
+Recommendation:
+  Implement before Task 8 (main-backend integration / first real LLM wire-up).
+  See "Suggested test cases" section at the bottom of this file.
+
+
+PROBLEM 3 [HIGH] — Citation-ID validation does not equal content validation
+---------------------------------------------------------------------------
+Status   : CONFIRMED
+File     : ai/prompts/explanation_prompt.py, parse_explanation_response()
+           and _validate_citations() (~line 152-260)
+
+What exists today:
+  - Every citation's chunk_id/document_id IS checked against the
+    EvidencePack's known chunk/doc IDs (_validate_citations, line ~152-168).
+  - grounding_status cannot be "grounded" if pack.evidence_available is
+    False (line ~245).
+  - Required fields are enforced: answer, key_points, citations,
+    limitations, warnings, grounding_status.
+
+What is missing:
+  - Nothing checks that the ANSWER TEXT is actually supported by the
+    cited chunk's content. A future LLM could cite a real, existing
+    chunk_id and still state a number, rate, or fact that appears nowhere
+    in that chunk's text — this passes all current validation because the
+    ID itself is valid, only the claim attached to it is fabricated.
+
+Recommendation:
+  Add a lightweight grounding check: for numeric claims (rates, amounts,
+  percentages) appearing in "answer", verify the same token/value appears
+  in at least one cited evidence item's raw text. Flag or reject otherwise.
+
+
+PROBLEM 4 [MEDIUM] — Template-disclaimer preservation is not independently tested
+---------------------------------------------------------------------------
+Status   : CONFIRMED (design relies on untested merge logic)
+File     : ai/grounding/evidence_pack.py (_collect_warnings) and
+           ai/prompts/explanation_prompt.py (_merge_unique)
+
+Detail:
+  Evidence items with is_template_data=True (e.g. the dairy yogurt project
+  report, which contains illustrative example figures, not local Mathura
+  facts) are supposed to always carry a "these are illustrative, not
+  guaranteed local facts" warning through to the final answer.
+  _merge_unique() is written to force pack.warnings into the final result
+  regardless of what an LLM response supplies — but no test proves an LLM
+  response cannot suppress or contradict this in the "answer" text itself
+  (only the separate "warnings" list is merge-protected).
+
+Recommendation:
+  Add a test: EvidencePack with is_template_data=True item -> simulate an
+  LLM response whose warnings list is empty / whose answer text ignores
+  the disclaimer -> assert final ExplanationResult.warnings still contains
+  the template warning.
+
+
+PROBLEM 5 [LOW] — Knowledge base is very thin
+---------------------------------------------------------------------------
+Status   : CONFIRMED
+Detail   : Only 4 source documents back the entire retrieval layer:
+             - pmfme_scheme_guidelines.json
+             - dairy_yogurt_plant_project_report.json
+             - manual_entrepreneurship_development.json
+             - mathura_district_industrial_profile.json
+Impact   : Fine for an MVP/hackathon demo scope, but any claim of broad
+           "AI advisory" coverage should be scoped honestly to what these
+           4 documents actually cover (PMFME scheme + one district +
+           one sample project template).
+
+
+PROBLEM 6 [LOW / STYLE] — Route-alias decorator stacking (informational, not a bug)
+---------------------------------------------------------------------------
+Status   : VERIFIED NOT A BUG, but flagged because it's easy to misread.
+File     : ai/service/main.py, query_endpoint (~line 228-251)
+Detail   : Two @app.post decorators stacked on one function to serve both
+           /query and /explain. This is valid FastAPI usage (each
+           decorator registers a route and returns the function
+           unchanged) — no fix needed, listed here only so it isn't
+           mistakenly "fixed" by someone unfamiliar with the pattern.
+
+
+=====================================================
+SUGGESTED TEST CASES FOR test_hallucination.py (Problem 2 fix)
+=====================================================
+1. test_rejects_citation_to_nonexistent_chunk_id
+   - LLM response cites a chunk_id/document_id not in EvidencePack ->
+     ExplanationValidationError.
+
+2. test_rejects_grounded_status_with_no_evidence
+   - evidence_available=False but LLM returns grounding_status="grounded"
+     -> ExplanationValidationError. Also test no_match retrieval status
+     with an LLM answer that states specific figures anyway.
+
+3. test_preserves_template_disclaimer_regardless_of_llm_output
+   - is_template_data=True evidence item; LLM response omits any
+     disclaimer -> final result.warnings still contains it.
+
+4. test_flags_numeric_claim_not_present_in_any_evidence_text
+   - Evidence text contains no rate/amount; LLM answer states a specific
+     rate -> document current behavior (passes silently today) and/or
+     assert a new grounding guard if Problem 3 is fixed alongside this.
+
+5. test_rejects_missing_required_fields
+   - Each of answer / key_points / citations / limitations / warnings /
+     grounding_status missing individually -> ExplanationValidationError
+     naming the missing field.
+
+6. test_rejects_invalid_grounding_status_value
+   - grounding_status not in GroundingStatus enum -> ExplanationValidationError.
+
+7. test_rejects_evidence_used_referencing_unknown_chunk_id
+   - Same shape as case 1, but for the evidence_used field.
+
+8. test_handles_malformed_or_wrapped_json_response
+   - Markdown code-fenced JSON, malformed JSON, non-dict/non-str response
+     type -> correct parsing or ExplanationValidationError in each case.
+
+9. test_deterministic_fallback_never_fabricates_without_evidence
+   - GroundedExplainer() with no llm_callable, empty EvidencePack ->
+     confirm output states no-match/no-evidence, never invents content.
+
+=====================================================
+END OF REPORT
+=====================================================
