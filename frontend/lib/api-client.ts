@@ -3,7 +3,7 @@
 // Connects Next.js Frontend to FastAPI Main Backend (:8000).
 // Invariant: Backend calculates deterministically; AI explains; Frontend displays.
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) || 'http://localhost:8000';
 
 export interface UserResponse {
   id: number;
