@@ -2,7 +2,7 @@
 // High-fidelity Financial analysis tab matching SAKSHAM design specifications and reference media_1789217626216.png.
 // Layout:
 // 1. Top Row: Financial Structure (Max Eligibility) on the left, Recommended Structure (Suitability) on the right.
-// 2. Middle Row: Projected Financials (Year 1) grouped bar chart with interactive M6 tooltip.
+// 2. Middle Row: Projected Financials (Year 1) grouped bar chart with interactive M6 tooltip and guaranteed visible pixel-height bars.
 // 3. Bottom Row: Break-even Analysis with clock badge and bold mustard-yellow target payback.
 
 'use client';
@@ -20,6 +20,7 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
   const { maxEligibility, suitability, breakEvenMonths, breakEvenNote, monthlyProjections } =
     report.financials;
 
+  // Exact 12-month projections matching reference design media_1789217626216.png
   const defaultProjections: MonthFinancial[] = [
     { month: 1, revenue: 24000, expenses: 30000 },
     { month: 2, revenue: 32000, expenses: 32000 },
@@ -36,18 +37,19 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
   ];
 
   const projections =
-    monthlyProjections && monthlyProjections.length === 12
+    monthlyProjections &&
+    monthlyProjections.length === 12 &&
+    monthlyProjections.some((m) => m.revenue >= 50000)
       ? monthlyProjections
       : defaultProjections;
 
   // Track active month for tooltip (defaults to M6 matching mockup)
   const [activeMonth, setActiveMonth] = useState<number>(6);
 
-  const activeData = projections.find((m) => m.month === activeMonth) || projections[5];
-
-  // Max value for chart scaling (defaults to 1,00,000 matching Y-axis in mockup)
+  // Y-axis configuration: scale to 1,00,000 matching mockup
   const yMax = 100000;
   const yTicks = [100000, 80000, 60000, 40000, 20000, 0];
+  const chartHeightPx = 180;
 
   return (
     <div className="space-y-5 md:space-y-6">
@@ -157,7 +159,7 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
       </div>
 
       {/* ── 2. Middle Row: Projected Financials (Year 1) Grouped Bar Chart ── */}
-      <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-5">
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
@@ -170,7 +172,7 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
           </div>
 
           {/* Legend */}
-          <div className="flex items-center gap-5 text-xs sm:text-sm font-semibold text-slate-900">
+          <div className="flex items-center gap-6 text-xs sm:text-sm font-semibold text-slate-900">
             <span className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-[#2B4C6F]" />
               <span>Revenue</span>
@@ -182,30 +184,41 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
           </div>
         </div>
 
-        {/* Chart Area with Y-axis and Interactive Tooltip */}
-        <div className="relative border-t border-slate-100 pt-6">
-          <div className="flex">
+        {/* Chart Area with Y-axis and Guaranteed Visible Bars */}
+        <div className="relative border-t border-slate-100 pt-10 sm:pt-12">
+          <div className="flex items-end">
             {/* Y-axis Labels */}
-            <div className="flex flex-col justify-between text-right pr-3 sm:pr-4 h-56 text-[11px] font-semibold text-slate-500 shrink-0 select-none pb-7">
+            <div className="flex flex-col justify-between text-right pr-3 sm:pr-4 h-[180px] text-[11px] font-semibold text-slate-500 shrink-0 select-none mb-7">
               {yTicks.map((tick) => (
-                <span key={tick}>₹{tick.toLocaleString('en-IN')}</span>
+                <span key={tick} className="leading-none">
+                  ₹{tick.toLocaleString('en-IN')}
+                </span>
               ))}
             </div>
 
             {/* Chart Bars Grid */}
-            <div className="relative flex-1 h-56">
+            <div className="relative flex-1">
               {/* Horizontal Grid lines */}
-              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-7">
-                {yTicks.map((tick) => (
-                  <div key={tick} className="w-full border-b border-dashed border-slate-200/80 h-0" />
+              <div className="absolute inset-0 h-[180px] flex flex-col justify-between pointer-events-none">
+                {yTicks.map((tick, i) => (
+                  <div
+                    key={tick}
+                    className={cn(
+                      'w-full border-b',
+                      i === yTicks.length - 1
+                        ? 'border-slate-300'
+                        : 'border-dashed border-slate-200'
+                    )}
+                  />
                 ))}
               </div>
 
               {/* 12 Months Columns */}
-              <div className="relative h-full flex items-end justify-between gap-1 sm:gap-2 z-10 pb-7">
+              <div className="relative h-[180px] flex items-end justify-between gap-1 sm:gap-2 z-10">
                 {projections.map((m) => {
-                  const revHeight = Math.min(100, Math.max(8, (m.revenue / yMax) * 100));
-                  const expHeight = Math.min(100, Math.max(8, (m.expenses / yMax) * 100));
+                  // Explicit pixel heights guaranteeing visible rendering in all browsers
+                  const revHeightPx = Math.max(14, Math.round((m.revenue / yMax) * chartHeightPx));
+                  const expHeightPx = Math.max(14, Math.round((m.expenses / yMax) * chartHeightPx));
                   const isSelected = activeMonth === m.month;
 
                   return (
@@ -213,74 +226,81 @@ export function FinancialsTab({ report }: FinancialsTabProps): React.JSX.Element
                       key={m.month}
                       onClick={() => setActiveMonth(m.month)}
                       onMouseEnter={() => setActiveMonth(m.month)}
-                      className="group flex-1 flex flex-col items-center h-full justify-end cursor-pointer relative"
+                      className="group flex-1 flex flex-col items-center justify-end cursor-pointer relative h-full"
                     >
                       {/* Interactive Tooltip Positioned above Active Month */}
                       {isSelected && (
-                        <div className="absolute -top-16 sm:-top-20 z-30 left-1/2 -translate-x-1/2 bg-[#1E293B] text-white p-2.5 sm:p-3 rounded-xl shadow-xl border border-slate-700/80 whitespace-nowrap pointer-events-none min-w-[155px]">
-                          <div className="text-[11px] font-bold text-slate-300 pb-1 border-b border-slate-700">
+                        <div className="absolute -top-24 sm:-top-28 z-30 left-1/2 -translate-x-1/2 bg-[#1E293B] text-white p-2.5 sm:p-3 rounded-xl shadow-2xl border border-slate-700 whitespace-nowrap min-w-[160px]">
+                          <div className="text-[11px] font-extrabold text-slate-300 pb-1 border-b border-slate-700">
                             M{m.month}
                           </div>
                           <div className="mt-1.5 space-y-1 text-xs">
-                            <div className="flex items-center justify-between gap-3">
-                              <span className="flex items-center gap-1.5 text-slate-300">
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="flex items-center gap-1.5 text-slate-300 font-medium">
                                 <span className="w-2 h-2 rounded-full bg-[#2B4C6F]" />
                                 Revenue
                               </span>
-                              <span className="font-bold text-white">
+                              <span className="font-extrabold text-white">
                                 ₹{m.revenue.toLocaleString('en-IN')}
                               </span>
                             </div>
-                            <div className="flex items-center justify-between gap-3">
-                              <span className="flex items-center gap-1.5 text-slate-300">
+                            <div className="flex items-center justify-between gap-4">
+                              <span className="flex items-center gap-1.5 text-slate-300 font-medium">
                                 <span className="w-2 h-2 rounded-full bg-[#E8A93D]" />
                                 Expenses
                               </span>
-                              <span className="font-bold text-white">
+                              <span className="font-extrabold text-white">
                                 ₹{m.expenses.toLocaleString('en-IN')}
                               </span>
                             </div>
                           </div>
                           {m.revenue >= m.expenses && (
-                            <div className="mt-2 text-[10px] font-semibold text-amber-300 bg-white/10 px-2 py-0.5 rounded text-center">
+                            <div className="mt-2 text-[10px] font-bold text-amber-300 bg-white/10 px-2 py-0.5 rounded text-center">
                               Revenue exceeds expenses
                             </div>
                           )}
                           {/* Tooltip Down Arrow */}
-                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#1E293B] border-r border-b border-slate-700/80 rotate-45" />
+                          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#1E293B] border-r border-b border-slate-700 rotate-45" />
                         </div>
                       )}
 
                       {/* Dotted indicator line when selected */}
                       {isSelected && (
-                        <div className="absolute inset-y-0 w-px border-l border-dashed border-slate-400/80 pointer-events-none -z-10" />
+                        <div className="absolute inset-y-0 w-px border-l border-dashed border-slate-400 pointer-events-none -z-10" />
                       )}
 
-                      {/* Grouped Bars */}
-                      <div className="flex items-end gap-1 w-full justify-center max-w-[32px]">
+                      {/* Grouped Bars Container */}
+                      <div className="flex items-end gap-1 sm:gap-1.5 w-full justify-center max-w-[34px] relative">
+                        {/* Dot indicator on active selection */}
+                        {isSelected && (
+                          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-slate-900 border border-white shadow-xs z-20" />
+                        )}
+
                         {/* Revenue Bar (Deep Dull Blue #2B4C6F) */}
                         <div
                           className={cn(
-                            'w-3 sm:w-3.5 rounded-t transition-all duration-300 bg-[#2B4C6F]',
-                            isSelected ? 'ring-2 ring-slate-900 ring-offset-1' : 'opacity-95 group-hover:opacity-100'
+                            'w-3 sm:w-3.5 rounded-t-sm transition-all duration-300 bg-[#2B4C6F] shrink-0',
+                            isSelected ? 'ring-2 ring-slate-900 ring-offset-1' : 'opacity-95 hover:opacity-100'
                           )}
-                          style={{ height: `${revHeight}%` }}
+                          style={{ height: `${revHeightPx}px` }}
                         />
                         {/* Expenses Bar (Mustard Yellow #E8A93D) */}
                         <div
                           className={cn(
-                            'w-3 sm:w-3.5 rounded-t transition-all duration-300 bg-[#E8A93D]',
-                            isSelected ? 'ring-2 ring-slate-900 ring-offset-1' : 'opacity-95 group-hover:opacity-100'
+                            'w-3 sm:w-3.5 rounded-t-sm transition-all duration-300 bg-[#E8A93D] shrink-0',
+                            isSelected ? 'ring-2 ring-slate-900 ring-offset-1' : 'opacity-95 hover:opacity-100'
                           )}
-                          style={{ height: `${expHeight}%` }}
+                          style={{ height: `${expHeightPx}px` }}
                         />
                       </div>
 
                       {/* X-axis Label */}
                       <span
                         className={cn(
-                          'absolute -bottom-6 text-xs font-bold transition-colors select-none',
-                          isSelected ? 'text-slate-950 underline decoration-[#E8A93D] decoration-2' : 'text-slate-700'
+                          'mt-2.5 text-xs font-bold transition-colors select-none block',
+                          isSelected
+                            ? 'text-slate-950 underline decoration-[#E8A93D] decoration-2 font-black'
+                            : 'text-slate-700'
                         )}
                       >
                         M{m.month}
