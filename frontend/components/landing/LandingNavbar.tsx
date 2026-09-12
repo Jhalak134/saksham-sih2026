@@ -31,9 +31,7 @@ interface NavItem {
 const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Home', href: '/', isHome: true },
   { label: 'About Us', href: '/about' },
-  { label: 'How It Works', href: '/how-it-works' },
-  { label: 'Feasibility', href: '/discover' },
-  { label: 'Schemes', href: '/new-assessment' },
+  { label: 'Discover', href: '/discover' },
 ] as const;
 
 export function LandingNavbar(): React.JSX.Element {
