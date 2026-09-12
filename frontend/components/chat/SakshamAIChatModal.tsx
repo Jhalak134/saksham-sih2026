@@ -425,6 +425,7 @@ export function SakshamAIChatModal({
   const [keyInput, setKeyInput] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const messagesScrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const baseInputRef = useRef<string>('');
@@ -480,12 +481,14 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
     }
   }, [messages]);
 
-  // Load Gemini key from storage or default
+  // Load saved Gemini API key on mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('saksham_gemini_api_key') || '';
-      setGeminiApiKey(saved || DEFAULT_GEMINI_KEY);
-      setKeyInput(saved);
+      const savedKey = localStorage.getItem('saksham_gemini_api_key');
+      if (savedKey) {
+        setGeminiApiKey(savedKey);
+        setKeyInput(savedKey);
+      }
     }
   }, []);
 
@@ -499,22 +502,22 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
     });
   }, [language]);
 
-  // Voice speech recognition hook
-  const handleSpeechResult = useCallback((fullTranscript: string) => {
-    const base = baseInputRef.current.trim();
-    const speech = fullTranscript.trim();
-    const combined = base ? `${base} ${speech}` : speech;
-    setInputText(combined);
+  // Voice speech-to-text handler
+  const handleSpeechResult = useCallback((transcript: string) => {
+    if (!transcript) return;
+    const base = baseInputRef.current ? `${baseInputRef.current.trim()} ` : '';
+    setInputText(`${base}${transcript}`);
   }, []);
 
+  const speechLang = languageCodeToSpeechLang(language);
   const {
     isListening,
-    toggleListening,
-    resetTranscript,
     isSupported: isSpeechSupported,
     error: speechError,
+    toggleListening,
+    resetTranscript,
   } = useSpeechRecognition({
-    initialLanguage: languageCodeToSpeechLang(language),
+    initialLanguage: speechLang,
     onTranscriptChange: handleSpeechResult,
   });
 
@@ -526,18 +529,39 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
     toggleListening();
   }, [isListening, inputText, resetTranscript, toggleListening]);
 
-  // Auto-scroll to bottom
+  // Safe auto-scroll to bottom inside the messages container only
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesScrollRef.current) {
+      if (typeof messagesScrollRef.current.scrollTo === 'function') {
+        messagesScrollRef.current.scrollTo({
+          top: messagesScrollRef.current.scrollHeight,
+          behavior: 'smooth',
+        });
+      } else {
+        messagesScrollRef.current.scrollTop = messagesScrollRef.current.scrollHeight;
+      }
+    }
   }, []);
 
   useEffect(() => {
     if (isOpen && !isKeyModalOpen) {
       scrollToBottom();
-      const timer = setTimeout(() => inputRef.current?.focus(), 150);
+      const timer = setTimeout(() => {
+        inputRef.current?.focus({ preventScroll: true });
+      }, 150);
       return () => clearTimeout(timer);
     }
   }, [isOpen, isKeyModalOpen, messages, scrollToBottom]);
+
+  // Lock background body scrolling while modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
 
   // Handle ESC key to close modal
   useEffect(() => {
@@ -704,11 +728,11 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
       role="dialog"
       aria-modal="true"
       aria-labelledby="saksham-chat-title"
-      className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,200px)] z-[45] flex flex-col bg-white animate-in fade-in duration-200 border-l border-slate-200/80 overflow-hidden"
+      className="fixed inset-y-0 top-0 bottom-0 right-0 left-0 md:left-[var(--sidebar-width,200px)] z-[45] h-screen h-[100dvh] max-h-screen max-h-[100dvh] flex flex-col bg-white border-l border-slate-200/80 overflow-hidden shadow-2xl"
     >
-      <div className="relative flex flex-col w-full h-full bg-white overflow-hidden text-left">
+      <div className="relative flex flex-col w-full h-full max-h-full min-h-0 bg-white overflow-hidden text-left">
         {/* Modal Top Header - Clean Minimal SaaS Bar */}
-        <header className="flex items-center justify-between px-4 sm:px-8 py-3.5 border-b border-slate-200/80 bg-white shrink-0">
+        <header className="shrink-0 flex items-center justify-between px-4 sm:px-8 py-3.5 border-b border-slate-200/80 bg-white z-10">
           <div className="flex items-center gap-3">
             <h2 id="saksham-chat-title" className="text-sm sm:text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <span>SAKSH<span className="text-[#FBAC05]">AM</span> AI Assistant</span>
@@ -863,13 +887,16 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
           mathura_district_industrial_profile, Census 2011, SIH #91 architecture.
         </div>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col overflow-y-auto bg-white">
+        {/* Main Content Area - Scrollable Message Feed */}
+        <div
+          ref={messagesScrollRef}
+          className="flex-1 min-h-0 overflow-y-auto bg-white"
+        >
           {!hasUserSentMessage ? (
             /* ================================================== */
             /* 1. INITIAL AI ASSISTANT SCREEN (Matching Panel 1) */
             /* ================================================== */
-            <div className="flex-1 flex flex-col items-center justify-center p-6 sm:p-10 text-center max-w-3xl mx-auto w-full">
+            <div className="flex min-h-full flex-col items-center justify-center p-6 sm:p-10 text-center max-w-3xl mx-auto w-full">
               {/* Soft Circular Sprout Badge */}
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8F8EE] text-[#167844] shadow-xs mb-5">
                 <svg
@@ -919,7 +946,7 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
             /* ================================================== */
             /* 2. CONVERSATIONAL RESPONSE VIEW (Panels 2 & 3)     */
             /* ================================================== */
-            <div className="flex-1 overflow-y-auto px-4 sm:px-12 py-6 space-y-6 max-w-4xl mx-auto w-full">
+            <div className="px-4 sm:px-12 py-6 space-y-6 max-w-4xl mx-auto w-full">
               {messages.map((msg) => {
                 // Skip the initial greeting from conversational flow once conversation starts
                 if (msg.id === 'greeting-en' || msg.id === 'greeting-hi' || msg.id === 'greeting-mr') {
@@ -1182,9 +1209,9 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
         )}
 
         {/* ================================================== */}
-        {/* 3. INPUT BAR (BOTTOM OF SCREEN) (Matching Reference) */}
+        {/* 3. INPUT BAR (BOTTOM OF SCREEN) (Permanently Pinned at Bottom) */}
         {/* ================================================== */}
-        <div className="p-4 sm:p-6 bg-white border-t border-slate-100 shrink-0">
+        <div className="shrink-0 p-4 sm:p-6 bg-white border-t border-slate-100 z-10 shadow-xs">
           <div className="max-w-3xl mx-auto w-full">
             {/* Attached File Chip */}
             {attachedFileName && (
