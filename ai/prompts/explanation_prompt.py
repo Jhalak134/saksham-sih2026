@@ -25,6 +25,7 @@ from typing import Any, Callable
 
 from ai.grounding.evidence_models import EvidenceItem
 from ai.grounding.evidence_pack import EvidencePack
+from ai.prompts.claim_verifier import verify_quantitative_grounding
 from ai.prompts.explanation_models import (
     EXPLANATION_JSON_SCHEMA,
     ExplanationCitation,
@@ -43,6 +44,7 @@ __all__ = [
     "build_explanation_user_prompt",
     "parse_explanation_response",
     "generate_deterministic_explanation",
+    "verify_quantitative_grounding",
     "GroundedExplainer",
     "explain_evidence",
 ]
@@ -174,13 +176,22 @@ def _extract_response_dict(raw_response: str | dict[str, Any]) -> dict[str, Any]
     """Extract and validate dictionary from raw string or dict response."""
     if isinstance(raw_response, str):
         cleaned = raw_response.strip()
-        if cleaned.startswith("```"):
-            cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
-            cleaned = re.sub(r"\s*```$", "", cleaned)
+        if "```" in cleaned:
+            match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", cleaned)
+            if match:
+                cleaned = match.group(1).strip()
         try:
             data = json.loads(cleaned)
-        except Exception as err:
-            raise ExplanationValidationError(f"Invalid JSON in LLM response: {err}") from err
+        except Exception:
+            first_brace = cleaned.find("{")
+            last_brace = cleaned.rfind("}")
+            if first_brace != -1 and last_brace > first_brace:
+                try:
+                    data = json.loads(cleaned[first_brace:last_brace + 1])
+                except Exception as err:
+                    raise ExplanationValidationError(f"Invalid JSON in LLM response: {err}") from err
+            else:
+                raise ExplanationValidationError("Invalid JSON in LLM response: no valid JSON object found")
     elif isinstance(raw_response, dict):
         data = raw_response
     else:
@@ -234,6 +245,8 @@ def parse_explanation_response(
     raw_response: str | dict[str, Any],
     pack: EvidencePack,
     language: str = "en",
+    calculations: dict[str, Any] | None = None,
+    reject_unsupported: bool = True,
 ) -> ExplanationResult:
     """Parse, validate, and verify grounding of LLM response against EvidencePack."""
     if not isinstance(pack, EvidencePack):
@@ -259,6 +272,39 @@ def parse_explanation_response(
     all_warnings = _merge_unique(pack.warnings, data.get("warnings", []))
     all_limitations = _merge_unique(pack.limitations, data.get("limitations", []))
     evidence_used = _validate_evidence_used(data.get("evidence_used", []), valid_chunk_ids)
+
+    # Content-level quantitative grounding verification
+    if pack.evidence_available and status_str == GroundingStatus.GROUNDED.value:
+        cited_cids = {c.chunk_id for c in parsed_cits}
+        target_items = [
+            it for it in pack.evidence_items if it.chunk_id in cited_cids
+        ] or pack.evidence_items
+
+        verification = verify_quantitative_grounding(
+            answer=str(data["answer"]),
+            evidence_items=target_items,
+            calculations=calculations,
+        )
+        if not verification.is_grounded:
+            if reject_unsupported:
+                unsupported_desc = ", ".join(c.raw_text for c in verification.unsupported_claims)
+                raise ExplanationValidationError(
+                    f"Unsupported quantitative claim in answer: '{unsupported_desc}' "
+                    f"is not supported by cited evidence or pre-computed calculations"
+                )
+            status_str = verification.downgraded_status
+            if verification.warning_message is not None:
+                if verification.warning_message not in all_warnings:
+                    all_warnings.append(verification.warning_message)
+    elif status_str == GroundingStatus.UNGROUNDED_FLAGGED.value:
+        verification = verify_quantitative_grounding(
+            answer=str(data["answer"]),
+            evidence_items=pack.evidence_items,
+            calculations=calculations,
+        )
+        if not verification.is_grounded and verification.warning_message is not None:
+            if verification.warning_message not in all_warnings:
+                all_warnings.append(verification.warning_message)
 
     return ExplanationResult(
         answer=str(data["answer"]).strip(),
@@ -376,8 +422,10 @@ class GroundedExplainer:
     def __init__(
         self,
         llm_callable: Callable[[str, str], str | dict[str, Any]] | None = None,
+        fallback_on_provider_error: bool = True,
     ) -> None:
         self.llm_callable = llm_callable
+        self.fallback_on_provider_error = fallback_on_provider_error
 
     def explain(
         self,
@@ -395,11 +443,21 @@ class GroundedExplainer:
                 language=language,
                 calculations=calculations,
             )
-            raw_response = self.llm_callable(EXPLANATION_SYSTEM_PROMPT, user_prompt)
+            try:
+                raw_response = self.llm_callable(EXPLANATION_SYSTEM_PROMPT, user_prompt)
+            except Exception as exc:
+                if self.fallback_on_provider_error and not isinstance(exc, ExplanationValidationError):
+                    return generate_deterministic_explanation(
+                        pack=evidence_pack,
+                        language=language,
+                        calculations=calculations,
+                    )
+                raise
             return parse_explanation_response(
                 raw_response=raw_response,
                 pack=evidence_pack,
                 language=language,
+                calculations=calculations,
             )
 
         return generate_deterministic_explanation(
@@ -414,9 +472,13 @@ def explain_evidence(
     llm_callable: Callable[[str, str], str | dict[str, Any]] | None = None,
     language: str = "en",
     calculations: dict[str, Any] | None = None,
+    fallback_on_provider_error: bool = True,
 ) -> ExplanationResult:
     """Convenience functional interface for generating an evidence-grounded explanation."""
-    return GroundedExplainer(llm_callable=llm_callable).explain(
+    return GroundedExplainer(
+        llm_callable=llm_callable,
+        fallback_on_provider_error=fallback_on_provider_error,
+    ).explain(
         evidence_pack=evidence_pack,
         language=language,
         calculations=calculations,
