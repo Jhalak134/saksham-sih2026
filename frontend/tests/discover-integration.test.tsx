@@ -113,18 +113,14 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       expect(screen.getByText('Pilot Live')).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
+        expect(screen.getByText('State Priority Sectors')).toBeInTheDocument();
       });
 
-      expect(screen.getByText('Micro Finance Scheme')).toBeInTheDocument();
-      expect(screen.getByText(/6\.5% p\.a\./)).toBeInTheDocument();
-      expect(screen.getByText('Term Loan Scheme')).toBeInTheDocument();
-      expect(screen.getByText(/8(\.0)?% p\.a\./)).toBeInTheDocument();
-      expect(screen.getByText('PMFME Scheme')).toBeInTheDocument();
-
-      expect(screen.getAllByText(/Census 2011 Baseline/i).length).toBeGreaterThan(0);
-      expect(screen.getAllByText(/874/).length).toBeGreaterThan(0);
-      expect(screen.getByText(/micro locations/i)).toBeInTheDocument();
+      expect(screen.getByText('Dairy & Allied')).toBeInTheDocument();
+      expect(screen.getByText('Food Processing')).toBeInTheDocument();
+      expect(screen.getByText('Agri-Business')).toBeInTheDocument();
+      expect(screen.getByText('ODOP (One District One Product)')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Start assessment for Uttar Pradesh/i })).toBeInTheDocument();
     });
 
     it('navigates with district parameter when selectedDistrict is provided for UP', async () => {
@@ -179,7 +175,7 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       await waitFor(() => {
         expect(screen.queryByRole('alert')).not.toBeInTheDocument();
       });
-      expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
+      expect(screen.getByText('State Priority Sectors')).toBeInTheDocument();
     });
 
     it('handles non-Error rejection object gracefully', async () => {
@@ -240,9 +236,9 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
+        expect(screen.getByText('State Priority Sectors')).toBeInTheDocument();
       });
-      expect(screen.getByText('Micro Finance Scheme')).toBeInTheDocument();
+      expect(screen.getByText('Dairy & Allied')).toBeInTheDocument();
     });
   });
 
@@ -399,7 +395,7 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       expect(screen.getByText('State Opportunities & Pilot Insights')).toBeInTheDocument();
 
       await waitFor(() => {
-        expect(screen.getByText('Active Schemes & Credit Facilities')).toBeInTheDocument();
+        expect(screen.getByText('State Priority Sectors')).toBeInTheDocument();
       });
 
       // Select Rajasthan state on Level 1 map if path exists
