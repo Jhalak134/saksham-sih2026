@@ -16,8 +16,11 @@ import {
   Download,
   Languages,
   LogOut,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
+import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
+
 import { cn } from '@/lib/cn';
 import {
   SIDEBAR_PRIMARY_ITEMS,
@@ -264,6 +267,7 @@ export function Sidebar(): React.JSX.Element {
   const { width, startResize, resetWidth } = useSidebarResize();
 
   const [showLogOutModal, setShowLogOutModal] = useState(false);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
@@ -312,7 +316,8 @@ export function Sidebar(): React.JSX.Element {
         <img src="/icon.svg" alt="" className="h-8 w-8 object-contain shrink-0" />
         <div className="min-w-0">
           <p className="text-base font-bold tracking-tight text-[#00284D] truncate">
-            SAKSH<span className="text-[#FBAC05]">AM</span>
+            <span className="sr-only">SAKSHAM</span>
+            <span aria-hidden="true">SAKSH<span className="text-[#FBAC05]">AM</span></span>
           </p>
           <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)] leading-tight truncate">
             Your business. A stronger tomorrow.
@@ -320,16 +325,31 @@ export function Sidebar(): React.JSX.Element {
         </div>
       </div>
 
-
       {/* Scrollable nav area */}
       <nav className="flex flex-1 flex-col overflow-y-auto px-2 py-3 gap-0.5">
         {SIDEBAR_PRIMARY_ITEMS.map((item) => (
-          <NavRow
-            key={item.href}
-            config={item}
-            active={isNavActive(pathname, item.href)}
-          />
+          <div key={item.href}>
+            <NavRow
+              config={item}
+              active={isNavActive(pathname, item.href)}
+            />
+            {item.href === '/new-assessment' && (
+              <button
+                type="button"
+                onClick={() => setIsAIChatOpen(true)}
+                className="mt-1 mb-1.5 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-semibold text-amber-800 bg-gradient-to-r from-amber-50 to-emerald-50 hover:from-amber-100 hover:to-emerald-100 transition-colors cursor-pointer border border-amber-200/80 shadow-2xs group"
+                aria-label="Open AI Assistance"
+              >
+                <Sparkles size={15} className="text-amber-600 shrink-0 group-hover:scale-110 transition-transform" />
+                <span className="truncate">AI Assistance</span>
+                <span className="ml-auto rounded-full bg-amber-200/80 px-1.5 py-0.5 text-[9px] font-bold text-amber-800">
+                  AI
+                </span>
+              </button>
+            )}
+          </div>
         ))}
+
 
         <div className="my-2 border-t border-[var(--color-border)]" />
 
@@ -378,6 +398,13 @@ export function Sidebar(): React.JSX.Element {
         onClose={() => setShowLogOutModal(false)}
         onConfirm={handleConfirmLogOut}
       />
+
+      {/* SAKSHAM AI Complete Screen Assistant Modal */}
+      <SakshamAIChatModal
+        isOpen={isAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+      />
     </aside>
   );
 }
+

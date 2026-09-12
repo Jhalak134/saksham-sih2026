@@ -201,27 +201,30 @@ export function SakshamAIChatModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="saksham-chat-title"
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150"
-      onClick={onClose}
+      className="fixed inset-0 z-[45] flex flex-col bg-[#F8FAFC] animate-in fade-in duration-200 md:pl-[var(--sidebar-width)] overflow-hidden"
     >
       <div
-        className="relative flex flex-col w-full max-w-3xl h-[88vh] max-h-[780px] rounded-2xl bg-white shadow-2xl border border-slate-200 overflow-hidden text-left"
-        onClick={(e) => e.stopPropagation()}
+        className="relative flex flex-col w-full h-full bg-white overflow-hidden text-left"
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-200/90 bg-gradient-to-r from-slate-900 via-slate-800 to-emerald-950 text-white shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-8 py-3.5 border-b border-slate-200/90 bg-gradient-to-r from-slate-900 via-slate-800 to-[#00284D] text-white shrink-0 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-400/30">
-              <Bot size={20} strokeWidth={2.2} />
-            </div>
+            <img
+              src="/icon.svg"
+              alt="SAKSHAM"
+              className="h-8 w-8 object-contain shrink-0"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <h2 id="saksham-chat-title" className="text-sm sm:text-base font-bold text-white tracking-tight">
-                  SAKSHAM AI Assistant
+                  SAKSH<span className="text-[#FBAC05]">AM</span> AI Assistant
                 </h2>
                 <span className="flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold text-emerald-300 border border-emerald-400/30">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   ai/ Knowledge Base Live
+                </span>
+                <span className="hidden sm:inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-300 border border-amber-400/30">
+                  Simple English
                 </span>
               </div>
               <p className="text-[11px] text-slate-300">
@@ -230,27 +233,30 @@ export function SakshamAIChatModal({
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleClearHistory}
               title="Clear Conversation"
               aria-label="Clear chat history"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer border border-white/10"
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} />
+              <span className="hidden sm:inline">Clear Chat</span>
             </button>
             <button
               type="button"
               onClick={onClose}
               title="Close (Esc)"
               aria-label="Close modal"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors cursor-pointer border border-white/20 shadow-xs"
             >
-              <X size={18} />
+              <span>Close</span>
+              <X size={15} />
             </button>
           </div>
         </div>
+
 
         {/* Conversation Thread */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/50">
