@@ -5,8 +5,8 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
-import { MOCK_REPORTS, type AssessmentStatus, type ReportSummary, type ConfidenceLevel } from '@/data/reportsData';
+import { Plus, MapPin, Sparkles, Loader2 } from 'lucide-react';
+import type { AssessmentStatus, ReportSummary, ConfidenceLevel } from '@/data/reportsData';
 
 import { fetchMyReports, getUserSavedReports } from '@/lib/api-client';
 import { getStorageItem } from '@/lib/storage';
@@ -81,7 +81,7 @@ export function MyReportsScreen(): React.JSX.Element {
         const localSavedReports: ReportSummary[] = (getUserSavedReports() as ReportSummary[]) || [];
 
         const token = getStorageItem(STORAGE_KEYS.authToken);
-        let baseReports: ReportSummary[] = [...MOCK_REPORTS];
+        let baseReports: ReportSummary[] = [];
 
         if (token) {
           try {
@@ -104,7 +104,7 @@ export function MyReportsScreen(): React.JSX.Element {
               }));
             }
           } catch {
-            // Keep baseReports as MOCK_REPORTS
+            // Keep baseReports as empty array
           }
         }
 
@@ -116,9 +116,7 @@ export function MyReportsScreen(): React.JSX.Element {
         setReports(combined);
       } catch {
         const localSavedReports: ReportSummary[] = (getUserSavedReports() as ReportSummary[]) || [];
-        const userReportIds = new Set(localSavedReports.map((r) => String(r.id)));
-        const dedupedMock = MOCK_REPORTS.filter((r) => !userReportIds.has(String(r.id)));
-        setReports([...localSavedReports, ...dedupedMock]);
+        setReports(localSavedReports);
       } finally {
         setLoading(false);
       }
@@ -250,19 +248,6 @@ export function MyReportsScreen(): React.JSX.Element {
             })}
           </div>
         )}
-
-        {/* Bottom Tip Card matching mockup */}
-        <div className="flex items-center gap-3 rounded-xl border border-amber-200/70 bg-amber-50/60 p-3.5 text-xs text-amber-900">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-800">
-            <Bookmark size={16} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-semibold text-amber-950">Save ideas to revisit later</p>
-            <p className="text-[11px] text-amber-800/90">
-              Found something interesting? Save it and come back anytime.
-            </p>
-          </div>
-        </div>
       </div>
     </div>
   );
