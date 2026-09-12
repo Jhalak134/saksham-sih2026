@@ -19,7 +19,7 @@ import {
 import { cn } from '@/lib/cn';
 import { getStateOpportunityProfile } from '@/data/stateOpportunitiesData';
 import { getInsights, getSchemes } from '@/lib/api-client';
-import type { InsightsResponse, OfficialScheme, CategoryDetailsResponse } from '@/lib/api-types';
+import type { InsightsResponse, OfficialScheme } from '@/lib/api-types';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
 
@@ -29,7 +29,6 @@ interface StateInsightsBarProps {
   readonly selectedDistrict?: string | null;
   readonly browsingLocation: string;
   readonly availableCapital?: string;
-  readonly selectedCategory?: CategoryDetailsResponse | null;
 }
 
 export function StateInsightsBar({
@@ -37,7 +36,6 @@ export function StateInsightsBar({
   selectedDistrict = null,
   browsingLocation,
   availableCapital = '₹1,00,000',
-  selectedCategory = null,
 }: StateInsightsBarProps): React.JSX.Element {
   const router = useRouter();
   const [comingSoonMessage, setComingSoonMessage] = useState<string | null>(null);
@@ -341,22 +339,10 @@ export function StateInsightsBar({
         <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
           <div className="rounded-xl bg-emerald-50/60 p-2.5 border border-emerald-100">
             <span className="text-[10.5px] font-medium text-emerald-800">
-              {selectedCategory
-                ? `${selectedCategory.name} Clusters`
-                : isUP
-                ? 'Census Village Clusters'
-                : 'Feasible Clusters'}
+              {isUP ? 'Census Village Clusters' : 'Feasible Clusters'}
             </span>
             <p className="text-sm font-bold text-emerald-950 mt-0.5 flex items-center">
-              {selectedCategory ? (
-                <>
-                  <AnimatedCounter
-                    key={`cat-${selectedCategory.id}-clusters`}
-                    value={selectedCategory.feasible_locations_count}
-                  />{' '}
-                  <span className="ml-1">micro locations</span>
-                </>
-              ) : isUP ? (
+              {isUP ? (
                 <>
                   <AnimatedCounter
                     key="up-census-clusters"
@@ -375,11 +361,7 @@ export function StateInsightsBar({
                 </>
               )}
             </p>
-            {selectedCategory ? (
-              <span className="text-[9.5px] text-emerald-700/80 block mt-0.5">
-                Category Viability Model ({selectedCategory.state_name || 'Pilot'})
-              </span>
-            ) : isUP && (
+            {isUP && (
               <span className="text-[9.5px] text-emerald-700/80 block mt-0.5">
                 Census 2011 Baseline (Mathura)
               </span>
@@ -388,10 +370,10 @@ export function StateInsightsBar({
           <div className="rounded-xl bg-slate-50 p-2.5 border border-slate-100">
             <span className="text-[10.5px] font-medium text-slate-500">Target Capital</span>
             <p className="text-sm font-bold text-slate-900 mt-0.5">
-              {selectedCategory ? selectedCategory.capital_bracket : availableCapital}
+              {availableCapital}
             </p>
             <span className="text-[9.5px] text-slate-400 block mt-0.5">
-              {selectedCategory ? 'Benchmark Capital' : 'Promoter Margin Buffer'}
+              Promoter Margin Buffer
             </span>
           </div>
         </div>
@@ -458,12 +440,10 @@ export function StateInsightsBar({
       </div>
 
       {/* SAKSHAM AI Complete Screen Assistant Modal */}
-      {isAIChatOpen && (
-        <SakshamAIChatModal
-          isOpen={isAIChatOpen}
-          onClose={() => setIsAIChatOpen(false)}
-        />
-      )}
+      <SakshamAIChatModal
+        isOpen={isAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+      />
     </div>
   );
 }

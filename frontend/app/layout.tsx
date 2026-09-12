@@ -1,6 +1,12 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { ShellProvider } from '@/lib/shell-context';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'SAKSHAM — Business Advisory for Rural Entrepreneurs',
@@ -30,10 +36,6 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="bg-white text-[var(--color-text-dark)] antialiased">
         <ShellProvider>{children}</ShellProvider>
