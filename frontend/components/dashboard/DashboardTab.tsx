@@ -23,7 +23,7 @@ interface BreakdownBarProps {
 function BreakdownBar({ label, value }: BreakdownBarProps): React.JSX.Element {
   return (
     <div className="space-y-1.5">
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex items-center justify-between text-sm">
         <span className="font-semibold text-slate-800">{label}</span>
         <span className="font-bold text-slate-900 flex items-center">
           <AnimatedCounter value={value} decimals={1} />
@@ -88,8 +88,8 @@ export function DashboardTab({
   ));
 
   return (
-    <div className="space-y-6">
-      {/* 2x2 Grid Layout matching user design */}
+    <div className="space-y-5 md:space-y-6">
+      {/* Top Row: Score & Viability and Fit Score Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
         {/* Card 1: Score & Viability */}
         <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
@@ -103,7 +103,7 @@ export function DashboardTab({
               <ShieldCheck size={14} className="text-amber-700 shrink-0" />
               <span>{report.viabilityLabel || 'Viable Opportunity'}</span>
             </div>
-            <p className="mt-2.5 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+            <p className="mt-2.5 text-sm text-slate-600 font-medium leading-relaxed">
               {report.viabilityDescription ||
                 'This business idea looks promising for your location and budget.'}
             </p>
@@ -125,14 +125,14 @@ export function DashboardTab({
             <button
               type="button"
               onClick={onNavigateFinancials}
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors cursor-pointer group text-left"
+              className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors cursor-pointer group text-left"
             >
               <span>
                 Recommended: ₹{report.recommendation.recommendedProjectCost.toLocaleString('en-IN')}{' '}
                 project
               </span>
               <ArrowRight
-                size={14}
+                size={15}
                 className="text-slate-900 group-hover:translate-x-0.5 transition-transform"
               />
             </button>
@@ -140,8 +140,8 @@ export function DashboardTab({
         </div>
 
         {/* Card 2: Fit Score Breakdown */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-3.5">
-          <h3 className="text-sm sm:text-base font-bold text-slate-900">
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+          <h3 className="text-base font-bold text-slate-900">
             Fit Score Breakdown
           </h3>
           <div className="space-y-3.5">
@@ -163,14 +163,17 @@ export function DashboardTab({
             />
           </div>
         </div>
+      </div>
 
-        {/* Card 3: Final Recommendation with Table */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+      {/* Bottom Row: Table (Final Recommendation) takes 2/3, Key Insights takes 1/3 */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
+        {/* Card 3: Final Recommendation with Table (2/3 space of the screen) */}
+        <div className="lg:col-span-2 rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
           <div>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900">
+            <h3 className="text-base font-bold text-slate-900">
               Final Recommendation
             </h3>
-            <p className="mt-1 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+            <p className="mt-1 text-sm text-slate-600 font-medium leading-relaxed">
               {report.recommendation.verdict ||
                 'Potentially viable, but consider starting at a smaller scale.'}
             </p>
@@ -181,21 +184,21 @@ export function DashboardTab({
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-300">
-                  <th className="w-1/2 py-2 px-4 text-center text-xs font-bold text-slate-900 border-r border-slate-300">
+                  <th className="w-1/2 py-2.5 px-4 text-center text-sm font-bold text-slate-900 border-r border-slate-300">
                     Benefits
                   </th>
-                  <th className="w-1/2 py-2 px-4 text-center text-xs font-bold text-slate-900">
+                  <th className="w-1/2 py-2.5 px-4 text-center text-sm font-bold text-slate-900">
                     Critical
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-300 text-xs">
+              <tbody className="divide-y divide-slate-300 text-sm">
                 {tableRows.map((row, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="w-1/2 py-2.5 px-4 text-slate-700 border-r border-slate-300 align-middle">
+                    <td className="w-1/2 py-3 px-4 text-slate-700 border-r border-slate-300 align-middle leading-relaxed">
                       {row.benefit}
                     </td>
-                    <td className="w-1/2 py-2.5 px-4 text-slate-700 align-middle">
+                    <td className="w-1/2 py-3 px-4 text-slate-700 align-middle leading-relaxed">
                       {row.critical}
                     </td>
                   </tr>
@@ -205,12 +208,12 @@ export function DashboardTab({
           </div>
         </div>
 
-        {/* Card 4: Key Insights (with light yellowish hover effect) */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-3">
-          <h3 className="text-sm sm:text-base font-bold text-slate-900">
+        {/* Card 4: Key Insights (1/3 space of the screen, with light yellowish hover effect) */}
+        <div className="lg:col-span-1 rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-3">
+          <h3 className="text-base font-bold text-slate-900">
             Key Insights
           </h3>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {displayInsights.map((insight, idx) => (
               <div
                 key={idx}
@@ -221,7 +224,7 @@ export function DashboardTab({
                   strokeWidth={2.2}
                   className="mt-0.5 shrink-0 text-[#1C4974] group-hover:translate-x-0.5 transition-transform"
                 />
-                <p className="text-xs sm:text-sm font-medium text-slate-700 leading-relaxed group-hover:text-slate-950 transition-colors">
+                <p className="text-sm font-medium text-slate-700 leading-relaxed group-hover:text-slate-950 transition-colors">
                   {insight}
                 </p>
               </div>
