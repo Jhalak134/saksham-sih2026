@@ -138,10 +138,12 @@ function LoginFormContent(): React.JSX.Element {
     google_id?: string;
   }) => {
     setLoading(true);
+    let isNewUser = false;
+    let backendHomeLoc: string | null = null;
     try {
       const backendUrl =
         process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
-      await fetch(`${backendUrl}/api/v1/auth/google`, {
+      const res = await fetch(`${backendUrl}/api/v1/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -151,6 +153,11 @@ function LoginFormContent(): React.JSX.Element {
           google_id: userProfile.google_id,
         }),
       });
+      if (res.ok) {
+        const data = await res.json();
+        isNewUser = Boolean(data.is_new_user);
+        backendHomeLoc = data.home_location || null;
+      }
     } catch (syncErr) {
       console.warn('Backend sync note:', syncErr);
     }
@@ -166,7 +173,34 @@ function LoginFormContent(): React.JSX.Element {
       setStorageItem(STORAGE_KEYS.authToken, userProfile.token);
     }
 
-    router.push(destination);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(
+        'saksham_user',
+        JSON.stringify({
+          email: userProfile.email,
+          name: userProfile.name,
+          picture: userProfile.picture,
+          authProvider: 'google',
+          token: userProfile.token,
+        })
+      );
+      if (backendHomeLoc) {
+        localStorage.setItem('saksham_home_location', backendHomeLoc);
+      }
+    }
+
+    setLoading(false);
+
+    // Prompt for live location if signing up, newly created Google user, or no location saved yet
+    const hasSavedLocation =
+      Boolean(backendHomeLoc) ||
+      (typeof window !== 'undefined' && Boolean(localStorage.getItem('saksham_home_location')));
+
+    if (activeTab === 'signup' || isNewUser || !hasSavedLocation) {
+      setShowLocationModal(true);
+    } else {
+      router.push(destination);
+    }
   };
 
   const initGoogleOneTap = () => {
@@ -246,17 +280,29 @@ function LoginFormContent(): React.JSX.Element {
     });
     setStorageItem(STORAGE_KEYS.authToken, 'session-token-' + Date.now());
 
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(
+        'saksham_user',
+        JSON.stringify({
+          phone_or_email: cleanAccount,
+          name: name.trim() || undefined,
+          authProvider: 'credentials',
+        })
+      );
+    }
+
     setLoading(true);
     try {
       if (activeTab === 'login') {
         await login(cleanAccount);
+        router.push(destination);
       } else {
         await signup({
           phone_or_email: cleanAccount,
           preferred_language: 'en',
         });
+        setShowLocationModal(true);
       }
-      router.push(destination);
     } catch (err: unknown) {
       const msg =
         err instanceof Error
@@ -270,6 +316,10 @@ function LoginFormContent(): React.JSX.Element {
 
   const handleGoogleAuth = () => {
     setError(null);
+    if (activeTab === 'signup') {
+      setShowLocationModal(true);
+      return;
+    }
     setGoogleNotice(
       'Google Sign-In is not configured in this pilot environment. Please sign in with your mobile number or email, or continue as guest.'
     );
@@ -278,7 +328,31 @@ function LoginFormContent(): React.JSX.Element {
   const handleAllowLocation = async () => {
     setIsDetectingLocation(true);
     try {
-      await requestUserLocation();
+      const locResult = await requestUserLocation();
+      if (typeof window !== 'undefined') {
+        const storedUser = localStorage.getItem('saksham_user');
+        if (storedUser && locResult.locationString) {
+          try {
+            const userObj = JSON.parse(storedUser);
+            const userIdentifier =
+              userObj.email || userObj.phone_or_email || mobileNumber.trim();
+            if (userIdentifier) {
+              const backendUrl =
+                process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+              await fetch(`${backendUrl}/api/v1/auth/profile`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  phone_or_email: userIdentifier,
+                  home_location: locResult.locationString,
+                }),
+              });
+            }
+          } catch (profileErr) {
+            console.warn('Failed to sync location to backend profile:', profileErr);
+          }
+        }
+      }
     } catch {
       // Ignored - fallback
     } finally {

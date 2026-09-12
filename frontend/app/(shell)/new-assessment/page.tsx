@@ -92,7 +92,6 @@ function NewAssessmentContent(): React.JSX.Element {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
-  const hasHydratedRef = React.useRef(false);
 
   // Auto-select category if provided via query params or inferred from idea
   React.useEffect(() => {
@@ -101,10 +100,12 @@ function NewAssessmentContent(): React.JSX.Element {
     }
   }, [paramCategory, session.category, updateSession]);
 
-  // Hydrate saved user location on client after initial render to avoid SSR mismatch
+  const hasHydratedLocationRef = React.useRef(false);
+
+  // Hydrate saved user location on client ONCE after initial mount so user can clear/change location freely
   React.useEffect(() => {
-    if (hasHydratedRef.current) return;
-    hasHydratedRef.current = true;
+    if (hasHydratedLocationRef.current) return;
+    hasHydratedLocationRef.current = true;
 
     if (!paramLoc && !paramDistrict && !session.locationId) {
       const { location: storedLoc, status: geoStatus } = getSavedUserLocation();
