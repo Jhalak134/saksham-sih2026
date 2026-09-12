@@ -88,25 +88,6 @@ The short version: aggregators calculate but don't localize, chatbots localize b
 
 ## 🏗️ System Architecture
 
-```
-                         SAKSHAM
-                            |
-              +-------------+-------------+
-       BUSINESS INTELLIGENCE       FINANCIAL INTELLIGENCE
-       (Market / Risk / Competition)  (Project / Scheme / Repayment)
-              +-------------+-------------+
-                            v
-                     EVIDENCE LAYER  (numbers + confidence, never invented)
-                            v
-                    RAG / KNOWLEDGE BASE  (ChromaDB, 4 curated documents)
-                            v
-                  AI ADVISOR / EXPLANATION LAYER  (grounded, cited, never calculates)
-                            v
-                   MULTILINGUAL ADVISORY REPORT
-                            v
-                       USER DECISION
-```
-
 <p align="center"><img src="diagrams/SystemArchitecture_flowchart.png" alt="System architecture flowchart" width="720"></p>
 
 **Request flow:** `Frontend (Next.js)` -> `Main Backend (FastAPI :8000)` -> deterministic **Location / Financial / Feasibility engines + Postgres** -> `AIClient` -> **AI/RAG microservice (FastAPI :8001)**: query parser, ChromaDB retriever, evidence pack, grounded explainer, then a structured response back up the chain. If the AI microservice is unreachable, the assessment **degrades to a deterministic, rule-based explanation** rather than failing or fabricating advice: every assessment always returns real numbers.
