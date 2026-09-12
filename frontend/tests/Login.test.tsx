@@ -1,6 +1,6 @@
 // tests/Login.test.tsx
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import React from 'react';
 
 const mockPush = vi.fn();
@@ -209,11 +209,18 @@ describe('LoginPage', () => {
         phone_or_email: '9876543210',
         preferred_language: 'en',
       });
+      expect(screen.getByText(/saksham wants to access your location/i)).toBeInTheDocument();
+    });
+
+    const allowBtn = screen.getByRole('button', { name: /allow location access/i });
+    fireEvent.click(allowBtn);
+
+    await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/discover');
     });
   });
 
-  it('displays honest notice when Google authentication is clicked', () => {
+  it('displays honest notice when Google authentication is clicked in login mode', () => {
     render(<LoginPage />);
     const googleBtn = screen.getByRole('button', { name: /continue with google/i });
     fireEvent.click(googleBtn);
@@ -230,4 +237,39 @@ describe('LoginPage', () => {
     expect(screen.getByRole('heading', { level: 1, name: /create an account/i })).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/enter your full name/i)).toBeInTheDocument();
   });
+
+  it('prompts for location modal when signing up with Google', async () => {
+    render(<LoginPage />);
+    const signupTab = screen.getByRole('tab', { name: /^sign up$/i });
+    fireEvent.click(signupTab);
+
+    const googleBtn = screen.getByRole('button', { name: /continue with google/i });
+    fireEvent.click(googleBtn);
+
+    expect(screen.getByText(/saksham wants to access your location/i)).toBeInTheDocument();
+
+    const allowBtn = screen.getByRole('button', { name: /allow location access/i });
+    fireEvent.click(allowBtn);
+
+    await waitFor(() => {
+      expect(mockPush).toHaveBeenCalledWith('/discover');
+    });
+  });
+
+  it('allows skipping location access from modal during Google signup', () => {
+    render(<LoginPage />);
+    const signupTab = screen.getByRole('tab', { name: /^sign up$/i });
+    fireEvent.click(signupTab);
+
+    const googleBtn = screen.getByRole('button', { name: /continue with google/i });
+    fireEvent.click(googleBtn);
+
+    expect(screen.getByText(/saksham wants to access your location/i)).toBeInTheDocument();
+
+    const skipBtn = screen.getByRole('button', { name: /not now, i'll fill manually/i });
+    fireEvent.click(skipBtn);
+
+    expect(mockPush).toHaveBeenCalledWith('/discover');
+  });
 });
+

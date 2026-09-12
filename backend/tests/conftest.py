@@ -10,6 +10,11 @@ import pytest
 import tempfile
 
 test_db = os.path.join(tempfile.gettempdir(), "test_saksham.db").replace("\\", "/")
+if os.path.exists(test_db):
+    try:
+        os.remove(test_db)
+    except OSError:
+        pass
 os.environ["DATABASE_URL"] = f"sqlite:///{test_db}"
 os.environ.setdefault("AI_SERVICE_URL", "http://localhost:8001")
 os.environ.setdefault("AI_REQUEST_TIMEOUT", "5.0")
