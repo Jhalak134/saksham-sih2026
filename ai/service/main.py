@@ -21,6 +21,7 @@ from ai.grounding.evidence_pack import create_evidence_pack
 from ai.prompts.explanation_models import ExplanationValidationError
 from ai.prompts.explanation_prompt import GroundedExplainer
 from ai.prompts.query_parser import ParserValidationError, QueryParser
+from ai.providers import LLMProviderError, get_default_llm_callable
 from ai.retrieval.retriever import KnowledgeRetriever, get_default_retriever
 from ai.service.models import (
     ErrorResponse,
@@ -53,7 +54,8 @@ def get_parser(request: Request) -> QueryParser:
     deps: AIServiceDependencies | None = getattr(request.app.state, "deps", None)
     if deps and deps.parser is not None:
         return deps.parser
-    return QueryParser()
+    llm = get_default_llm_callable()
+    return QueryParser(llm_callable=llm)
 
 
 def get_retriever(request: Request) -> KnowledgeRetriever:
@@ -69,7 +71,8 @@ def get_explainer(request: Request) -> GroundedExplainer:
     deps: AIServiceDependencies | None = getattr(request.app.state, "deps", None)
     if deps and deps.explainer is not None:
         return deps.explainer
-    return GroundedExplainer()
+    llm = get_default_llm_callable()
+    return GroundedExplainer(llm_callable=llm, fallback_on_provider_error=True)
 
 
 def run_ai_pipeline(
@@ -182,6 +185,17 @@ def register_exception_handlers(app: FastAPI) -> None:
                 error="Explanation Grounding Error",
                 detail=str(exc),
                 error_type="explanation_validation_error",
+            ).model_dump(),
+        )
+
+    @app.exception_handler(LLMProviderError)
+    async def llm_provider_error_handler(_: Request, exc: LLMProviderError) -> JSONResponse:
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content=ErrorResponse(
+                error="LLM Provider Error",
+                detail=str(exc),
+                error_type="llm_provider_error",
             ).model_dump(),
         )
 

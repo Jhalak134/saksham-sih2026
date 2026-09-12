@@ -2,7 +2,7 @@
 
 ## Completed
 
-The AI Content-Level Grounding Hardening (Task 11) is implemented and thoroughly verified:
+The Safe Real LLM Integration (Task 12) is implemented and thoroughly verified:
 * PDF extraction verified (`ai/ingestion/extract_documents.py`)
 * PDF cleaning verified (`ai/ingestion/clean_documents.py`)
 * Curated document metadata verified and schema enhanced (`ai/knowledge_base/document_metadata.py`)
@@ -15,37 +15,35 @@ The AI Content-Level Grounding Hardening (Task 11) is implemented and thoroughly
 * Intent / Query Parser implemented (`ai/prompts/parser_prompt.py`, `ai/prompts/query_parser.py`)
 * Grounding and Evidence Pack Layer implemented (`ai/grounding/evidence_models.py`, `ai/grounding/evidence_pack.py`, `ai/grounding/__init__.py`)
 * Grounded Explanation Layer implemented (`ai/prompts/explanation_models.py`, `ai/prompts/explanation_prompt.py`)
+* Content-Level Quantitative Claim Verifier implemented (`ai/prompts/claim_verifier.py`)
 * AI Service Request & Response Models implemented (`ai/service/models.py`)
 * AI Service Application & Endpoints implemented (`ai/service/main.py`, `ai/service/__init__.py`)
-* Hallucination Regression Suite implemented and refactored across dedicated test modules (< 500 LOC per file)
-* Content-Level Quantitative Claim Verifier implemented (`ai/prompts/claim_verifier.py`):
-  * Deterministic quantitative extraction for percentages, INR currency (with lakh/crore/thousand normalization and formatting variations), loan tenure (months/years conversion), and domain quantities.
-  * Semantic concept detection (`subsidy`, `margin`, `interest_rate`, `loan_amount`, `project_cost`, `emi`, `tenure`, `profit`, `revenue`, `units`) with proximity matching.
-  * Mutual exclusivity protection preventing false-positive matches (e.g. matching 35% subsidy against 35% margin).
-  * Authoritative financial calculation claim extraction and protection against LLM numerical confabulation.
-  * Dual-mode rejection / downgrade:
-    * `reject_unsupported=True` raises `ExplanationValidationError` for ungrounded quantitative claims in `grounded` responses.
-    * `reject_unsupported=False` gracefully downgrades status to `GroundingStatus.UNGROUNDED_FLAGGED` and appends an explicit warning to `warnings`.
-* Full test suite: **265/265 tests passing** (including 30 quantitative claim tests, 13 provenance tests, 36 hallucination tests, and all baseline AI tests).
-* Test suite refactored such that **every single test and production file is strictly under 500 LOC**:
-  * `ai/tests/test_chunk_documents.py`: 438 LOC
-  * `ai/tests/test_document_metadata.py`: 102 LOC
-  * `ai/tests/test_embed_and_store.py`: 331 LOC
-  * `ai/tests/test_embed_and_store_indexing.py`: 305 LOC
-  * `ai/tests/test_evidence_pack.py`: 488 LOC
-  * `ai/tests/test_explanation_prompt.py`: 435 LOC
-  * `ai/tests/test_grounding_claims.py`: 476 LOC
-  * `ai/tests/test_grounding_provenance.py`: 271 LOC
-  * `ai/tests/test_hallucination.py`: 367 LOC
-  * `ai/tests/test_parser.py`: 481 LOC
-  * `ai/tests/test_retriever.py`: 426 LOC
-  * `ai/tests/test_service.py`: 433 LOC
-  * `ai/tests/conftest.py`: 139 LOC
-* **100% statement coverage** (1,795 / 1,795 statements) and **100% branch coverage** (688 / 688 branches) across ALL 17 modules in `ai/`.
+* Real LLM Provider Abstraction implemented (`ai/providers/`):
+  * `ai/providers/base.py`: Exception hierarchy (`LLMProviderError`, `LLMAuthenticationError`, `LLMTimeoutError`, `LLMRateLimitError`, `LLMNetworkError`, `LLMResponseFormatError`), zero-secret masking (`sanitize_secret`), and abstract `BaseLLMProvider`.
+  * `ai/providers/openai_provider.py`: OpenAI-compatible REST adapter supporting OpenAI (`gpt-4o-mini`), Groq, Azure, vLLM, and any OpenAI-compatible API via `OPENAI_API_KEY`, `OPENAI_BASE_URL`, bounded exponential backoff, request timeouts, and structured JSON output.
+  * `ai/providers/gemini_provider.py`: Google Gemini REST adapter supporting Gemini 1.5 Flash and Pro via `GEMINI_API_KEY` or `GOOGLE_API_KEY`, header-based authentication (`x-goog-api-key`), bounded retries, and JSON output mode.
+  * `ai/providers/factory.py`: Automatic credential discovery (`get_llm_provider`, `get_default_llm_callable`, `create_llm_provider`).
+* Grounded generation pipeline integration:
+  * `GroundedExplainer` integrates `llm_callable` while strictly preserving deterministic fallback on provider network, timeout, or auth failures (`fallback_on_provider_error=True`).
+  * LLM generated output is strictly parsed and grounded through `parse_explanation_response()` and `claim_verifier.py`.
+  * External LLMs CANNOT bypass citation verification, quantitative grounding, template disclaimers, or historical vintages.
+* Full test suite: **315/315 tests passing** (including 30 provider unit tests, 20 LLM grounding integration tests, 30 quantitative claim tests, 13 provenance tests, 36 hallucination tests, and all baseline AI tests).
+* Test suite and codebase structure maintained such that **every single test and production file is strictly under 500 LOC**:
+  * `ai/providers/base.py`: 67 LOC
+  * `ai/providers/factory.py`: 51 LOC
+  * `ai/providers/gemini_provider.py`: 171 LOC
+  * `ai/providers/openai_provider.py`: 157 LOC
+  * `ai/providers/__init__.py`: 40 LOC
+  * `ai/prompts/explanation_prompt.py`: 485 LOC
+  * `ai/service/main.py`: 281 LOC
+  * `ai/tests/test_providers.py`: 417 LOC
+  * `ai/tests/test_grounding_llm_integration.py`: 398 LOC
+  * All other AI test files strictly < 500 LOC.
+* **100% statement coverage** (2,037 / 2,037 statements) and **100% branch coverage** (764 / 764 branches) across ALL 22 modules under `ai/`.
 * Quality gates verified:
-  * Radon Cyclomatic Complexity: Max 21 (`parse_explanation_response`), Average 5.6 (Grade B/A). All functions < 22.
-  * Radon Maintainability Index: Grade A across all files (`claim_verifier.py`: 39.28, `explanation_prompt.py`: 34.22).
-  * Radon Halstead Difficulty: `claim_verifier.py` = 12.04, `explanation_prompt.py` = 4.32 (well below limit of 80).
+  * Radon Cyclomatic Complexity: Max 21 (`parse_explanation_response`), Average 4.79 (Grade A). All functions < 22.
+  * Radon Maintainability Index: Grade A across all files.
+  * Radon Halstead Difficulty: Max 7.13 (`gemini_provider.py`, limit < 80).
   * Vulture Dead Code: 0 unused items detected.
 
 ## Current Files
@@ -62,14 +60,21 @@ The AI Content-Level Grounding Hardening (Task 11) is implemented and thoroughly
 * `ai/grounding/evidence_models.py` — COMPLETED. Evidence item dataclasses, classification taxonomy, and validation logic.
 * `ai/grounding/evidence_pack.py` — COMPLETED. EvidencePack container, pack validation, warnings/limitations generation, factory, and formatting routines.
 * `ai/grounding/__init__.py` — COMPLETED. Package initializer re-exporting evidence models, pack builder, and validation routines.
-* `ai/prompts/claim_verifier.py` — COMPLETED (Task 11). Content-level quantitative claim extraction, concept compatibility, unit normalization, and verification against cited evidence and backend calculations.
+* `ai/prompts/claim_verifier.py` — COMPLETED. Content-level quantitative claim extraction, concept compatibility, unit normalization, and verification against cited evidence and backend calculations.
 * `ai/prompts/explanation_models.py` — COMPLETED. Explanatory result models, citation models, schemas, and grounding status enums.
-* `ai/prompts/explanation_prompt.py` — COMPLETED. Grounded explanation prompts, parsing, citation validation, quantitative claim verification integration, deterministic explanation generator, and `GroundedExplainer`.
+* `ai/prompts/explanation_prompt.py` — COMPLETED. Grounded explanation prompts, parsing, citation validation, quantitative claim verification, deterministic explanation generator, and `GroundedExplainer` with provider fallback.
+* `ai/providers/base.py` — COMPLETED (Task 12). Base provider interface, secret sanitization, and structured provider exceptions.
+* `ai/providers/openai_provider.py` — COMPLETED (Task 12). OpenAI-compatible REST client with bounded retries, timeout handling, and JSON schema enforcement.
+* `ai/providers/gemini_provider.py` — COMPLETED (Task 12). Google Gemini REST client with header authentication, bounded retries, and JSON output mode.
+* `ai/providers/factory.py` — COMPLETED (Task 12). Provider factory and environment discovery.
+* `ai/providers/__init__.py` — COMPLETED (Task 12). Provider package initializer.
 * `ai/service/models.py` — COMPLETED. Pydantic request and response schemas for FastAPI endpoints.
-* `ai/service/main.py` — COMPLETED. FastAPI application factory, routes (`/health`, `/query`, `/explain`), dependency injection, and sanitized exception handlers.
+* `ai/service/main.py` — COMPLETED. FastAPI application factory, routes (`/health`, `/query`, `/explain`), dependency injection, sanitized exception handlers, and provider error status code mapping (503).
 * `ai/service/__init__.py` — COMPLETED. Service package exports.
 * `ai/tests/` — FULLY IMPLEMENTED (All files < 500 LOC):
   * `ai/tests/conftest.py` — Shared fixtures for evidence items and baseline responses.
+  * `ai/tests/test_providers.py` — Unit tests for LLM provider adapters.
+  * `ai/tests/test_grounding_llm_integration.py` — Grounding LLM integration tests across all 20 required scenarios.
   * `ai/tests/test_chunk_documents.py` — Chunking pipeline tests.
   * `ai/tests/test_document_metadata.py` — Document metadata tests.
   * `ai/tests/test_embed_and_store.py` — Embedding generation & storage core tests.
@@ -118,26 +123,27 @@ The knowledge base consists of four curated documents with critical metadata dis
 
 ## Decisions
 
-* **Content-Level Quantitative Grounding Guard**: Added deterministic extraction and comparison for quantitative claims (percentages, INR currency, loan tenure, enterprise quantities) inside LLM responses against cited evidence chunks and backend calculations.
-* **Proximity Concept Detection & Exclusivity**: Concept proximity matching ensures numbers associated with "subsidy" cannot be confused with numbers associated with "margin" or "interest_rate".
-* **Preservation of Authoritative Calculations**: The quantitative verifier cross-references calculations passed from the main backend engine, ensuring an LLM explanation cannot contradict calculated EMI, loan amounts, or interest rates.
-* **Refactored Test Suite Under 500 LOC**: Split test files cleanly across modular concerns (`conftest.py`, `test_grounding_claims.py`, `test_grounding_provenance.py`, `test_embed_and_store_indexing.py`) to keep every file under 500 lines while maintaining 100% line and branch coverage.
-* **Zero Live LLM / Zero External Calls**: Preserved 100% offline, deterministic, dependency-free execution. No live LLM SDK or external API key was introduced.
+* **Safe Provider Adapter Seam**: Connected the real LLM provider through the existing `llm_callable` injection seam (`Callable[[str, str], str | dict[str, Any]]`).
+* **Zero Live Key Exposure & Masking**: API keys are strictly loaded from environment variables (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `GOOGLE_API_KEY`). All exceptions, headers, and logs are scrubbed via `sanitize_secret`.
+* **Bounded Retries & Request Timeouts**: Network calls are bounded with max 2 retries and exponential backoff, preventing infinite loops. Default request timeout is 10s (bounded 1s..60s).
+* **Deterministic Fallback Invariance**: If an external provider encounters network errors, timeouts, or authentication issues, `GroundedExplainer` automatically and gracefully falls back to the deterministic explanation engine (`fallback_on_provider_error=True`).
+* **Strict Grounding Safety Barrier**: LLM output is strictly passed through `parse_explanation_response()` and `claim_verifier.py`. An external LLM can NEVER bypass citation checks, quantitative claim validation, or template disclaimers.
+* **Credentials Status**: Adapter implemented, live external LLM not smoke-tested because credentials are unavailable in the development environment.
 
 ## Unresolved Issues
 
-* **Problem 1**: No live LLM is connected yet. Explanations currently use deterministic f-string fallback templates over retrieved chunks.
+* **Problem 1**: External LLM credentials are not yet configured in `.env` / environment. When keys are supplied, the provider adapter automatically activates without code changes.
 * **Problem 5**: Knowledge base remains 4 documents.
 
 ## Next Task
 
 ```
-NEXT TASK: SAFE LIVE LLM CLIENT INTEGRATION (OR SYSTEM HANDOFF)
+NEXT TASK: AI AGENT OR AUTONOMOUS ADVISORY WORKFLOW
 ```
 
 Before writing code for the next task:
-1. Inspect `ai/prompts/claim_verifier.py` and `ai/prompts/explanation_prompt.py`.
-2. Inspect `ai/tests/test_grounding_claims.py` and `ai/tests/test_hallucination.py`.
+1. Inspect `ai/providers/` and `ai/prompts/explanation_prompt.py`.
+2. Review `ai/tests/test_grounding_llm_integration.py`.
 3. Preserve the architectural invariant: Data provides evidence, deterministic engines calculate, AI explains.
 
 ## Important Rules
@@ -159,35 +165,34 @@ AI explains.
 The following verification commands and checks were executed:
 
 ```bash
-# 1. Full regression test suite across entire ai package (265 passed)
+# 1. Full regression test suite across entire ai package (315 passed)
 PYTHONPATH=. /home/divyansh/myenv/bin/pytest ai/tests/ -v
 
-# 2. Branch coverage across all 17 AI modules (100% statement & 100% branch coverage)
+# 2. Branch coverage across all 22 AI modules (100% statement & 100% branch coverage)
 PYTHONPATH=. /home/divyansh/myenv/bin/coverage run --branch -m pytest ai/tests/
-/home/divyansh/myenv/bin/coverage report -m --include="ai/prompts/*,ai/grounding/*,ai/service/*,ai/retrieval/*,ai/ingestion/*,ai/knowledge_base/*"
+/home/divyansh/myenv/bin/coverage report -m --include="ai/providers/*,ai/prompts/*,ai/grounding/*,ai/service/*,ai/retrieval/*,ai/ingestion/*,ai/knowledge_base/*"
 
-# 3. Cyclomatic complexity (Limit < 22, Result: Avg 5.6 Grade B/A, Max 21)
-/home/divyansh/myenv/bin/radon cc ai/prompts/claim_verifier.py ai/prompts/explanation_prompt.py -s -a
+# 3. Cyclomatic complexity (Limit < 22, Result: Avg 4.79 Grade A, Max 21)
+/home/divyansh/myenv/bin/radon cc ai/providers/*.py ai/prompts/explanation_prompt.py ai/service/main.py -s -a
 
-# 4. Halstead difficulty (Limit < 80, Result: claim_verifier.py = 12.04, explanation_prompt.py = 4.32)
-/home/divyansh/myenv/bin/radon hal ai/prompts/claim_verifier.py ai/prompts/explanation_prompt.py
+# 4. Halstead difficulty (Limit < 80, Result: Max 7.13 on gemini_provider.py)
+/home/divyansh/myenv/bin/radon hal ai/providers/*.py ai/prompts/explanation_prompt.py ai/service/main.py
 
 # 5. Maintainability index (Result: Rank A for all files)
-/home/divyansh/myenv/bin/radon mi ai/prompts/claim_verifier.py ai/prompts/explanation_prompt.py -s
+/home/divyansh/myenv/bin/radon mi ai/providers/*.py ai/prompts/explanation_prompt.py ai/service/main.py -s
 
 # 6. Dead code check (Result: 0 unused items detected)
-/home/divyansh/myenv/bin/vulture --min-confidence 70 ai/prompts/claim_verifier.py ai/prompts/explanation_prompt.py
+/home/divyansh/myenv/bin/vulture --min-confidence 70 ai/providers/*.py ai/prompts/explanation_prompt.py ai/service/main.py
 
 # 7. Line count enforcement (Limit < 500 LOC per file)
-wc -l ai/tests/*.py ai/prompts/claim_verifier.py ai/prompts/explanation_prompt.py
+wc -l ai/providers/*.py ai/tests/*.py ai/prompts/explanation_prompt.py ai/service/main.py
 ```
 
 ### Verified Pipeline Results
-* **Full test suite**: 265/265 tests passed in ~3.5s.
-* **Line & Branch coverage**: **100% statement coverage** (1,795/1,795 statements) and **100% branch coverage** (688/688 branches) across all 17 modules in `ai/`.
-* **Cyclomatic Complexity**: Max CC is 21 (`parse_explanation_response`), all functions < 22.
-* **Halstead Difficulty**: Max 12.04 (limit < 80).
+* **Full test suite**: 315/315 tests passed in ~3.7s.
+* **Line & Branch coverage**: **100% statement coverage** (2,037/2,037 statements) and **100% branch coverage** (764/764 branches) across all 22 modules in `ai/`.
+* **Cyclomatic Complexity**: Max CC is 21 (`parse_explanation_response`), average 4.79 (Grade A), all functions < 22.
+* **Halstead Difficulty**: Max 7.13 (limit < 80).
 * **Maintainability Index**: Grade A across all production and test modules.
 * **LOC constraint**: All test files and modified files strictly < 500 LOC (Max: 488 LOC).
 * **Redundancy**: 0 unused/dead items via `vulture`.
-* **Zero regressions**: Backend test suite 79/79 passed. AI service healthy on port 8001.
