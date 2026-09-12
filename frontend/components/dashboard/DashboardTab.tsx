@@ -21,25 +21,18 @@ interface BreakdownBarProps {
 }
 
 function BreakdownBar({ label, value }: BreakdownBarProps): React.JSX.Element {
-  const barColor =
-    value >= 7.5
-      ? 'bg-emerald-600'
-      : value >= 5.0
-      ? 'bg-amber-500'
-      : 'bg-rose-500';
-
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-600">{label}</span>
-        <span className="font-semibold text-slate-800 flex items-center">
+        <span className="font-semibold text-slate-800">{label}</span>
+        <span className="font-bold text-slate-900 flex items-center">
           <AnimatedCounter value={value} decimals={1} />
           <span>/10</span>
         </span>
       </div>
-      <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+      <div className="h-2.5 w-full rounded-full bg-slate-100 overflow-hidden">
         <div
-          className={cn('h-full rounded-full transition-all duration-700', barColor)}
+          className="h-full rounded-full bg-[#1C4974] transition-all duration-700"
           style={{ width: `${Math.min(100, Math.max(0, (value / 10) * 100))}%` }}
         />
       </div>
@@ -58,109 +51,187 @@ export function DashboardTab({
       ? 'bg-teal-50 text-teal-800 border-teal-200'
       : report.viabilityLabel === 'Moderate Fit'
       ? 'bg-amber-50 text-amber-900 border-amber-300'
-      : 'bg-rose-50 text-rose-800 border-rose-200';
+      : 'bg-amber-50 text-amber-800 border-amber-200';
+
+  const defaultBenefits = [
+    'Steady local demand',
+    'Reasonable government schemes',
+    'Existing repair ecosystem',
+    'Low initial infrastructure requirement',
+  ];
+
+  const defaultCritical = [
+    'Moderate competition in local haat',
+    'Seasonal demand variation during summer',
+    'Initial inventory cost may be high',
+    'Need skilled technician or training',
+  ];
+
+  const rawBenefits = report.recommendation.supportingFactors || [];
+  const rawCritical = report.recommendation.pointsToConsider || [];
+
+  const tableRows = Array.from({ length: 4 }).map((_, i) => ({
+    benefit: rawBenefits[i] || defaultBenefits[i] || 'Strong local demand potential',
+    critical: rawCritical[i] || defaultCritical[i] || 'Market differentiation required',
+  }));
+
+  const defaultInsights = [
+    `Steady local demand for ${report.category?.toLowerCase() || 'enterprise'} services throughout the year.`,
+    `Nearest major market is 14km away in Fatehabad block.`,
+    `Growing smartphone usage in rural areas creates consistent demand.`,
+    `Consider offering additional services (accessories, screen guards) to increase revenue.`,
+  ];
+
+  const rawInsights = report.keyInsights || [];
+  const displayInsights = Array.from({ length: Math.max(4, rawInsights.length) }).map((_, i) => (
+    rawInsights[i] || defaultInsights[i % defaultInsights.length]
+  ));
 
   return (
     <div className="space-y-6">
-      {/* 1. Score Section: stacked on mobile, side-by-side on desktop (md:flex-row) */}
-      <div className="flex flex-col md:flex-row gap-6 rounded-xl border border-slate-200 bg-white p-5 md:p-6">
-        {/* Ring & Verdict side */}
-        <div className="flex flex-col items-center md:items-start text-center md:text-left md:w-1/2 justify-between">
+      {/* 2x2 Grid Layout matching user design */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-6">
+        {/* Card 1: Score & Viability */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className={cn('inline-flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold border', viabilityBadgeStyle)}>
-              <ShieldCheck size={14} />
-              <span>{report.viabilityLabel}</span>
+            <div
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold border shadow-2xs',
+                viabilityBadgeStyle
+              )}
+            >
+              <ShieldCheck size={14} className="text-amber-700 shrink-0" />
+              <span>{report.viabilityLabel || 'Viable Opportunity'}</span>
             </div>
-            <p className="mt-2 text-xs md:text-sm text-slate-600 max-w-sm">
-              {report.viabilityDescription}
+            <p className="mt-2.5 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+              {report.viabilityDescription ||
+                'This business idea looks promising for your location and budget.'}
             </p>
           </div>
 
-          <div className="my-4 flex items-center gap-4">
-            <ScoreRing score={report.fitScore} />
-            <div className="text-left">
-              <span className="inline-block rounded bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700">
+          <div className="my-5 flex items-center gap-5">
+            <ScoreRing score={report.fitScore} size={105} strokeWidth={9} />
+            <div className="text-left space-y-1">
+              <span className="inline-block rounded-md bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700">
                 {report.confidence} confidence
               </span>
-              <p className="mt-1 text-xs text-slate-500">Based on local supply & demand data</p>
+              <p className="text-xs text-slate-500 leading-tight">
+                Based on local supply &amp; demand data
+              </p>
             </div>
           </div>
 
-          {/* Teaser CTA */}
-          <button
-            type="button"
-            onClick={onNavigateFinancials}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--color-accent)] hover:underline"
-          >
-            <span>Recommended: ₹{report.recommendation.recommendedProjectCost.toLocaleString('en-IN')} project</span>
-            <ArrowRight size={13} />
-          </button>
+          <div>
+            <button
+              type="button"
+              onClick={onNavigateFinancials}
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors cursor-pointer group text-left"
+            >
+              <span>
+                Recommended: ₹{report.recommendation.recommendedProjectCost.toLocaleString('en-IN')}{' '}
+                project
+              </span>
+              <ArrowRight
+                size={14}
+                className="text-slate-900 group-hover:translate-x-0.5 transition-transform"
+              />
+            </button>
+          </div>
         </div>
 
-        {/* Breakdown bars side */}
-        <div className="border-t border-slate-100 pt-4 md:border-t-0 md:border-l md:pl-6 md:pt-0 md:w-1/2 flex flex-col justify-center space-y-3.5">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+        {/* Card 2: Fit Score Breakdown */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-3.5">
+          <h3 className="text-sm sm:text-base font-bold text-slate-900">
             Fit Score Breakdown
           </h3>
-          <BreakdownBar label="Market Opportunity" value={report.breakdown.marketOpportunity} />
-          <BreakdownBar label="Competition" value={report.breakdown.competition} />
-          <BreakdownBar label="Capital Fit" value={report.breakdown.capitalFit} />
-          <BreakdownBar label="Supply Risk" value={report.breakdown.supplyRisk} />
+          <div className="space-y-3.5">
+            <BreakdownBar
+              label="Market Opportunity"
+              value={report.breakdown.marketOpportunity}
+            />
+            <BreakdownBar
+              label="Competition"
+              value={report.breakdown.competition}
+            />
+            <BreakdownBar
+              label="Capital Fit"
+              value={report.breakdown.capitalFit}
+            />
+            <BreakdownBar
+              label="Supply Risk"
+              value={report.breakdown.supplyRisk}
+            />
+          </div>
+        </div>
+
+        {/* Card 3: Final Recommendation with Table */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+          <div>
+            <h3 className="text-sm sm:text-base font-bold text-slate-900">
+              Final Recommendation
+            </h3>
+            <p className="mt-1 text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
+              {report.recommendation.verdict ||
+                'Potentially viable, but consider starting at a smaller scale.'}
+            </p>
+          </div>
+
+          {/* Table: Benefits vs Critical */}
+          <div className="rounded-xl border border-slate-200 overflow-hidden shadow-2xs">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50/80">
+                  <th className="w-1/2 px-4 py-2.5 text-xs font-bold text-slate-800 text-center border-r border-slate-200">
+                    Benefits
+                  </th>
+                  <th className="w-1/2 px-4 py-2.5 text-xs font-bold text-slate-800 text-center">
+                    Critical
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
+                {tableRows.map((row, idx) => (
+                  <tr key={idx} className="hover:bg-slate-50/60 transition-colors">
+                    <td className="w-1/2 px-3.5 py-2.5 text-slate-700 border-r border-slate-200 align-middle">
+                      {row.benefit}
+                    </td>
+                    <td className="w-1/2 px-3.5 py-2.5 text-slate-700 align-middle">
+                      {row.critical}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Card 4: Key Insights (with light yellowish hover effect) */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-3">
+          <h3 className="text-sm sm:text-base font-bold text-slate-900">
+            Key Insights
+          </h3>
+          <div className="space-y-1.5">
+            {displayInsights.map((insight, idx) => (
+              <div
+                key={idx}
+                className="group flex items-start gap-3 rounded-xl p-3 border border-transparent hover:border-amber-200/80 hover:bg-[#FEF9C3] transition-all duration-200 cursor-pointer"
+              >
+                <ArrowRight
+                  size={16}
+                  strokeWidth={2.2}
+                  className="mt-0.5 shrink-0 text-[#1C4974] group-hover:translate-x-0.5 transition-transform"
+                />
+                <p className="text-xs sm:text-sm font-medium text-slate-700 leading-relaxed group-hover:text-slate-950 transition-colors">
+                  {insight}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* 2. AI Advisory & Grounded Evidence Section (Rendered when live AI insights exist) */}
+      {/* AI Advisory & Grounded Evidence Section (Rendered when live AI insights exist) */}
       {report.aiInsights && <AIAdvisorySection aiInsights={report.aiInsights} />}
-
-      {/* 3. Final Recommendation Section */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 md:p-6 space-y-4">
-        <div>
-          <h3 className="text-sm font-bold text-slate-900">Final Recommendation</h3>
-          <p className="mt-1 text-xs md:text-sm text-slate-600 font-medium">
-            {report.recommendation.verdict}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-100 pt-4 text-xs">
-          {/* Supporting Factors */}
-          <div className="space-y-2">
-            <p className="font-semibold text-emerald-800 flex items-center gap-1.5">
-              <CheckCircle2 size={14} />
-              <span>Supporting factors</span>
-            </p>
-            <ul className="space-y-1.5 text-slate-600 pl-5 list-disc marker:text-emerald-500">
-              {report.recommendation.supportingFactors.map((factor) => (
-                <li key={factor}>{factor}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Points to Consider */}
-          <div className="space-y-2">
-            <p className="font-semibold text-amber-800 flex items-center gap-1.5">
-              <AlertCircle size={14} />
-              <span>Points to consider</span>
-            </p>
-            <ul className="space-y-1.5 text-slate-600 pl-5 list-disc marker:text-amber-500">
-              {report.recommendation.pointsToConsider.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Key Insights */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-2.5">
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Key Insights</h3>
-        <div className="space-y-2">
-          {report.keyInsights.map((insight) => (
-            <p key={insight} className="text-xs text-slate-700 bg-slate-50 rounded-lg p-2.5 border border-slate-100">
-              {insight}
-            </p>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

@@ -198,7 +198,7 @@ export function ReportScreen({ reportId = 'assess_001' }: ReportScreenProps): Re
                 className={cn(
                   'whitespace-nowrap px-3.5 py-2 font-semibold transition-all border-b-2 -mb-1',
                   isActive
-                    ? 'border-slate-900 text-slate-900 font-bold'
+                    ? 'border-amber-500 text-slate-900 font-bold'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 )}
                 aria-current={isActive ? 'page' : undefined}
