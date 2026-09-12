@@ -287,48 +287,6 @@ export function StateInsightsBar({
         </div>
       )}
 
-      {/* Live Backend Insights: Top Growth Categories (When fetched) */}
-      {liveInsights && Array.isArray(liveInsights.categories) && liveInsights.categories.length > 0 && (
-        <div className="rounded-xl border border-slate-200/90 bg-white p-3 space-y-2 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-slate-800">Top Growth Categories</span>
-            <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded px-1.5 py-0.5">
-              Observed Regional Indicator
-            </span>
-          </div>
-          <div className="grid grid-cols-3 gap-2 pt-0.5">
-            {liveInsights.categories.slice(0, 3).map((mover) => {
-              const numericTrend =
-                typeof mover.trend === 'number'
-                  ? mover.trend
-                  : parseFloat(String(mover.trend)) || 0;
-
-              return (
-                <div key={mover.name} className="flex flex-col">
-                  <span className="text-sm sm:text-base font-extrabold text-emerald-600 flex items-center">
-                    <AnimatedCounter
-                      key={`${activeStateName}-${mover.name}`}
-                      value={numericTrend}
-                      prefix={numericTrend >= 0 ? '+' : ''}
-                      suffix="%"
-                    />
-                  </span>
-                  <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
-                    {mover.name}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Empty categories fallback */}
-      {liveInsights && Array.isArray(liveInsights.categories) && liveInsights.categories.length === 0 && (
-        <div className="rounded-xl border border-slate-200/90 bg-white p-3 text-center text-xs text-slate-500 shadow-2xs">
-          No category trends recorded for this location yet.
-        </div>
-      )}
 
       {/* ── SUBGRID: State Priority Sectors + Active Schemes ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
