@@ -13,6 +13,16 @@ export const metadata: Metadata = {
   description:
     'AI-driven hyper-local business advisory and financial structuring assistant for rural micro-entrepreneurs.',
   manifest: '/manifest.json',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -22,6 +32,11 @@ export default function RootLayout({
 }): React.JSX.Element {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </head>
       <body className={`${inter.className} bg-white text-[var(--color-text-dark)] antialiased`}>
         <ShellProvider>{children}</ShellProvider>
       </body>

@@ -31,6 +31,9 @@ interface NavItem {
 const NAV_ITEMS: readonly NavItem[] = [
   { label: 'Home', href: '/', isHome: true },
   { label: 'About Us', href: '/about' },
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Feasibility', href: '/#feasibility' },
+  { label: 'Schemes', href: '/#schemes' },
   { label: 'Discover', href: '/discover' },
 ] as const;
 
@@ -60,15 +63,18 @@ export function LandingNavbar(): React.JSX.Element {
           className="flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 rounded-lg group"
           aria-label="SAKSHAM Home"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-950 text-white shadow-xs group-hover:scale-105 transition-transform">
-            <Sparkles size={18} className="text-emerald-400" aria-hidden="true" />
-          </div>
+          <img
+            src="/icon.svg"
+            alt=""
+            className="h-9 w-9 object-contain group-hover:scale-105 transition-transform"
+          />
           <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tight text-slate-950 sm:text-2xl">
-              SAKSHAM
+            <span className="text-xl font-black tracking-tight text-[#00284D] sm:text-2xl">
+              SAKSH<span className="text-[#FBAC05]">AM</span>
             </span>
           </div>
         </Link>
+
 
         {/* Center: Floating Pill Navbar */}
         <nav

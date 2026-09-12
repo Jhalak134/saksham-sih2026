@@ -308,14 +308,18 @@ export function Sidebar(): React.JSX.Element {
       <ResizeHandle onMouseDown={startResize} onDoubleClick={resetWidth} />
 
       {/* Brand */}
-      <div className="px-4 py-5 border-b border-[var(--color-border)]">
-        <p className="text-base font-bold tracking-tight text-[var(--color-text-dark)]">
-          SAKSHAM
-        </p>
-        <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)] leading-tight">
-          Your business. A stronger tomorrow.
-        </p>
+      <div className="px-4 py-4 border-b border-[var(--color-border)] flex items-center gap-2.5">
+        <img src="/icon.svg" alt="" className="h-8 w-8 object-contain shrink-0" />
+        <div className="min-w-0">
+          <p className="text-base font-bold tracking-tight text-[#00284D] truncate">
+            SAKSH<span className="text-[#FBAC05]">AM</span>
+          </p>
+          <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)] leading-tight truncate">
+            Your business. A stronger tomorrow.
+          </p>
+        </div>
       </div>
+
 
       {/* Scrollable nav area */}
       <nav className="flex flex-1 flex-col overflow-y-auto px-2 py-3 gap-0.5">
