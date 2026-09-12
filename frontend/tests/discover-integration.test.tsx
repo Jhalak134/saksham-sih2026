@@ -208,7 +208,7 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       );
 
       expect(screen.getByText('Coming Soon')).toBeInTheDocument();
-      expect(screen.getByText(/Surging clean energy & traditional handicraft exports/i)).toBeInTheDocument();
+      expect(screen.getByText('State Economic Pulse')).toBeInTheDocument();
       expect(getInsightsSpy).not.toHaveBeenCalled();
       expect(getSchemesSpy).not.toHaveBeenCalled();
 
