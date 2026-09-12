@@ -21,6 +21,8 @@ import { getStateOpportunityProfile } from '@/data/stateOpportunitiesData';
 import { getInsights, getSchemes } from '@/lib/api-client';
 import type { InsightsResponse, OfficialScheme } from '@/lib/api-types';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
+
 
 interface StateInsightsBarProps {
   readonly selectedState: string | null;
@@ -37,6 +39,8 @@ export function StateInsightsBar({
 }: StateInsightsBarProps): React.JSX.Element {
   const router = useRouter();
   const [comingSoonMessage, setComingSoonMessage] = useState<string | null>(null);
+  const [isAIChatOpen, setIsAIChatOpen] = useState<boolean>(false);
+
 
   // Live backend data states
   const [liveInsights, setLiveInsights] = useState<InsightsResponse | null>(null);
@@ -402,8 +406,8 @@ export function StateInsightsBar({
         )}
       </div>
 
-      {/* Start Assessment CTA */}
-      <div className="mt-4 pt-3 border-t border-slate-100">
+      {/* Start Assessment CTA & AI Assistance */}
+      <div className="mt-4 pt-3 border-t border-slate-100 space-y-2.5">
         <button
           type="button"
           onClick={handleStartAssessment}
@@ -420,7 +424,26 @@ export function StateInsightsBar({
           </span>
           <ArrowRight size={15} strokeWidth={2.2} />
         </button>
+
+        <button
+          type="button"
+          onClick={() => setIsAIChatOpen(true)}
+          aria-label="Open AI Assistance Chatbot"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300/80 bg-gradient-to-r from-amber-500 via-[#FBAC05] to-emerald-600 px-4 py-2.5 text-xs md:text-sm font-bold text-white shadow-xs hover:shadow-md hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer"
+        >
+          <Sparkles size={16} className="text-amber-100 animate-pulse" />
+          <span>AI Assistance</span>
+          <span className="rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-semibold text-white/95">
+            Chat Assistant
+          </span>
+        </button>
       </div>
+
+      {/* SAKSHAM AI Complete Screen Assistant Modal */}
+      <SakshamAIChatModal
+        isOpen={isAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+      />
     </div>
   );
 }

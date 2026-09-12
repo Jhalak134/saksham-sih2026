@@ -6,6 +6,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Search,
   X,
@@ -278,6 +279,8 @@ function SearchBar(): React.JSX.Element {
 export function Header(): React.JSX.Element {
   const { openDrawer } = useShell();
   const { user, isAuthenticated } = useAuth();
+  const pathname = usePathname();
+  const isDiscoverPage = pathname === '/discover';
 
   return (
     <header
@@ -310,11 +313,11 @@ export function Header(): React.JSX.Element {
         </Link>
       </div>
 
-
-      {/* Center: Search & AI Chatbot Bar */}
+      {/* Center: Search & AI Chatbot Bar (Hidden on /discover per user request) */}
       <div className="flex flex-1 items-center justify-center px-2 md:px-6">
-        <SearchBar />
+        {!isDiscoverPage && <SearchBar />}
       </div>
+
 
       {/* Right: Auth indicator & Home link */}
       <div className="flex items-center gap-2">

@@ -84,13 +84,18 @@ export async function querySakshamAI(
   if (!validation.isValid) {
     return {
       answer:
-        'I could not understand that query. SAKSHAM AI is an enterprise decision-support chatbot specialized in rural business feasibility, government subsidies, and demographics.\n\nPlease ask a valid question such as:\n• Setup costs & equipment for a Dairy, Kirana, or Agro-processing unit\n• How the statutory 10% borrower margin & 90% loan works\n• PMFME 35% capital subsidy, PMEGP, or Mudra loans\n• Mathura pilot industrial profile and village catchments (Kamar, Chhata)\n• Official Census 2011 demographics & ODOP products',
-      key_points: [],
+        '⚠️ Error: I could not understand that query. Please type a question using simple English words, such as:\n• "How much does it cost to start a Dairy or Grocery shop?"\n• "How does the 10% own money and 90% bank loan work?"\n• "What government subsidies can I get (PMFME, PMEGP, Mudra)?"\n• "What is a good business idea for Mathura or Uttar Pradesh?"',
+      key_points: [
+        'Please use clear English words without random letters or symbols.',
+        'Ask about startup costs, bank loans, or government subsidies.',
+      ],
       citations: [],
       grounding_status: 'invalid_input',
       is_valid: false,
     };
   }
+
+
 
   // 1. Try Live Backend AI Microservice Integration
   const baseUrl = getBackendBaseUrl();
@@ -154,13 +159,13 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   ) {
     return {
       answer:
-        'SAKSHAM is designed under Smart India Hackathon (SIH) Problem Statement #91 as an explainable decision-support and financing platform for rural micro-enterprises. Under the statutory priority financing guidelines, the borrower provides a 10% equity contribution (margin money), while the remaining 90% is financed as a bank term loan at concessional interest rates (7.5%–8.5% p.a.). The platform calculates a composite 4-Factor Fit Score (0–100) grounded in real Census 2011 and local catchment data.',
+        'Here are the statutory priority financing guidelines in simple words:\n\n• You only need to pay 10% from your own pocket (your savings).\n• The bank gives you a loan for the remaining 90% at low interest (around 7.5% to 8.5% per year).\n• Example: If your new business costs ₹1,00,000, you invest ₹10,000 and the bank loans you ₹90,000.\n• SAKSHAM checks your village population, number of nearby shops, and profit to give you a clear Fit Score from 0 to 100.',
       key_points: [
-        'Financing Structure: 10% borrower equity margin + 90% bank term loan up to ₹10 Lakhs.',
-        'Market Opportunity Factor (30%): Assesses local village consumer demand pool based on households & category spend.',
-        'Competition Density Factor (25%): Computes competitors per household to detect underserved vs saturated catchments.',
-        'Capital Fit Factor (25%): Verifies borrower equity against statutory benchmark setup costs.',
-        'Infrastructure Viability Factor (20%): Evaluates block road connectivity and three-phase power availability.',
+        'Financing Structure: 10% borrower equity margin + 90% priority bank loan up to ₹10 Lakh.',
+        'Market Demand (30%): Checks how many village families will buy from your shop.',
+        'Local Competition (25%): Checks if too many similar shops already exist nearby.',
+        'Money Fit (25%): Checks if you have enough savings to start safely.',
+        'Roads & Electricity (20%): Checks if good roads and power are available.',
       ],
       citations: [
         {
@@ -171,7 +176,7 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
           excerpt: 'Statutory 10% borrower equity with 90% institutional debt. Weighted 4-factor feasibility model.',
         },
       ],
-      limitations: ['Individual loan sanction requires bank appraisal and Udyam/Aadhaar verification.'],
+      limitations: ['Bank loan approval requires basic Aadhaar, PAN, and free Udyam registration.'],
       grounding_status: 'fully_grounded',
       is_valid: true,
     };
@@ -189,13 +194,13 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   ) {
     return {
       answer:
-        'According to the pre-feasibility study in the SAKSHAM AI Knowledge Base (`dairy_yogurt_plant_project_report`), establishing a 500-liter/day yogurt manufacturing unit requires an estimated benchmark investment of ₹3,50,000 to ₹5,00,000. With 10% margin capital (₹35,000–₹50,000), an entrepreneur can access 90% financing. The unit reaches break-even in approximately 8 to 12 months with typical gross operating margins of 22%–32%.',
+        'Here are the setup details for a small dairy business in simple words:\n\n• Setting up a 500-liter/day yogurt manufacturing unit costs around ₹3,50,000 to ₹5,00,000.\n• You only need ₹35,000 to ₹50,000 of your own money (10%). The bank provides the rest.\n• Equipment needed: Milk storage cans, a cooler tank, packing machine, and curd containers.\n• Most village dairy units start making good profit in 8 to 12 months with 22% to 32% profit margins.',
       key_points: [
-        'Recommended Processing Capacity: 500 liters/day of cow or buffalo milk (min 3.5% fat, 8.5% SNF).',
-        'Core Machinery: Milk reception tank, cream separator, batch pasteurizer, homogenizer, incubation room (42°C), blast chiller, and automatic cup sealing machine.',
-        'Financial Profile: Benchmark project cost ~₹3,50,000–₹5,00,000; statutory 10% margin required is ₹35,000–₹50,000.',
-        'Operating Margins: 22%–32% profit margin depending on packaged retail vs bulk institutional off-take.',
-        'Applicable Subsidies: PMFME 35% capital subsidy (up to ₹10L) + UP State Dairy Development and Cattle Subsidy.',
+        'Daily Milk Capacity: 500 liters of cow or buffalo milk per day.',
+        'Your Investment: ₹35,000 to ₹50,000 (10% of total setup cost).',
+        'Bank Loan: The bank provides the remaining 90% as a term loan.',
+        'Profit Margin: Around ₹22 to ₹32 clear profit for every ₹100 of sales.',
+        'Government Subsidy: You can get a 35% free grant under the PMFME scheme.',
       ],
       citations: [
         {
@@ -214,8 +219,8 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
         },
       ],
       suggested_idea: 'Dairy & Livestock',
-      warnings: ['Raw milk quality testing (fat and SNF) must be conducted at each daily collection batch.'],
-      limitations: ['Report figures represent reference benchmarks; local equipment prices vary by supplier.'],
+      warnings: ['Always check milk fat and purity daily to maintain high quality.'],
+      limitations: ['Exact machinery prices may change slightly depending on local suppliers.'],
       grounding_status: 'fully_grounded',
       is_valid: true,
     };
@@ -235,13 +240,13 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   ) {
     return {
       answer:
-        'The primary central subsidy for rural micro-enterprises is the PMFME (PM Formalisation of Micro Food Processing Enterprises) Scheme, documented in `ai/knowledge_base/pmfme_scheme_guidelines`. It provides a 35% credit-linked capital subsidy up to ₹10,00,000 for individual micro food units. In addition, rural non-farm enterprises can leverage PMEGP (up to 35% margin money grant) and PM Mudra Yojana (collateral-free credit up to ₹10 Lakhs).',
+        'Here are the best government subsidies explained in simple words:\n\n• **PMFME Scheme**: The government gives you a 35% cash subsidy (up to ₹10,00,000 free grant) to buy machines and set up food businesses.\n• **PMEGP Scheme**: Gives you a 15% to 35% cash grant to start any small village shop or factory.\n• **PM Mudra Loan**: Gives you up to ₹10,00,000 bank loan without needing any land or property as guarantee.',
       key_points: [
-        'PMFME Capital Subsidy: 35% of eligible project cost up to a maximum ceiling of ₹10,00,000.',
-        'Mandatory Beneficiary Contribution: Minimum 10% of project cost; remaining 55% as bank loan.',
-        'SHG Seed Capital: ₹40,000 per SHG member for working capital and minor tools.',
-        'Common Infrastructure Grant: 35% subsidy for FPOs, SHGs, and cooperatives establishing shared cold chains or grading labs.',
-        'PMEGP Scheme: Up to 35% margin money subsidy for general and special categories in rural areas.',
+        'PMFME Cash Grant: 35% of your machine cost paid by the government (up to ₹10 Lakh).',
+        'Your Money Needed: You only put in 10% of the project cost.',
+        'Self-Help Groups (SHGs): Women group members get ₹40,000 seed money for basic tools.',
+        'Mudra Loan: Fast collateral-free loans from ₹50,000 to ₹10 Lakh.',
+        'PMEGP Scheme: 15% to 35% subsidy for new rural entrepreneurs.',
       ],
       citations: [
         {
@@ -268,12 +273,13 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   ) {
     return {
       answer:
-        'In the SAKSHAM AI Knowledge Base (`mathura_district_industrial_profile`), Mathura is an active pilot district with strong industrial connectivity along NH-19 and Yamuna Expressway. Key agricultural and manufacturing blocks include Chhata (large dairy, flour milling, and farm machinery), Goverdhan, and Mathura. Pilot village catchments such as Kamar (pop: 12,450) and Shergarh Bangar (pop: 7,492) present high market feasibility for dairy chilling, grain expelling, and retail kirana.',
+        'Here are the business opportunities in Mathura in simple words:\n\n• Mathura is an active pilot district very well connected along the Yamuna Expressway and national highway.\n• Chhata block is ideal for milk chilling, cattle feed, and flour milling.\n• Big villages like Kamar (12,450 residents) and Shergarh Bangar (7,492 residents) have high demand for grocery shops, dairy collection, and farm supplies.',
       key_points: [
-        'Geographic Vintage: Census 2011 baseline recorded 2,547,184 district population with 70.36% literacy.',
-        'Leading Clusters: Traditional milk sweets (Mathura Peda), mustard oil expelling, brass sculpture casting, and handloom printing.',
-        'Chhata Industrial Corridor: Prime cluster for agro-processing, cold storage logistics, and feed mills.',
-        'Pilot Villages: Kamar and Shergarh Bangar have active rural commerce, high milch cattle density, and unmet processing capacity.',
+        'Location Advantage: Prime corridor with expressway access for agro-processing.',
+        'Kamar Village: Over 12,000 residents needing daily retail goods and services.',
+        'Chhata Corridor: Prime area for dairy chilling, grain mills, and cold storage.',
+        'Top Local Products: Mathura Peda sweets, dairy ghee, and brass hardware.',
+        'High Customer Demand: Great opportunity for small agro-processing and grocery shops.',
       ],
       citations: [
         {
@@ -315,12 +321,12 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   ) {
     return {
       answer:
-        'Under the MANAGE Agribusiness & Rural Enterprise Development Handbook (`manual_entrepreneurship_development`), establishing a micro-enterprise requires systematic planning: maintaining a 30-day operating cash buffer to cushion seasonal crop cycles, obtaining statutory Udyam and FSSAI registrations, and developing direct procurement linkages with local farmers and rural haats.',
+        'Here are the steps to start a successful rural shop or business in simple words:\n\n• Keep 1 month of emergency cash ready to pay for daily goods and operating expenses.\n• Register your business for free on the government Udyam portal, and get an FSSAI food license if selling food.\n• Buy directly from local village farmers and markets to keep costs low and profits high.\n• You only need 10% own money; the bank can loan you 90% of the startup cost.',
       key_points: [
-        'Operating Buffer: Maintain a 30-day cash reserve for raw materials and operating expenses.',
-        'Statutory Licenses: Complete Udyam portal registration and FSSAI food safety clearance where applicable.',
-        'Forward & Backward Linkages: Direct aggregation from local producers and distribution to rural haats and mandis.',
-        'Financial Support: Statutory 10% borrower margin unlocks 90% debt financing under priority lending.',
+        'Emergency Cash: Keep 30 days of money saved for buying daily inventory.',
+        'Government Licenses: Free Udyam registration and FSSAI food safety certificate.',
+        'Local Buying: Buy directly from farmers and mandis for cheaper wholesale prices.',
+        'Bank Support: 10% own savings + 90% priority bank loan.',
       ],
       citations: [
         {
@@ -349,16 +355,16 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   if (matchedState || isDemographicsQuery) {
     const targetState = matchedState || getStateRealData(query);
     const popStr = targetState.census_2011.population
-      ? `${(targetState.census_2011.population / 10000000).toFixed(2)} Cr`
-      : 'high demographic scale';
+      ? `${(targetState.census_2011.population / 10000000).toFixed(2)} Crore`
+      : 'large population';
 
     return {
-      answer: `SAKSHAM integrates real-world Census 2011 and Invest India ODOP data for ${targetState.state_name}. With a verified population of ${popStr}, ${targetState.census_2011.literacy_percent || 70}% literacy, and ${targetState.odop.districts_captured_in_odop_list} ODOP districts led by ${targetState.odop.leading_odop_sector} (flagship: "${targetState.odop.flagship_example_district_product}"), the region offers viable micro-enterprise opportunities across agro-processing, retail, textiles, and services.`,
+      answer: `Here are the state business facts in simple words:\n\n• SAKSHAM uses official Census 2011 records and One District One Product (ODOP) data for ${targetState.state_name}.\n• With a population of ${popStr} and ${targetState.census_2011.literacy_percent || 70}% literacy, there is strong local customer demand for food, retail, and services.\n• Top district specialty product: ${targetState.odop.leading_odop_sector} (Flagship product: "${targetState.odop.flagship_example_district_product}").\n• You can apply for a 35% government grant under PMFME with just 10% of your own savings.`,
       key_points: [
-        `Demographic Base: ${popStr} population (${targetState.census_2011.density_per_km2 || 300}/km² density).`,
-        `Official ODOP Sector: ${targetState.odop.leading_odop_sector} across ${targetState.odop.leading_sector_district_count} districts.`,
-        `Flagship Product: ${targetState.odop.flagship_example_district_product}.`,
-        'Financing: Eligible for 35% PMFME/PMEGP capital subsidies with 10% borrower margin contribution.',
+        `Local Population: ${popStr} people (${targetState.census_2011.density_per_km2 || 300} people per km²).`,
+        `Top Product Sector: ${targetState.odop.leading_odop_sector} across ${targetState.odop.leading_sector_district_count} districts.`,
+        `Flagship Village Product: ${targetState.odop.flagship_example_district_product}.`,
+        'Government Aid: 35% cash grant under PMFME or PMEGP + 90% bank loan.',
       ],
       citations: [
         {
@@ -386,11 +392,11 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   ) {
     return {
       answer:
-        'Hello! I am SAKSHAM AI, your enterprise decision-support chatbot. I can help you evaluate business viability, financing requirements, and government subsidies.\n\nYou can ask me about:\n• 500 LPD Dairy & Yogurt plant pre-feasibility study (Capex, machinery, 22%–32% margins)\n• 10% borrower equity margin & 90% term loan structure under SIH #91\n• PMFME 35% capital subsidy, PMEGP, and SHG seed capital guidelines\n• Mathura pilot industrial profile and village catchments\n• Real Census 2011 demographics & ODOP products across all 34 states/UTs',
+        'Hello! I am SAKSHAM AI, your business helper.\n\nI give you advice in simple English words to help you start your business:\n• Dairy, Kirana (Grocery), or Food Processing setup costs and profits\n• How you can pay only 10% own money and get a 90% bank loan\n• Free government subsidies up to 35% under PMFME and Mudra loans\n• Village population and top products in your state\n\nHow can I help you today?',
       key_points: [
-        'Ask about business idea feasibility and Capex',
-        'Inquire about government subsidies and loans',
-        'Explore district demographic and ODOP data',
+        'Ask about startup costs and profits for any shop or unit',
+        'Learn how to get a low-interest 90% bank loan with 10% own money',
+        'Find government cash subsidy schemes (PMFME, PMEGP, Mudra)',
       ],
       citations: [],
       grounding_status: 'domain_knowledge',
@@ -401,10 +407,14 @@ function generateDeepProjectAnswer(query: string): AIAdvisoryResult {
   // Scenario H: Unrecognized / Invalid input fallback - DO NOT fabricate census data!
   return {
     answer:
-      `I could not understand or find relevant project information for "${query.trim()}". SAKSHAM AI is an enterprise decision-support system and only responds to valid questions about micro-enterprises, financial structuring, and government schemes.\n\nPlease ask a valid question such as:\n• "What is the Capex for a 500 LPD dairy plant?"\n• "How does the 10% borrower margin work?"\n• "What subsidies are available under PMFME or PMEGP?"\n• "Tell me about Mathura Chhata agro-corridor"\n• "What is the Census 2011 population and ODOP for Bihar or Uttar Pradesh?"`,
-    key_points: [],
+      `⚠️ Error: We could not understand your question "${query.trim()}".\n\nPlease ask your question using simple English words, like:\n• "How much does it cost to start a dairy or grocery shop?"\n• "How does the 10% own money and 90% bank loan work?"\n• "What government subsidies can I get (PMFME, PMEGP, Mudra)?"\n• "What is a good business idea for my village?"`,
+    key_points: [
+      'Please ask about small businesses, loans, or subsidies in simple English.',
+      'Check your spelling and avoid random letters or symbols.',
+    ],
     citations: [],
     grounding_status: 'invalid_input',
     is_valid: false,
   };
 }
+
