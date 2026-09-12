@@ -28,9 +28,11 @@ import {
   type LanguageCode,
 } from '@/lib/constants';
 import { useShell } from '@/lib/shell-context';
-import { getStorageItem, setStorageItem } from '@/lib/storage';
+import { useAuth } from '@/lib/auth-context';
+import { getStorageItem, setStorageItem, removeStorageItem } from '@/lib/storage';
 import { LogoutModal } from '@/components/ui/LogoutModal';
 import { getAuthUser, clearAuthUser, type AuthUser } from '@/lib/auth';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 // ─── Resize constants ─────────────────────────────────────────────────────────
 
@@ -258,6 +260,7 @@ function useSidebarResize() {
 export function Sidebar(): React.JSX.Element {
   const pathname = usePathname();
   const { compareCount, language, setLanguage } = useShell();
+  const { user: authUser, isAuthenticated, logout } = useAuth();
   const { width, startResize, resetWidth } = useSidebarResize();
 
   const [showLogOutModal, setShowLogOutModal] = useState(false);
@@ -273,24 +276,27 @@ export function Sidebar(): React.JSX.Element {
 
   function handleConfirmLogOut(): void {
     setShowLogOutModal(false);
+    logout();
     clearAuthUser();
-    import('@/lib/storage').then(({ removeStorageItem }) => {
-      removeStorageItem('auth_token');
-    });
+    removeStorageItem(STORAGE_KEYS.authToken);
     window.location.href = '/';
   }
 
-  const displayName = user?.name || (user?.phone ? `+91 ${user.phone}` : 'Rural Entrepreneur');
-  const displaySub = user?.email || (user?.phone ? 'Verified Profile' : 'My Profile');
-  const userInitials = user?.name
-    ? user.name
-        .split(' ')
-        .filter(Boolean)
-        .map((n) => n[0])
-        .join('')
-        .slice(0, 2)
-        .toUpperCase()
-    : 'RE';
+  const displayName = authUser?.phone_or_email || user?.name || (user?.phone ? `+91 ${user.phone}` : 'Rural Entrepreneur');
+  const displaySub = isAuthenticated && authUser
+    ? (authUser.home_location || 'Verified Profile')
+    : user?.email || (user?.phone ? 'Verified Profile' : 'My Profile');
+  const userInitials = authUser?.phone_or_email
+    ? authUser.phone_or_email.slice(0, 2).toUpperCase()
+    : user?.name
+      ? user.name
+          .split(' ')
+          .filter(Boolean)
+          .map((n) => n[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase()
+      : 'RE';
 
   return (
     <aside

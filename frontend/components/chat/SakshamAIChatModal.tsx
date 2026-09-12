@@ -74,7 +74,12 @@ export function SakshamAIChatModal({
   onClose,
   initialQuery,
 }: SakshamAIChatModalProps): React.JSX.Element | null {
-  const router = useRouter();
+  let router: ReturnType<typeof useRouter> | null = null;
+  try {
+    router = useRouter();
+  } catch {
+    router = null;
+  }
   const { setBrowsingLocation } = useShell();
 
   const [messages, setMessages] = useState<readonly ChatMessage[]>([INITIAL_AI_GREETING]);
@@ -180,13 +185,13 @@ export function SakshamAIChatModal({
 
   const handleLaunchAssessment = (idea: string) => {
     onClose();
-    router.push(`/new-assessment?idea=${encodeURIComponent(idea)}`);
+    router?.push(`/new-assessment?idea=${encodeURIComponent(idea)}`);
   };
 
   const handleExploreLocation = (location: string) => {
     setBrowsingLocation(location);
     onClose();
-    router.push('/discover');
+    router?.push('/discover');
   };
 
   if (!isOpen) return null;

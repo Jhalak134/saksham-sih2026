@@ -238,37 +238,116 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         recommended_project_size=fin_data["recommended_project_size"],
         scheme_id=fin_data["scheme_id"],
         status="Exploring",
+        rating=feas_data.get("rating"),
+        competitor_count=comp_count,
+        business_idea=req.idea or cat.name,
+        interest_rate=fin_data.get("interest_rate"),
+        tenure_months=fin_data.get("tenure_months"),
+        moratorium_months=fin_data.get("moratorium_months"),
+        monthly_emi=fin_data.get("monthly_emi"),
+        total_repayment=fin_data.get("total_repayment"),
+        total_interest=fin_data.get("total_interest"),
+        estimated_monthly_revenue=fin_data.get("estimated_monthly_revenue"),
+        estimated_monthly_profit=fin_data.get("estimated_monthly_profit"),
+        repayment_burden_ratio=fin_data.get("repayment_burden_ratio"),
+        repayment_burden_category=fin_data.get("repayment_burden_category"),
+        feasibility_breakdown=feas_data,
+        ai_insights=ai_data,
     )
 
-    recommendation_text = ai_data.get("recommendation") or ai_data.get("explanation", "")
+    return _build_assessment_response(saved)
 
-    # Unified response matching frontend interface & rich backend spec
+
+def _build_village_dict(v: Optional[Village]) -> Optional[Dict[str, Any]]:
+    if not v:
+        return None
+    block_name = v.block.name if v.block else "Mathura"
     return {
-        "id": saved.id,
-        # Frontend compatibility fields
-        "fitScore": feas_data["fit_score"],
-        "confidence": feas_data["confidence_level"],
+        "id": v.id,
+        "name": v.name,
+        "block_name": block_name,
+        "district": "Mathura",
+        "state": "Uttar Pradesh",
+        "population": v.population or 0,
+        "households": v.household_count or 0,
+        "literacy_rate": round(v.literacy_rate * 100.0, 1) if (v.literacy_rate is not None and v.literacy_rate <= 1.0) else (v.literacy_rate or 0.0),
+    }
+
+
+def _build_category_dict(cat: Optional[BusinessCategory]) -> Optional[Dict[str, Any]]:
+    if not cat:
+        return None
+    return {
+        "id": cat.id,
+        "name": cat.name,
+        "icon": cat.icon,
+        "is_seasonal": cat.is_seasonal,
+    }
+
+
+def _build_financial_dict(a: Assessment) -> Dict[str, Any]:
+    sch = a.scheme
+    project_cost = a.project_cost if a.project_cost is not None else (a.capital_input / 0.10 if a.capital_input else 1000000.0)
+    max_loan = a.max_loan_amount if a.max_loan_amount is not None else (project_cost * 0.90)
+    interest_rate = a.interest_rate if a.interest_rate is not None else (sch.interest_rate if sch else 8.0)
+    tenure_months = a.tenure_months if a.tenure_months is not None else (sch.tenure_months if sch else 84)
+    moratorium_months = a.moratorium_months if a.moratorium_months is not None else (sch.moratorium_months if sch else 6)
+    scheme_name = sch.name if sch else "Term Loan Scheme"
+    scheme_id = a.scheme_id or (sch.id if sch else 2)
+
+    return {
+        "available_margin": a.capital_input,
+        "project_cost": project_cost,
+        "max_loan_amount": max_loan,
+        "recommended_project_size": a.recommended_project_size or (project_cost * 0.35),
+        "scheme_id": scheme_id,
+        "scheme_name": scheme_name,
+        "interest_rate": interest_rate,
+        "tenure_months": tenure_months,
+        "moratorium_months": moratorium_months,
+        "monthly_emi": a.monthly_emi,
+        "total_repayment": a.total_repayment,
+        "total_interest": a.total_interest,
+        "estimated_monthly_revenue": a.estimated_monthly_revenue,
+        "estimated_monthly_profit": a.estimated_monthly_profit,
+        "repayment_burden_ratio": a.repayment_burden_ratio,
+        "repayment_burden_category": a.repayment_burden_category,
+    }
+
+
+def _build_feasibility_dict(a: Assessment) -> Dict[str, Any]:
+    if a.feasibility_breakdown and isinstance(a.feasibility_breakdown, dict):
+        return a.feasibility_breakdown
+    return {
+        "fit_score": a.fit_score,
+        "rating": a.rating or "Feasible",
+        "confidence_level": a.confidence_level or "Medium",
+    }
+
+
+def _build_assessment_response(a: Assessment) -> Dict[str, Any]:
+    """
+    Constructs the authoritative analytical assessment response matching the frontend
+    and backend contracts from a persisted Assessment entity.
+    """
+    recommendation_text = ""
+    if a.ai_insights and isinstance(a.ai_insights, dict):
+        recommendation_text = a.ai_insights.get("recommendation") or a.ai_insights.get("explanation", "")
+
+    fin_data = _build_financial_dict(a)
+    feas_data = _build_feasibility_dict(a)
+    rating = a.rating or (feas_data.get("rating") if isinstance(feas_data, dict) else "Highly Feasible")
+
+    return {
+        "id": a.id,
+        "fitScore": a.fit_score,
+        "confidence": a.confidence_level,
         "recommendation": recommendation_text,
-        # Rich report fields
-        "fit_score": feas_data["fit_score"],
-        "confidence_level": feas_data["confidence_level"],
-        "rating": feas_data["rating"],
-        "village": {
-            "id": village.id,
-            "name": village.name,
-            "block_name": village.block.name if village.block else "Mathura",
-            "district": "Mathura",
-            "state": "Uttar Pradesh",
-            "population": village.population or 0,
-            "households": village.household_count or 0,
-            "literacy_rate": round(village.literacy_rate * 100.0, 1) if (village.literacy_rate is not None and village.literacy_rate <= 1.0) else (village.literacy_rate or 0.0),
-        },
-        "category": {
-            "id": cat.id,
-            "name": cat.name,
-            "icon": cat.icon,
-            "is_seasonal": cat.is_seasonal,
-        },
+        "fit_score": a.fit_score,
+        "confidence_level": a.confidence_level,
+        "rating": rating,
+        "village": _build_village_dict(a.village),
+        "category": _build_category_dict(a.category),
         "financial": fin_data,
         "feasibility": feas_data,
         "scheme": {
@@ -278,10 +357,10 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
             "tenure_months": fin_data["tenure_months"],
             "moratorium_months": fin_data["moratorium_months"],
         },
-        "ai_insights": ai_data,
-        "competitor_count": comp_count,
-        "status": saved.status,
-        "created_at": saved.created_at,
+        "ai_insights": a.ai_insights,
+        "competitor_count": a.competitor_count if a.competitor_count is not None else 0,
+        "status": a.status or "Exploring",
+        "created_at": a.created_at,
     }
 
 
@@ -324,7 +403,7 @@ def get_history(
         {
             "id": a.id,
             "village_name": a.village.name if a.village else "Unknown",
-            "category_name": a.scheme.name if a.scheme else "General",
+            "category_name": a.category.name if a.category else "General",
             "capital_input": a.capital_input,
             "project_cost": a.project_cost,
             "fit_score": a.fit_score,
@@ -342,69 +421,4 @@ def get_assessment(assessment_id: int, db: Session = Depends(get_db)):
     a = get_assessment_by_id(db, assessment_id)
     if not a:
         raise HTTPException(status_code=404, detail="Assessment not found.")
-
-    comp_count = count_competitors_in_catchment(db, a.village_id, a.category_id) if a.village_id and a.category_id else 0
-    feas_data = evaluate_feasibility(
-        village=a.village,
-        category=a.category,
-        capital_input=a.capital_input or 100000.0,
-        competitor_count=comp_count,
-    ) if a.village and a.category else None
-
-    score = a.fit_score or (feas_data["fit_score"] if feas_data else 75.0)
-    if score >= 82.0:
-        rating = "Highly Feasible"
-    elif score >= 68.0:
-        rating = "Feasible"
-    elif score >= 52.0:
-        rating = "Moderate Fit"
-    else:
-        rating = "High Risk"
-
-    return {
-        "id": a.id,
-        "fitScore": a.fit_score,
-        "fit_score": a.fit_score,
-        "confidence": a.confidence_level or "High",
-        "confidence_level": a.confidence_level or "High",
-        "rating": rating,
-        "village": {
-            "id": a.village.id,
-            "name": a.village.name,
-            "block_name": a.village.block.name if a.village and a.village.block else "Mathura",
-            "district": "Mathura",
-            "state": "Uttar Pradesh",
-            "population": a.village.population,
-            "households": a.village.household_count,
-            "literacy_rate": a.village.literacy_rate,
-        } if a.village else None,
-        "category": {
-            "id": a.category.id,
-            "name": a.category.name,
-            "icon": a.category.icon,
-            "is_seasonal": a.category.is_seasonal,
-        } if a.category else None,
-        "capital_input": a.capital_input,
-        "project_cost": a.project_cost,
-        "max_loan_amount": a.max_loan_amount,
-        "recommended_project_size": a.recommended_project_size,
-        "feasibility": feas_data,
-        "financial": {
-            "project_cost": a.project_cost,
-            "max_loan_amount": a.max_loan_amount,
-            "recommended_project_size": a.recommended_project_size,
-            "available_margin": a.capital_input,
-            "scheme_name": a.scheme.name if a.scheme else "Priority Scheme",
-            "interest_rate": a.scheme.interest_rate if a.scheme else 8.0,
-            "tenure_months": a.scheme.tenure_months if a.scheme else 84,
-            "monthly_emi": 14945.0,
-        },
-        "scheme": {
-            "id": a.scheme.id,
-            "name": a.scheme.name,
-            "interest_rate": a.scheme.interest_rate,
-            "tenure_months": a.scheme.tenure_months,
-        } if a.scheme else None,
-        "competitor_count": comp_count,
-        "created_at": a.created_at,
-    }
+    return _build_assessment_response(a)
