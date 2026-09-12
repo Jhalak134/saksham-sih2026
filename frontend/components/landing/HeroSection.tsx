@@ -100,11 +100,11 @@ export function HeroSection(): React.JSX.Element {
           />
 
           {/* Left-Aligned Text Content in the open left area */}
-          <div className="relative z-20 flex min-h-[480px] sm:min-h-[540px] md:min-h-[580px] lg:min-h-[620px] flex-col justify-center px-6 sm:px-10 md:px-12 lg:px-16 py-8 sm:py-12 max-w-xl md:max-w-2xl text-left">
+          <div className="relative z-20 flex min-h-[480px] sm:min-h-[540px] md:min-h-[580px] lg:min-h-[620px] flex-col justify-center px-6 sm:px-10 md:px-12 lg:px-16 py-8 sm:py-12 max-w-2xl lg:max-w-3xl text-left">
             {/* Main Headline */}
-            <h1 className="animate-slide-up-1 text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight text-slate-950 leading-[1.12]">
-              Know if your 
-              <span className="block">business idea works</span>
+            <h1 className="animate-slide-up-1 text-4xl sm:text-5xl md:text-6xl lg:text-[3.5rem] font-black tracking-tight text-slate-950 leading-[1.1]">
+              Know if your <br />
+              <span className="whitespace-nowrap">business idea works</span>
             </h1>
 
             {/* Subtitle */}
