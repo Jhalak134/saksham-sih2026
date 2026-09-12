@@ -2,11 +2,7 @@
 
 <img src="frontend/public/logo.svg" alt="SAKSHAM logo" width="88" />
 
-# SAKSHAM
-
 **AI-Driven Hyper-Local Business Advisory & Financial Structuring Assistant for Rural Micro-Entrepreneurs**
-
-*Smart India Hackathon 2026, Problem Statement #91*
 
 [![Backend](https://img.shields.io/badge/backend-FastAPI-009688)](backend)
 [![Frontend](https://img.shields.io/badge/frontend-Next.js%2016%20%2F%20React%2019-black)](frontend)
