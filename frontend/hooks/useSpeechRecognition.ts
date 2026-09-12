@@ -5,11 +5,34 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export type SpeechLanguage = 'en-IN' | 'hi-IN';
+export type SpeechLanguage =
+  | 'en-IN'
+  | 'hi-IN'
+  | 'mr-IN'
+  | 'ta-IN'
+  | 'te-IN'
+  | string;
+
+export function languageCodeToSpeechLang(code: string): SpeechLanguage {
+  switch (code) {
+    case 'hi':
+      return 'hi-IN';
+    case 'mr':
+      return 'mr-IN';
+    case 'ta':
+      return 'ta-IN';
+    case 'te':
+      return 'te-IN';
+    case 'en':
+    default:
+      return 'en-IN';
+  }
+}
 
 export interface UseSpeechRecognitionOptions {
   readonly initialLanguage?: SpeechLanguage;
   readonly onTranscriptChange?: (text: string) => void;
+  readonly onFinalChunk?: (chunk: string) => void;
 }
 
 export interface UseSpeechRecognitionResult {
@@ -35,6 +58,7 @@ interface IWindow extends Window {
 export function useSpeechRecognition({
   initialLanguage = 'hi-IN',
   onTranscriptChange,
+  onFinalChunk,
 }: UseSpeechRecognitionOptions = {}): UseSpeechRecognitionResult {
   const [isListening, setIsListening] = useState<boolean>(false);
   const [transcript, setTranscript] = useState<string>('');
@@ -46,10 +70,19 @@ export function useSpeechRecognition({
   const recognitionRef = useRef<any>(null);
   const isManuallyStoppedRef = useRef<boolean>(false);
   const onTranscriptChangeRef = useRef(onTranscriptChange);
+  const onFinalChunkRef = useRef(onFinalChunk);
 
   useEffect(() => {
     onTranscriptChangeRef.current = onTranscriptChange;
   }, [onTranscriptChange]);
+
+  useEffect(() => {
+    onFinalChunkRef.current = onFinalChunk;
+  }, [onFinalChunk]);
+
+  useEffect(() => {
+    setLanguageState(initialLanguage);
+  }, [initialLanguage]);
 
   // Check browser support
   useEffect(() => {
@@ -122,13 +155,17 @@ export function useSpeechRecognition({
         }
 
         if (finalChunk) {
+          const cleanFinal = finalChunk.trim();
           setTranscript((prev) => {
-            const next = prev ? `${prev} ${finalChunk.trim()}` : finalChunk.trim();
+            const next = prev ? `${prev} ${cleanFinal}` : cleanFinal;
             if (onTranscriptChangeRef.current) {
               onTranscriptChangeRef.current(next);
             }
             return next;
           });
+          if (onFinalChunkRef.current) {
+            onFinalChunkRef.current(cleanFinal);
+          }
         }
         setInterimTranscript(interimChunk);
       };
