@@ -266,13 +266,14 @@ export function Sidebar(): React.JSX.Element {
       : 'RE';
 
   return (
-    <aside
-      className="hidden md:flex flex-col fixed inset-y-0 left-0 bg-white border-r border-[var(--color-border)]"
-      style={{ width, zIndex: 'var(--z-sidebar)' }}
-      aria-label="Main navigation"
-    >
-      {/* Drag handle — right edge */}
-      <ResizeHandle onMouseDown={startResize} onDoubleClick={resetWidth} />
+    <>
+      <aside
+        className="hidden md:flex flex-col fixed inset-y-0 left-0 bg-white border-r border-[var(--color-border)]"
+        style={{ width, zIndex: 'var(--z-sidebar)' }}
+        aria-label="Main navigation"
+      >
+        {/* Drag handle — right edge */}
+        <ResizeHandle onMouseDown={startResize} onDoubleClick={resetWidth} />
 
       {/* Brand */}
       <Link
