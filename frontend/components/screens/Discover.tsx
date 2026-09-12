@@ -69,9 +69,19 @@ export function DiscoverScreen(): React.JSX.Element {
   return (
     <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-7">
       <div className="w-full space-y-6 md:space-y-8">
-        {/* 1. TOP HALF: 3-Level Interactive Map Heatmap (Left) + Dynamic State Info Bar (Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          <div className="lg:col-span-7">
+        {/* Page Heading matching media_1789234113482.png */}
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Discover Opportunities
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm font-medium text-slate-500">
+            Explore data-driven insights to find the right business for your region.
+          </p>
+        </div>
+
+        {/* 1. TOP HALF: 3-Level Interactive Map Heatmap (Left 3/5) + Dynamic State Info Bar (Right 2/5) */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+          <div className="lg:col-span-3">
             <IndiaMap
               selectedState={selectedState}
               onStateSelect={handleStateSelect}
@@ -79,7 +89,7 @@ export function DiscoverScreen(): React.JSX.Element {
               onDistrictSelect={handleDistrictSelect}
             />
           </div>
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-2">
             <StateInsightsBar
               selectedState={selectedState}
               selectedDistrict={selectedDistrict}

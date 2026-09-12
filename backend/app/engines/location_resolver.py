@@ -12,6 +12,14 @@ from sqlalchemy import or_, func
 from backend.app.db.models import Village, Block, District
 
 
+LOCATION_ALIASES: Dict[str, str] = {
+    "vrindavan": "vrindaban",
+    "brindavan": "vrindaban",
+    "brindaban": "vrindaban",
+    "loc_07": "vrindaban",
+}
+
+
 def resolve_location(db: Session, query: str) -> Dict[str, Any]:
     """
     Resolves an ambiguous user location query into a canonical Village entity.
@@ -21,6 +29,7 @@ def resolve_location(db: Session, query: str) -> Dict[str, Any]:
     - Exact village name: "Kamar", "Hulwana", "Shergarh Bangar"
     - Partial village name / token match: "Barsana", "Chaumuhan", "Farah"
     - Block name matching: "Chhata", "Govardhan"
+    - Transliterations & Aliases: "Vrindavan" -> "Vrindaban Bangar"
     - Safe fallback with matched=False only when no village matches
     """
     clean_q = query.strip()
@@ -38,7 +47,7 @@ def resolve_location(db: Session, query: str) -> Dict[str, Any]:
     num_str = clean_q
     if num_str.lower().startswith("loc_v_"):
         num_str = num_str[6:]
-    elif num_str.lower().startswith("loc_"):
+    elif num_str.lower().startswith("loc_") and num_str.lower() not in LOCATION_ALIASES:
         num_str = num_str[4:]
 
     if num_str.isdigit():
@@ -56,8 +65,14 @@ def resolve_location(db: Session, query: str) -> Dict[str, Any]:
     parts = [p.strip() for p in clean_q.split(",") if p.strip()]
     village_token = parts[0] if parts else clean_q
 
+    # Expand search candidates with aliases/transliterations
+    search_tokens = [village_token]
+    alias = LOCATION_ALIASES.get(village_token.lower()) or LOCATION_ALIASES.get(clean_q.lower())
+    if alias and alias.lower() not in [s.lower() for s in search_tokens]:
+        search_tokens.append(alias)
+
     # 3. Exact name match on full query or primary token
-    for candidate in [clean_q, village_token]:
+    for candidate in [clean_q] + search_tokens:
         exact_name = db.query(Village).filter(func.lower(Village.name) == candidate.lower()).first()
         if exact_name:
             return {
@@ -69,7 +84,7 @@ def resolve_location(db: Session, query: str) -> Dict[str, Any]:
             }
 
     # 4. Partial substring search on primary token then full query
-    for candidate in [village_token, clean_q]:
+    for candidate in search_tokens + [clean_q]:
         if len(candidate) >= 3:
             pattern = f"%{candidate}%"
             candidates = (

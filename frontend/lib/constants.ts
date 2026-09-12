@@ -29,6 +29,8 @@ export const STORAGE_KEYS = {
   emailNotifications: 'saksham_email_notifications',
   authUser: 'saksham_auth_user',
   authToken: 'auth_token',
+  language: 'saksham_language',
+  geminiApiKey: 'saksham_gemini_api_key',
 } as const;
 
 // ─── Navigation ─────────────────────────────────────────────────────────────
@@ -62,11 +64,8 @@ export const SIDEBAR_PRIMARY_ITEMS: readonly NavItemConfig[] = [
 ] as const;
 
 export const SIDEBAR_SECONDARY_ITEMS: readonly NavItemConfig[] = [
-  { label: 'Saved', href: '/saved', icon: 'Bookmark' },
-  { label: 'Compare', href: '/compare', icon: 'ArrowLeftRight' },
   { label: 'Settings', href: '/settings', icon: 'Settings' },
   { label: 'Help & Support', href: '/help', icon: 'HelpCircle' },
-  { label: 'How SAKSHAM Works', href: '/how-it-works', icon: 'PlayCircle' },
   { label: 'Install App', href: '/install', icon: 'Download' },
 ] as const;
 

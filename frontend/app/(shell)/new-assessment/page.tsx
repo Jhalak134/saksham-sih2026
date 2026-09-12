@@ -24,7 +24,7 @@ import { useAuth } from '@/lib/auth-context';
 import { CATEGORIES, type Category } from '@/lib/constants';
 import { CategoryIcon } from '@/components/assessment/CategoryIcon';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
-import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { useSpeechRecognition, languageCodeToSpeechLang } from '@/hooks/useSpeechRecognition';
 import { createAssessment, formatVillageLocation } from '@/lib/api-client';
 import type { VillageLocation } from '@/lib/api-types';
 import {
@@ -143,7 +143,7 @@ const CAPITAL_PRESETS = [
 function NewAssessmentContent(): React.JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { capital: shellCapital, homeLocation } = useShell();
+  const { capital: shellCapital, homeLocation, language } = useShell();
   const { user } = useAuth();
 
   // Query parameter extraction
@@ -211,8 +211,8 @@ function NewAssessmentContent(): React.JSX.Element {
         setLocationDisplay(candidateLoc);
       }
     } else {
-      // Default pilot location: Bera, Mathura
-      setLocationId('loc_07');
+      // Default pilot location: Bera, Mathura (Census ID: 123912)
+      setLocationId('123912');
       setLocationDisplay('Bera, Mathura');
     }
   }, [paramLoc, paramDistrict, paramState, homeLocation]);
@@ -227,11 +227,13 @@ function NewAssessmentContent(): React.JSX.Element {
   }, [paramCategory, suggestedCategory, category]);
 
   // Voice speech recognition hook
-  const handleSpeechResult = (newChunk: string) => {
-    setIdea((prev) => {
-      const combined = prev ? `${prev.trim()} ${newChunk}` : newChunk;
-      return combined.slice(0, 300);
-    });
+  const baseIdeaRef = useRef<string>('');
+
+  const handleSpeechResult = (fullTranscript: string) => {
+    const base = baseIdeaRef.current.trim();
+    const cleanSpeech = fullTranscript.trim();
+    const combined = base ? `${base} ${cleanSpeech}` : cleanSpeech;
+    setIdea(combined.slice(0, 300));
   };
 
   const {
@@ -239,11 +241,20 @@ function NewAssessmentContent(): React.JSX.Element {
     language: speechLang,
     setLanguage: setSpeechLang,
     toggleListening,
+    resetTranscript,
     isSupported: speechSupported,
   } = useSpeechRecognition({
-    initialLanguage: 'hi-IN',
+    initialLanguage: languageCodeToSpeechLang(language),
     onTranscriptChange: handleSpeechResult,
   });
+
+  const handleToggleListening = () => {
+    if (!isListening) {
+      baseIdeaRef.current = idea;
+      resetTranscript();
+    }
+    toggleListening();
+  };
 
   const isPilot = useMemo(() => {
     return isMathuraLocation(locationDisplay || locationId);
@@ -313,6 +324,8 @@ function NewAssessmentContent(): React.JSX.Element {
           if (Number.isFinite(idNum)) {
             parsedVillageId = idNum;
           }
+        } else if (locationId === 'loc_07') {
+          parsedVillageId = 124296;
         }
       }
 
@@ -631,7 +644,7 @@ function NewAssessmentContent(): React.JSX.Element {
 
                   <button
                     type="button"
-                    onClick={toggleListening}
+                    onClick={handleToggleListening}
                     className={cn(
                       'flex items-center gap-1.5 rounded-xl px-3 py-1 text-xs font-semibold transition-all cursor-pointer shadow-2xs',
                       isListening

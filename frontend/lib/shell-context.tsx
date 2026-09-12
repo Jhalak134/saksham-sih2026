@@ -66,7 +66,7 @@ function useShellState(): ShellContextValue {
   const [browsingLocation, setBrowsingLocation] = useState(DEFAULT_HOME_LOCATION);
   const [capital, setCapitalState] = useState(DEFAULT_CAPITAL);
   const [compareCount, setCompareCount] = useState(0);
-  const [language, setLanguage] = useState<LanguageCode>('en');
+  const [language, setLanguageState] = useState<LanguageCode>('en');
   const [savedCategories, setSavedCategories] = useState<CategoryRow[]>(() => [
     ...INITIAL_SAVED_CATEGORIES,
   ]);
@@ -83,6 +83,13 @@ function useShellState(): ShellContextValue {
       const parsed = Number(storedCap);
       if (Number.isFinite(parsed)) {
         setCapitalState(parsed);
+      }
+    }
+    const storedLang = getStorageItem(STORAGE_KEYS.language) as LanguageCode | null;
+    if (storedLang && ['en', 'hi', 'mr', 'ta', 'te'].includes(storedLang)) {
+      setLanguageState(storedLang);
+      if (typeof document !== 'undefined') {
+        document.documentElement.lang = storedLang;
       }
     }
     const storedSaved = getStorageItem(STORAGE_KEYS.savedCategories);
@@ -165,18 +172,30 @@ function useShellState(): ShellContextValue {
     });
   }, []);
 
+  const setLanguage = useCallback((code: LanguageCode) => {
+    setLanguageState(code);
+    setStorageItem(STORAGE_KEYS.language, code);
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = code;
+    }
+  }, []);
+
   const clearAllData = useCallback(() => {
     removeStorageItem(STORAGE_KEYS.homeLocation);
     removeStorageItem(STORAGE_KEYS.capital);
     removeStorageItem(STORAGE_KEYS.savedCategories);
     removeStorageItem(STORAGE_KEYS.emailNotifications);
     removeStorageItem(STORAGE_KEYS.authToken);
+    removeStorageItem(STORAGE_KEYS.language);
     setHomeLocationState(DEFAULT_HOME_LOCATION);
     setBrowsingLocation(DEFAULT_HOME_LOCATION);
     setCapitalState(DEFAULT_CAPITAL);
     setCompareCount(0);
     setSavedCategories([]);
-    setLanguage('en');
+    setLanguageState('en');
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = 'en';
+    }
   }, []);
 
   return {

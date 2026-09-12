@@ -223,13 +223,18 @@ export function Drawer(): React.JSX.Element {
         }}
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] px-4 py-3">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 py-3">
+          <Link
+            href="/discover"
+            onClick={closeDrawer}
+            className="flex items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer"
+            aria-label="Go to Discover"
+          >
             <img src="/icon.svg" alt="" className="h-6 w-6 object-contain" />
             <p className="text-base font-bold text-[#00284D]">
               SAKSH<span className="text-[#FBAC05]">AM</span>
             </p>
-          </div>
+          </Link>
           <IconButton label="Close navigation menu" onClick={closeDrawer}>
             <X size={18} strokeWidth={2} />
           </IconButton>
