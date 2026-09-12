@@ -31,6 +31,7 @@ from backend.app.db.queries import (
 from backend.app.engines.location_resolver import resolve_location
 from backend.app.engines.financial_engine import structure_finances
 from backend.app.engines.feasibility_engine import evaluate_feasibility
+from backend.app.ml.hybrid_layer import compute_hybrid_feasibility
 from backend.app.clients.ai_client import ai_client
 from backend.app.routers.auth import get_current_user
 from backend.app.schemas.assess import ReportSummary, MyReportsResponse
@@ -196,8 +197,8 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
         competitor_count=comp_count,
     )
 
-    # 6. Explainable Feasibility Evaluation
-    feas_data = evaluate_feasibility(
+    # 6. Hybrid Rule-Based + ML Feasibility Evaluation
+    feas_data = compute_hybrid_feasibility(
         village=village,
         category=cat,
         capital_input=margin,
@@ -271,6 +272,7 @@ async def create_assessment(req: AssessmentRequest, db: Session = Depends(get_db
             "category": _build_category_dict(cat),
             "financial": fin_data,
             "feasibility": feas_data,
+            "ml_analysis": feas_data.get("ml_analysis"),
             "scheme": {
                 "id": fin_data["scheme_id"],
                 "name": fin_data["scheme_name"],
@@ -377,6 +379,7 @@ def _build_assessment_response(a: Assessment) -> Dict[str, Any]:
         "category": _build_category_dict(a.category),
         "financial": fin_data,
         "feasibility": feas_data,
+        "ml_analysis": feas_data.get("ml_analysis"),
         "scheme": {
             "id": fin_data["scheme_id"],
             "name": fin_data["scheme_name"],
