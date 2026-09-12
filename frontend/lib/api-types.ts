@@ -105,6 +105,19 @@ export interface RiskItem {
   severity: string;
 }
 
+export interface MLAnalysisData {
+  method: string;
+  cluster_id: number;
+  cluster_name: string;
+  tier?: string;
+  cluster_description?: string;
+  peer_villages_count?: number;
+  opportunity_index?: number;
+  relative_saturation?: string;
+  centroid_distance?: number;
+  ml_insights?: string;
+}
+
 export interface FeasibilityData {
   fit_score: number;
   rating: string;
@@ -112,6 +125,7 @@ export interface FeasibilityData {
   breakdown: FeasibilityBreakdown;
   scoring_rationale: Record<string, string>;
   risks: RiskItem[];
+  ml_analysis?: MLAnalysisData;
 }
 
 export interface SchemeData {
@@ -163,6 +177,7 @@ export interface BackendAssessmentResponse {
   category?: CategoryData;
   financial?: FinancialData;
   feasibility?: FeasibilityData;
+  ml_analysis?: MLAnalysisData;
   scheme?: SchemeData;
   ai_insights?: AIInsights;
   competitor_count?: number;
@@ -193,6 +208,10 @@ export interface InsightsResponse {
     trend: number;
     sparkline: ReadonlyArray<number>;
     seasonality: string;
+    capital_bracket?: string;
+    profit_margin?: string;
+    demand_summary?: string;
+    applicable_schemes?: string[];
   }>;
 }
 

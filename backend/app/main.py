@@ -83,11 +83,43 @@ def run_database_migrations(target_engine):
         logger.warning(f"Database migration check encountered an error: {e}")
 
 
+def ensure_reference_data_seeded(target_engine):
+    """Automatically seeds reference data (874 villages, categories, schemes) if database is empty."""
+    try:
+        from sqlalchemy.orm import Session
+        from backend.app.db.models import Village, BusinessCategory, Scheme
+        with Session(target_engine) as session:
+            v_count = session.query(Village).count()
+            if v_count == 0:
+                logger.info("Villages table is empty. Auto-seeding 874 Mathura villages and reference data...")
+                from backend.data_pipeline.load_to_postgres import (
+                    seed_state, seed_district, seed_blocks,
+                    seed_business_categories, seed_schemes,
+                    seed_villages, seed_osm_businesses,
+                )
+                state = seed_state(session)
+                district = seed_district(session, state)
+                blocks_by_code = seed_blocks(session, district)
+                seed_business_categories(session)
+                seed_schemes(session)
+                seed_villages(session, blocks_by_code)
+                seed_osm_businesses(session)
+                logger.info("Successfully seeded 874 villages and reference data.")
+            else:
+                if session.query(BusinessCategory).count() == 0 or session.query(Scheme).count() == 0:
+                    from backend.data_pipeline.load_to_postgres import seed_business_categories, seed_schemes
+                    seed_business_categories(session)
+                    seed_schemes(session)
+    except Exception as e:
+        logger.warning(f"Auto-seeding check encountered an error: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Ensure database schema is created and upgraded on startup
     models.Base.metadata.create_all(bind=engine)
     run_database_migrations(engine)
+    ensure_reference_data_seeded(engine)
     yield
 
 

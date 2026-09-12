@@ -108,7 +108,6 @@ export function ArticleCategorySection({
   const targetLocation = selectedDistrict || stateName || 'Uttar Pradesh';
 
   const loadCategoryInsights = useCallback(async (isMounted: () => boolean) => {
-    if (!isUP) return;
     setLoading(true);
     setError(null);
     try {
@@ -133,24 +132,39 @@ export function ArticleCategorySection({
         setLoading(false);
       }
     }
-  }, [isUP, targetLocation]);
+  }, [targetLocation]);
 
   useEffect(() => {
     let mounted = true;
-    if (isUP) {
-      loadCategoryInsights(() => mounted);
-    } else {
-      setLiveInsights(null);
-      setLiveSchemes(null);
-      setError(null);
-      setLoading(false);
-    }
+    loadCategoryInsights(() => mounted);
     return () => {
       mounted = false;
     };
-  }, [isUP, loadCategoryInsights]);
+  }, [loadCategoryInsights]);
 
-  const selectedCategory = selectedCategoryId ? getCategoryDetail(selectedCategoryId) : null;
+  const baseCategory = selectedCategoryId ? getCategoryDetail(selectedCategoryId) : null;
+  const selectedCategory = baseCategory ? (() => {
+    if (!liveInsights?.categories) return baseCategory;
+    const idLower = baseCategory.id.toLowerCase();
+    for (const c of liveInsights.categories) {
+      const cLower = c.name.toLowerCase();
+      if (
+        cLower.includes(idLower) ||
+        idLower.includes(cLower) ||
+        (idLower === 'food' && cLower.includes('food')) ||
+        (idLower === 'agri' && (cLower.includes('agri') || cLower.includes('food')))
+      ) {
+        return {
+          ...baseCategory,
+          capitalBracket: c.capital_bracket || baseCategory.capitalBracket,
+          profitMargin: c.profit_margin || baseCategory.profitMargin,
+          demandSummary: c.demand_summary || baseCategory.demandSummary,
+          applicableSchemes: c.applicable_schemes && c.applicable_schemes.length > 0 ? c.applicable_schemes : baseCategory.applicableSchemes,
+        };
+      }
+    }
+    return baseCategory;
+  })() : null;
 
   const handleStartAssessment = (ideaName: string) => {
     if (isUP) {
@@ -204,7 +218,7 @@ export function ArticleCategorySection({
                     </h3>
                     <div className="flex items-center gap-2 mt-0.5">
                       {(() => {
-                        const liveTrend = isUP ? getLiveCategoryTrend(selectedCategory.id, liveInsights?.categories) : null;
+                        const liveTrend = getLiveCategoryTrend(selectedCategory.id, liveInsights?.categories);
                         const displayTrend = liveTrend ?? selectedCategory.trendPercent;
                         return (
                           <>
@@ -254,50 +268,22 @@ export function ArticleCategorySection({
                       <ShieldCheck size={14} className="text-emerald-600" />
                       <span>Eligible Schemes &amp; Credit:</span>
                     </div>
-                    {isUP && liveSchemes && liveSchemes.length > 0 && (
+                    {liveSchemes && liveSchemes.length > 0 && (
                       <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 rounded px-1.5 py-0.5 border border-emerald-200">
                         Official Credit Scheme
                       </span>
                     )}
                   </div>
                   <div className="space-y-1">
-                    {isUP && liveSchemes && liveSchemes.length > 0 ? (
-                      <>
-                        {liveSchemes.slice(0, 2).map((scheme) => (
-                          <div
-                            key={scheme.id}
-                            className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-1.5 text-xs text-slate-700 border border-slate-100"
-                          >
-                            <div className="flex items-center gap-2 truncate">
-                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
-                              <span className="truncate font-medium">{scheme.name}</span>
-                            </div>
-                            <span className="text-[10.5px] font-bold text-emerald-700 shrink-0 ml-2">
-                              {scheme.interest_rate}% p.a.
-                            </span>
-                          </div>
-                        ))}
-                        <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-1.5 text-xs text-slate-700 border border-slate-100">
-                          <div className="flex items-center gap-2 truncate">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
-                            <span className="truncate font-medium">PMFME Scheme</span>
-                          </div>
-                          <span className="text-[10.5px] font-medium text-slate-500 shrink-0 ml-2">
-                            35% Capital Subsidy
-                          </span>
-                        </div>
-                      </>
-                    ) : (
-                      selectedCategory.applicableSchemes.slice(0, 2).map((scheme) => (
-                        <div
-                          key={scheme}
-                          className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 text-xs text-slate-700 border border-slate-100"
-                        >
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
-                          <span className="truncate">{scheme}</span>
-                        </div>
-                      ))
-                    )}
+                    {selectedCategory.applicableSchemes.slice(0, 3).map((scheme: string, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 text-xs text-slate-700 border border-slate-100"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+                        <span className="truncate">{scheme}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -382,7 +368,7 @@ export function ArticleCategorySection({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 flex-1">
               {ALL_CATEGORY_DETAILS.map((cat) => {
                 const isSelected = selectedCategoryId === cat.id;
-                const liveTrend = isUP ? getLiveCategoryTrend(cat.id, liveInsights?.categories) : null;
+                const liveTrend = getLiveCategoryTrend(cat.id, liveInsights?.categories);
                 const displayTrend = liveTrend ?? cat.trendPercent;
 
                 return (

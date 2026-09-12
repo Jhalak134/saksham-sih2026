@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
 import { MOCK_REPORTS, type AssessmentStatus, type ReportSummary, type ConfidenceLevel } from '@/data/reportsData';
 
-import { fetchMyReports } from '@/lib/api-client';
+import { fetchMyReports, getUserSavedReports } from '@/lib/api-client';
 import { getStorageItem } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/lib/constants';
 import { ReportCard } from '@/components/reports/ReportCard';
@@ -77,32 +77,48 @@ export function MyReportsScreen(): React.JSX.Element {
     async function loadReports() {
       try {
         setLoading(true);
+        // 1. Retrieve user-saved reports from localStorage
+        const localSavedReports: ReportSummary[] = (getUserSavedReports() as ReportSummary[]) || [];
+
         const token = getStorageItem(STORAGE_KEYS.authToken);
+        let baseReports: ReportSummary[] = [...MOCK_REPORTS];
+
         if (token) {
-          const data = await fetchMyReports(token);
-          if (data?.reports && data.reports.length > 0) {
-            const mapped: ReportSummary[] = data.reports.map((r) => ({
-              id: r.id,
-              title: r.category ? `${r.category} Unit` : 'Rural Enterprise',
-              category: r.category || 'General',
-              location: r.location || 'Local Catchment',
-              status: ((r.status === 'Completed' || r.status === 'In Progress' || r.status === 'Saved')
-                ? r.status
-                : 'Completed') as AssessmentStatus,
-              date: r.date || 'Recent',
-              estimatedProfit: r.estimatedProfit ?? 25000,
-              breakEvenMonths: 8,
-              fitScore: r.fitScore ?? 75,
-              confidence: ((r.fitScore ?? 75) >= 75 ? 'High' : (r.fitScore ?? 75) >= 50 ? 'Medium' : 'Low') as ConfidenceLevel,
-              iconType: resolveCategoryIcon(r.category || ''),
-            }));
-            setReports(mapped);
-            return;
+          try {
+            const data = await fetchMyReports(token);
+            if (data?.reports && data.reports.length > 0) {
+              baseReports = data.reports.map((r) => ({
+                id: r.id,
+                title: r.category ? `${r.category} Unit` : 'Rural Enterprise',
+                category: r.category || 'General',
+                location: r.location || 'Local Catchment',
+                status: ((r.status === 'Completed' || r.status === 'In Progress' || r.status === 'Saved')
+                  ? r.status
+                  : 'Completed') as AssessmentStatus,
+                date: r.date || 'Recent',
+                estimatedProfit: r.estimatedProfit ?? 25000,
+                breakEvenMonths: 8,
+                fitScore: r.fitScore ?? 75,
+                confidence: ((r.fitScore ?? 75) >= 75 ? 'High' : (r.fitScore ?? 75) >= 50 ? 'Medium' : 'Low') as ConfidenceLevel,
+                iconType: resolveCategoryIcon(r.category || ''),
+              }));
+            }
+          } catch {
+            // Keep baseReports as MOCK_REPORTS
           }
         }
-        setReports([...MOCK_REPORTS]);
+
+        // Merge: locally created reports take precedence at the top, followed by base reports (deduped by ID)
+        const userReportIds = new Set(localSavedReports.map((r) => String(r.id)));
+        const dedupedBase = baseReports.filter((r) => !userReportIds.has(String(r.id)));
+        const combined = [...localSavedReports, ...dedupedBase];
+
+        setReports(combined);
       } catch {
-        setReports([...MOCK_REPORTS]);
+        const localSavedReports: ReportSummary[] = (getUserSavedReports() as ReportSummary[]) || [];
+        const userReportIds = new Set(localSavedReports.map((r) => String(r.id)));
+        const dedupedMock = MOCK_REPORTS.filter((r) => !userReportIds.has(String(r.id)));
+        setReports([...localSavedReports, ...dedupedMock]);
       } finally {
         setLoading(false);
       }

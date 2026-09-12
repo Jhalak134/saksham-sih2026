@@ -10,25 +10,27 @@ import {
   getStateOpportunityProfile,
   getOpportunityLevelColor,
 } from '@/data/stateOpportunitiesData';
-import { Plus, Minus, X, ArrowLeft, RotateCcw, Sparkles } from 'lucide-react';
+import { Plus, Minus, X, ArrowLeft, RotateCcw, Sparkles, Map } from 'lucide-react';
 
 interface IndiaMapProps {
   readonly selectedState: string | null;
   readonly onStateSelect: (state: string | null) => void;
   readonly selectedDistrict?: string | null;
   readonly onDistrictSelect?: (district: string | null) => void;
+  readonly className?: string;
 }
 
 export function IndiaMap({
   selectedState,
   onStateSelect,
   onDistrictSelect,
+  className,
 }: IndiaMapProps): React.JSX.Element {
   // Hover state for India SVG states
   const [hoveredState, setHoveredState] = useState<MapLocation | null>(null);
 
-  // Zoom for All-India SVG
-  const [svgZoomLevel, setSvgZoomLevel] = useState<number>(1);
+  // Zoom for All-India SVG - default 1.1x
+  const [svgZoomLevel, setSvgZoomLevel] = useState<number>(1.1);
 
   // Click handler for states on the national map
   const handleStateClick = (state: MapLocation) => {
@@ -52,13 +54,13 @@ export function IndiaMap({
   };
 
   const handleResetZoom = () => {
-    setSvgZoomLevel(1);
+    setSvgZoomLevel(1.1);
   };
 
   return (
-    <div className="relative flex h-full min-h-[460px] md:min-h-[520px] w-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-3 md:p-5 shadow-xs overflow-hidden">
+    <div className={cn("relative flex h-full min-h-[480px] md:min-h-[540px] w-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs overflow-hidden map-shine-border", className)}>
       {/* ── TOP CONSOLIDATED HEADER & BREADCRUMB SURFACE ── */}
-      <div className="relative z-20 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100/90 pb-3">
+      <div className="relative z-20 flex flex-wrap items-center justify-between gap-2 pb-1">
         {/* Navigation Breadcrumb Trail */}
         <div className="flex flex-wrap items-center gap-2">
           {selectedState ? (
@@ -68,9 +70,9 @@ export function IndiaMap({
                 onClick={() => {
                   onStateSelect(null);
                   if (onDistrictSelect) onDistrictSelect(null);
-                  setSvgZoomLevel(1);
+                  setSvgZoomLevel(1.1);
                 }}
-                className="flex items-center gap-1 rounded-lg border border-slate-200/90 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 shadow-xs cursor-pointer"
+                className="flex items-center gap-1 rounded-lg border border-slate-200/90 bg-white/90 backdrop-blur-sm px-2.5 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 shadow-2xs cursor-pointer"
                 aria-label="Back to India Map"
               >
                 <ArrowLeft size={13} strokeWidth={2.5} />
@@ -94,12 +96,12 @@ export function IndiaMap({
               </span>
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-slate-900">National Opportunities Heatmap</h3>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200/80">
-                <Sparkles size={10} className="text-emerald-600" />
-                Interactive India Map
-              </span>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50/80 text-blue-600 border border-blue-200/60">
+                <Map size={16} strokeWidth={2} />
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">National Opportunities Heatmap</h3>
+              <span className="sr-only">Interactive India Map</span>
             </div>
           )}
         </div>
@@ -126,7 +128,7 @@ export function IndiaMap({
       </div>
 
       {/* ── MAP ZOOM & RESET CONTROLS ── */}
-      <div className="absolute top-16 right-4 z-20 flex flex-col items-center gap-1 rounded-xl border border-slate-200/90 bg-white/95 p-1 shadow-md backdrop-blur-md">
+      <div className="absolute top-4 right-4 z-20 flex flex-col items-center gap-1 rounded-xl border border-slate-200/90 bg-white/95 p-1 shadow-xs backdrop-blur-md">
         <button
           type="button"
           onClick={handleZoomIn}
@@ -136,7 +138,7 @@ export function IndiaMap({
         >
           <Plus size={14} strokeWidth={2.5} />
         </button>
-        <div className="h-px w-5 bg-slate-200" />
+        <div className="h-px w-4 bg-slate-200" />
         <button
           type="button"
           onClick={handleZoomOut}
@@ -146,7 +148,7 @@ export function IndiaMap({
         >
           <Minus size={14} strokeWidth={2.5} />
         </button>
-        <div className="h-px w-5 bg-slate-200" />
+        <div className="h-px w-4 bg-slate-200" />
         <button
           type="button"
           onClick={handleResetZoom}
@@ -168,7 +170,7 @@ export function IndiaMap({
           <svg
             viewBox={INDIA_VIEWBOX}
             preserveAspectRatio="xMidYMid meet"
-            className="h-full max-h-[440px] w-full transition-transform duration-200"
+            className="h-full max-h-[520px] w-full transition-transform duration-200"
             style={{ transform: `scale(${svgZoomLevel})` }}
             role="img"
             aria-label="Interactive India Map"
@@ -246,24 +248,25 @@ export function IndiaMap({
       </div>
 
       {/* ── BOTTOM OPPORTUNITY LEGEND BAR ── */}
-      <div className="mt-1 flex flex-wrap items-center justify-between text-[11px] text-slate-500 border-t border-slate-100/90 pt-2 px-1">
-        <div className="flex flex-wrap items-center justify-between w-full">
-          <span className="font-semibold text-slate-700">Opportunity Level Heatmap:</span>
-          <div className="flex items-center gap-3 mt-1 sm:mt-0">
+      <div className="mt-2 flex flex-wrap items-center justify-between text-xs text-slate-600 px-1 pt-1">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="font-semibold text-slate-700">Opportunity Level:</span>
+          <span className="sr-only">Opportunity Level Heatmap:</span>
+          <div className="flex items-center gap-3.5">
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#15803D]" />
+              <span className="h-3 w-3 rounded-[3px] bg-[#15803D]" />
               <span className="text-slate-700 font-medium">High</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#4ADE80]" />
+              <span className="h-3 w-3 rounded-[3px] bg-[#4ADE80]" />
               <span className="text-slate-700 font-medium">Medium</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#BBF7D0]" />
+              <span className="h-3 w-3 rounded-[3px] bg-[#BBF7D0]" />
               <span className="text-slate-700 font-medium">Emerging</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-xs bg-[#E2E8F0]" />
+              <span className="h-3 w-3 rounded-[3px] bg-[#E2E8F0]" />
               <span className="text-slate-700 font-medium">Lower</span>
             </div>
           </div>

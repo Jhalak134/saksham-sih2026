@@ -37,7 +37,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
-      <body className={`${inter.className} bg-white text-[var(--color-text-dark)] antialiased`}>
+      <body className="bg-white text-[var(--color-text-dark)] antialiased">
         <ShellProvider>{children}</ShellProvider>
       </body>
     </html>
