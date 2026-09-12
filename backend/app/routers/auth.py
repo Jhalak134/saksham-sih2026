@@ -26,6 +26,8 @@ class UserProfileIn(BaseModel):
 @router.post("/profile")
 def save_profile(req: UserProfileIn, db: Session = Depends(get_db)):
     user = get_or_create_user(db, req.phone_or_email, req.home_location)
+    if req.home_location is not None:
+        user.home_location = req.home_location
     if req.default_capital is not None:
         user.default_capital = req.default_capital
     if req.preferred_language is not None:
@@ -69,6 +71,9 @@ def google_auth(req: GoogleAuthIn, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email is required.")
     
     clean_email = req.email.strip().lower()
+    existing_user = db.query(User).filter(User.phone_or_email == clean_email).first()
+    is_new = existing_user is None
+
     user = get_or_create_user(db, clean_email, None)
     db.commit()
     db.refresh(user)
@@ -82,5 +87,6 @@ def google_auth(req: GoogleAuthIn, db: Session = Depends(get_db)):
         "default_capital": user.default_capital,
         "preferred_language": user.preferred_language,
         "auth_provider": "google",
+        "is_new_user": is_new,
     }
 
