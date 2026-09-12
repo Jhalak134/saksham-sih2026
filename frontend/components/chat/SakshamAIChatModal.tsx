@@ -382,7 +382,6 @@ export function SakshamAIChatModal({
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   ai/ Knowledge Base Live
                 </span>
-
                 {/* Interactive Assistant Language Selector */}
                 <div className="flex items-center gap-1 rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-medium text-amber-300 border border-amber-400/40">
                   <Globe size={11} className="text-amber-300 shrink-0" />
@@ -423,7 +422,6 @@ export function SakshamAIChatModal({
               <Key size={12} className={geminiApiKey ? 'text-amber-400' : 'text-slate-400'} />
               <span className="hidden md:inline">{geminiApiKey ? 'Gemini Active' : 'Gemini Key'}</span>
             </button>
-
             <button
               type="button"
               onClick={handleClearHistory}

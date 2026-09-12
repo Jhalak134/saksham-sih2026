@@ -10,8 +10,10 @@ Zero-crash guarantee: falls back gracefully if artifact is missing or corrupt.
 import os
 import logging
 from typing import Dict, Any, Optional
-import numpy as np
-import joblib
+try:
+    import joblib
+except ImportError:
+    joblib = None
 
 from backend.app.ml.preprocessing import features_to_2d_array
 
@@ -30,7 +32,7 @@ def get_model_artifact() -> Optional[Dict[str, Any]]:
 
     if _MODEL_CACHE is not None:
         return _MODEL_CACHE
-    if _MODEL_LOAD_FAILED:
+    if _MODEL_LOAD_FAILED or joblib is None:
         return None
 
     if not os.path.exists(MODEL_PATH):
