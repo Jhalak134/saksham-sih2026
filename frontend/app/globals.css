@@ -1,31 +1,6 @@
 @import "tailwindcss";
 @import '../styles/tokens.css';
 
-/* Global font setup */
-body {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  color: #000000;
-}
-
-/* Accent text (like "turns heads") */
-.accent {
-  font-style: italic;
-  color: #4B00FF; /* same purple tone */
-}
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Georgia', 'Times New Roman', serif;
-  font-weight: 600;
-  color: #000000;
-}
-
-/* Logo or brand name styling */
-.logo span {
-  font-style: italic;
-  color: #4B00FF;
-}
-
 @keyframes float-slow {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);

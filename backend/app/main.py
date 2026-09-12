@@ -21,7 +21,7 @@ logger = logging.getLogger("saksham.main")
 
 from backend.app.db.session import engine, get_db
 from backend.app.db import models
-from backend.app.routers import location, schemes, insights, assess, auth, ai, categories
+from backend.app.routers import location, schemes, insights, assess, auth, ai
 
 
 def run_database_migrations(target_engine):
@@ -177,8 +177,6 @@ app.add_middleware(
 app.include_router(location.router)
 app.include_router(schemes.router)
 app.include_router(insights.router)
-app.include_router(categories.router)
-app.include_router(categories.legacy_router)
 app.include_router(assess.router)
 app.include_router(assess.legacy_router)
 app.include_router(auth.router)
@@ -201,6 +199,21 @@ def health_check(db: Session = Depends(get_db)):
         "version": "1.0.0",
         "database": db_status,
     }
+
+
+@app.get("/api/v1/categories", tags=["Categories"])
+def get_categories(db: Session = Depends(get_db)):
+    """Retrieve available business categories."""
+    cats = db.query(models.BusinessCategory).all()
+    return [
+        {
+            "id": c.id,
+            "name": c.name,
+            "icon": c.icon,
+            "is_seasonal": c.is_seasonal,
+        }
+        for c in cats
+    ]
 
 
 @app.get("/", response_class=HTMLResponse, tags=["Developer UI"])
