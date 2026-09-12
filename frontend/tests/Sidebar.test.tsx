@@ -249,4 +249,19 @@ describe('Sidebar — user profile and logout modal', () => {
 
     window.location = originalLocation;
   });
+
+  it('clicking AI Assistance opens AI Assistant modal while keeping sidebar visible', async () => {
+    renderSidebar();
+    const aiBtn = screen.getByRole('button', { name: 'Open AI Assistance' });
+    expect(aiBtn).toBeInTheDocument();
+
+    await userEvent.click(aiBtn);
+
+    // AI Assistant modal appears
+    expect(screen.getByRole('dialog', { name: /SAKSHAM AI Assistant/i })).toBeInTheDocument();
+    // Sidebar elements remain rendered and visible
+    expect(screen.getByText('SAKSHAM')).toBeInTheDocument();
+    expect(screen.getByText('Discover')).toBeInTheDocument();
+    expect(screen.getByText('My Reports')).toBeInTheDocument();
+  });
 });
