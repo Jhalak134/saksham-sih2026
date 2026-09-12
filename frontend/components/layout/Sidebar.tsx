@@ -364,13 +364,14 @@ export function Sidebar(): React.JSX.Element {
         onClose={() => setShowLogOutModal(false)}
         onConfirm={handleConfirmLogOut}
       />
-
-      {/* SAKSHAM AI Complete Screen Assistant Modal */}
-      <SakshamAIChatModal
-        isOpen={isAIChatOpen}
-        onClose={() => setIsAIChatOpen(false)}
-      />
     </aside>
-  );
+
+    {/* SAKSHAM AI Complete Screen Assistant Modal (Renders alongside Sidebar, keeping Sidebar visible) */}
+    <SakshamAIChatModal
+      isOpen={isAIChatOpen}
+      onClose={() => setIsAIChatOpen(false)}
+    />
+  </>
+);
 }
 
