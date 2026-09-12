@@ -53,7 +53,9 @@ export interface SakshamAIChatModalProps {
 }
 
 // Fallback Gemini API Key from environment if available
-const DEFAULT_GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
+const DEFAULT_GEMINI_KEY =
+  process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
+  '';
 
 interface SuggestedPromptCard {
   readonly label: string;
@@ -603,7 +605,7 @@ const STORAGE_KEY_AI_CHAT_HISTORY = 'saksham_ai_chat_history';
       role="dialog"
       aria-modal="true"
       aria-labelledby="saksham-chat-title"
-      className="fixed inset-0 z-[45] flex flex-col bg-[#F8FAFC] animate-in fade-in duration-200 md:pl-[var(--sidebar-width)] overflow-hidden"
+      className="fixed inset-y-0 right-0 left-0 md:left-[var(--sidebar-width,200px)] z-40 flex flex-col bg-white animate-in fade-in duration-200 border-l border-slate-200/80 overflow-hidden"
     >
       <div className="relative flex flex-col w-full h-full bg-white overflow-hidden text-left">
         {/* Modal Top Header - Clean Minimal SaaS Bar */}

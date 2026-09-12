@@ -177,12 +177,13 @@ export async function querySakshamAI(
     if (geminiRes.ok) {
       const geminiData = await geminiRes.json();
       if (geminiData && geminiData.available && geminiData.answer) {
+        const modelLabel = geminiData.model || 'Gemini Flash';
         return {
           answer: geminiData.answer,
           key_points: [
             language === 'hi'
-              ? 'सक्षम AI जेमिनी 1.5 फ़्लैश द्वारा संचालित'
-              : 'Powered by SAKSHAM AI Gemini 1.5 Flash',
+              ? `सक्षम AI (${modelLabel}) द्वारा संचालित`
+              : `Powered by SAKSHAM AI (${modelLabel})`,
             language === 'hi'
               ? '10% उद्यमी मार्जिन + 90% प्राथमिकता बैंक ऋण संरचना'
               : 'Financing Structure: 10% borrower equity margin + 90% loan',
@@ -190,7 +191,7 @@ export async function querySakshamAI(
           citations: [
             {
               document_id: 'gemini_flash_grounded',
-              source: 'Google Gemini 1.5 Flash (SAKSHAM Grounded Engine)',
+              source: `Google ${modelLabel} (SAKSHAM Grounded Engine)`,
             },
           ],
           grounding_status: 'fully_grounded',
