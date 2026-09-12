@@ -96,13 +96,12 @@ describe('Sidebar — active state', () => {
   });
 });
 
-describe('Sidebar — compare badge', () => {
-  it('does not render a count badge when compareCount is 0', () => {
+describe('Sidebar — compare option removal', () => {
+  it('does not render compare link or count badge in sidebar navigation', () => {
     vi.mocked(usePathname).mockReturnValue('/discover');
     renderSidebar();
-    const compareLink = screen.getByText('Compare').closest('a');
-    const badge = compareLink?.querySelector('.rounded-full');
-    expect(badge).toBeNull();
+    const compareLink = screen.queryByText('Compare');
+    expect(compareLink).toBeNull();
   });
 });
 

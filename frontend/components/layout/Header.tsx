@@ -287,8 +287,8 @@ export function Header(): React.JSX.Element {
       className="sticky top-0 z-[var(--z-header)] flex items-center justify-between gap-3 border-b border-slate-200/80 bg-white px-4 sm:px-6 md:px-8"
       style={{ height: '64px' }}
     >
-      {/* Left: Mobile menu toggle + Wordmark */}
-      <div className="flex items-center gap-2.5">
+      {/* Left: Mobile menu toggle + Home link */}
+      <div className="flex items-center gap-2">
         <IconButton
           label="Open navigation menu"
           className="md:hidden"
@@ -299,17 +299,10 @@ export function Header(): React.JSX.Element {
 
         <Link
           href="/discover"
-          className="flex items-center gap-2 hover:opacity-90 transition-opacity"
-          aria-label="SAKSHAM Discover"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 border border-slate-200/80 shadow-2xs"
+          aria-label="Navigate to Home / Discover"
         >
-          <img
-            src="/icon.svg"
-            alt=""
-            className="h-7 w-7 object-contain"
-          />
-          <span className="text-base font-bold tracking-tight text-[#00284D]">
-            SAKSH<span className="text-[#FBAC05]">AM</span>
-          </span>
+          <Home size={19} strokeWidth={1.75} aria-hidden="true" />
         </Link>
       </div>
 
@@ -318,8 +311,7 @@ export function Header(): React.JSX.Element {
         {!isDiscoverPage && <SearchBar />}
       </div>
 
-
-      {/* Right: Auth indicator & Home link */}
+      {/* Right: Auth indicator */}
       <div className="flex items-center gap-2">
         {isAuthenticated && user ? (
           <Link
@@ -340,14 +332,6 @@ export function Header(): React.JSX.Element {
             <span>Sign In</span>
           </Link>
         )}
-
-        <Link
-          href="/discover"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-          aria-label="Navigate to Home / Discover"
-        >
-          <Home size={19} strokeWidth={1.75} aria-hidden="true" />
-        </Link>
       </div>
     </header>
   );
