@@ -8,6 +8,7 @@ import { BarChart3, Lightbulb, IndianRupee, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { isAuthenticated } from '@/lib/auth';
 
+
 interface HelpCardItem {
   id: string;
   title: string;

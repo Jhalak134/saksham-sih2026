@@ -1,8 +1,9 @@
 // components/landing/HeroSection.tsx
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { cn } from '@/lib/cn';
 
 function FourPointStar({ className }: { className?: string }): React.JSX.Element {
@@ -19,6 +20,40 @@ function FourPointStar({ className }: { className?: string }): React.JSX.Element
 }
 
 export function HeroSection(): React.JSX.Element {
+  const [text, setText] = useState('');
+  const fullText = "Bring Fresh Growth To Agriculture";
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    let currentIndex = 0;
+    let isDeleting = false;
+    let isMounted = true;
+
+    const tick = () => {
+      if (!isMounted) return;
+      
+      setText(fullText.slice(0, currentIndex));
+
+      if (!isDeleting && currentIndex === fullText.length) {
+        isDeleting = true;
+        timeoutId = setTimeout(tick, 2500); // Pause when fully typed
+      } else if (isDeleting && currentIndex === 0) {
+        isDeleting = false;
+        timeoutId = setTimeout(tick, 800); // Pause when fully deleted
+      } else {
+        currentIndex += isDeleting ? -1 : 1;
+        timeoutId = setTimeout(tick, isDeleting ? 30 : 60); // Type at 60ms, delete at 30ms
+      }
+    };
+
+    timeoutId = setTimeout(tick, 200);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
     <section className="relative overflow-hidden bg-[#FAFAF8] pt-4 sm:pt-6 lg:pt-8 pb-8 sm:pb-12">
       {/* 1. Subtle Architectural Vertical Dashed Guide Lines */}
@@ -65,29 +100,40 @@ export function HeroSection(): React.JSX.Element {
           />
 
           {/* Left-Aligned Text Content in the open left area */}
-          <div className="relative z-20 flex min-h-[480px] sm:min-h-[540px] md:min-h-[580px] lg:min-h-[620px] flex-col justify-center px-6 sm:px-10 md:px-12 lg:px-16 py-8 sm:py-12 max-w-xl md:max-w-2xl text-left">
+          <div className="relative z-20 flex min-h-[480px] sm:min-h-[540px] md:min-h-[580px] lg:min-h-[620px] flex-col justify-center px-6 sm:px-10 md:px-12 lg:px-16 py-8 sm:py-12 max-w-2xl lg:max-w-3xl text-left">
             {/* Main Headline */}
-            <h1 className="animate-slide-up-1 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl md:text-5xl lg:text-6xl leading-[1.12]">
-              Bring Fresh Growth
-              <span className="block mt-1 sm:mt-2 text-slate-950">To Agriculture</span>
+            <h1 className="animate-slide-up-1 text-4xl sm:text-5xl md:text-6xl lg:text-[3.5rem] font-black tracking-tight text-slate-950 leading-[1.1]">
+              Know if your <br />
+              <span className="whitespace-nowrap">business idea works</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="animate-slide-up-2 mt-4 sm:mt-5 max-w-lg text-sm sm:text-base md:text-lg text-slate-700 leading-relaxed font-normal">
+            <p className="animate-slide-up-2 mt-4 sm:mt-5 max-w-lg text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
               Make confident business decisions for a better tomorrow. Experience the ultimate entrepreneurial journey with expert feasibility, tailored financial schemes, and hyper-local insights.
             </p>
 
-            {/* Subtle Provenance Data Chips */}
-            <div className="animate-slide-up-3 mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs sm:text-sm font-semibold text-slate-600">
-              <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
-                Local data
-              </span>
-              <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
-                Real opportunities
-              </span>
-              <span className="rounded-md bg-white/80 px-2 py-0.5 border border-slate-200/80 shadow-2xs">
-                Stronger businesses
-              </span>
+            {/* Search Bar with Typing Animation */}
+            <div className="animate-slide-up-3 mt-8 w-full max-w-lg">
+              <div className="flex items-center w-full rounded-full border border-slate-200 bg-white p-2 shadow-sm">
+                {/* Chat Icon */}
+                <div className="pl-3 pr-2 text-purple-400 flex-shrink-0">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                
+                {/* Typing Text */}
+                <div className="flex-1 text-slate-800 text-sm sm:text-base font-medium truncate px-2 min-h-[24px] flex items-center">
+                  {text}
+                  <span className="animate-pulse border-r-2 border-slate-400 ml-0.5 h-4 sm:h-5"></span>
+                </div>
+
+                {/* Button */}
+                <Link href="/login?mode=signup" className="flex-shrink-0 bg-[#FABC15] hover:bg-[#EAB308] text-slate-900 font-semibold text-sm px-5 py-2.5 rounded-full transition-colors flex items-center gap-1.5">
+                  Try it 
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

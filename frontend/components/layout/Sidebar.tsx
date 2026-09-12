@@ -275,107 +275,102 @@ export function Sidebar(): React.JSX.Element {
         {/* Drag handle — right edge */}
         <ResizeHandle onMouseDown={startResize} onDoubleClick={resetWidth} />
 
-        {/* Brand */}
+      {/* Brand */}
+      <Link
+        href="/discover"
+        className="px-4 py-4 flex items-center gap-2.5 hover:bg-slate-50/80 transition-colors group cursor-pointer"
+        aria-label="Go to Discover"
+      >
+        <img src="/icon.svg" alt="" className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform" />
+        <div className="min-w-0">
+          <p className="text-base font-bold tracking-tight text-[#00284D] truncate">
+            <span className="sr-only">SAKSHAM</span>
+            <span aria-hidden="true">SAKSH<span className="text-[#FBAC05]">AM</span></span>
+          </p>
+          <p className="sr-only">
+            Your business. A stronger tomorrow.
+          </p>
+        </div>
+      </Link>
+
+      {/* Scrollable nav area */}
+      <nav className="flex flex-1 flex-col overflow-y-auto px-2 py-3 gap-0.5">
+        {SIDEBAR_PRIMARY_ITEMS.map((item) => (
+          <div key={item.href}>
+            <NavRow
+              config={item}
+              active={isNavActive(pathname, item.href)}
+            />
+            {item.href === '/new-assessment' && (
+              <button
+                type="button"
+                onClick={() => setIsAIChatOpen(true)}
+                className="mt-1 mb-1.5 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-semibold text-amber-800 bg-gradient-to-r from-amber-50 to-emerald-50 hover:from-amber-100 hover:to-emerald-100 transition-colors cursor-pointer border border-amber-200/80 shadow-2xs group"
+                aria-label="Open AI Assistance"
+              >
+                <Sparkles size={15} className="text-amber-600 shrink-0 group-hover:scale-110 transition-transform" />
+                <span className="truncate">AI Assistance</span>
+                <span className="ml-auto rounded-full bg-amber-200/80 px-1.5 py-0.5 text-[9px] font-bold text-amber-800">
+                  AI
+                </span>
+              </button>
+            )}
+          </div>
+        ))}
+
+
+        <div className="my-2 border-t border-[var(--color-border)]" />
+
+        {SIDEBAR_SECONDARY_ITEMS.map((item) => (
+          <NavRow
+            key={item.href}
+            config={item}
+            active={isNavActive(pathname, item.href)}
+            badge={item.href === '/compare' ? compareCount : undefined}
+          />
+        ))}
+      </nav>
+
+      {/* Bottom Profile & Log Out Section */}
+      <div className="border-t border-[var(--color-border)] p-2 bg-slate-50/70 space-y-1">
+        {/* Profile Card */}
         <Link
-          href="/discover"
-          className="px-4 py-4 flex items-center gap-2.5 hover:bg-slate-50/80 transition-colors group cursor-pointer"
-          aria-label="Go to Discover"
+          href="/profile"
+          className="flex items-center gap-2.5 rounded-md p-1.5 hover:bg-white hover:shadow-xs transition-all group"
+          title="Manage Profile"
         >
-          <img src="/icon.svg" alt="" className="h-8 w-8 object-contain shrink-0 group-hover:scale-105 transition-transform" />
-          <div className="min-w-0">
-            <p className="text-base font-bold tracking-tight text-[#00284D] truncate">
-              <span className="sr-only">SAKSHAM</span>
-              <span aria-hidden="true">SAKSH<span className="text-[#FBAC05]">AM</span></span>
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-xs">
+            {userInitials}
+          </div>
+          <div className="min-w-0 flex-1 text-left">
+            <p className="truncate text-xs font-semibold text-slate-800 group-hover:text-[var(--color-accent)]">
+              {displayName}
             </p>
-            <p className="sr-only">
-              Your business. A stronger tomorrow.
+            <p className="truncate text-[10px] text-slate-500">
+              {displaySub}
             </p>
           </div>
         </Link>
 
-        {/* Scrollable nav area */}
-        <nav className="flex flex-1 flex-col overflow-y-auto px-2 py-3 gap-0.5">
-          {SIDEBAR_PRIMARY_ITEMS.map((item) => (
-            <div key={item.href}>
-              <NavRow
-                config={item}
-                active={isNavActive(pathname, item.href) && !isAIChatOpen}
-              />
-              {item.href === '/new-assessment' && (
-                <button
-                  type="button"
-                  onClick={() => setIsAIChatOpen(true)}
-                  className={cn(
-                    'mt-1 mb-1.5 flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-all cursor-pointer border shadow-2xs group',
-                    isAIChatOpen
-                      ? 'bg-amber-100/90 text-amber-950 border-amber-300 ring-2 ring-amber-400/50 shadow-xs'
-                      : 'text-amber-800 bg-gradient-to-r from-amber-50 to-emerald-50 hover:from-amber-100 hover:to-emerald-100 border-amber-200/80'
-                  )}
-                  aria-label="Open AI Assistance"
-                >
-                  <Sparkles size={15} className={cn('shrink-0 transition-transform', isAIChatOpen ? 'text-amber-700 scale-110' : 'text-amber-600 group-hover:scale-110')} />
-                  <span className="truncate">AI Assistance</span>
-                  <span className="ml-auto rounded-full bg-amber-200/80 px-1.5 py-0.5 text-[9px] font-bold text-amber-800">
-                    AI
-                  </span>
-                </button>
-              )}
-            </div>
-          ))}
-
-          <div className="my-2 border-t border-[var(--color-border)]" />
-
-          {SIDEBAR_SECONDARY_ITEMS.map((item) => (
-            <NavRow
-              key={item.href}
-              config={item}
-              active={isNavActive(pathname, item.href) && !isAIChatOpen}
-              badge={item.href === '/compare' ? compareCount : undefined}
-            />
-          ))}
-        </nav>
-
-        {/* Bottom Profile & Log Out Section */}
-        <div className="border-t border-[var(--color-border)] p-2 bg-slate-50/70 space-y-1">
-          {/* Profile Card */}
-          <Link
-            href="/profile"
-            className="flex items-center gap-2.5 rounded-md p-1.5 hover:bg-white hover:shadow-xs transition-all group"
-            title="Manage Profile"
-          >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-xs">
-              {userInitials}
-            </div>
-            <div className="min-w-0 flex-1 text-left">
-              <p className="truncate text-xs font-semibold text-slate-800 group-hover:text-[var(--color-accent)]">
-                {displayName}
-              </p>
-              <p className="truncate text-[10px] text-slate-500">
-                {displaySub}
-              </p>
-            </div>
-          </Link>
-
-          {/* Log Out button positioned directly under the profile */}
-          <div className="pt-0.5">
-            <LogOutRow onLogOut={handleLogOutClick} />
-          </div>
+        {/* Log Out button positioned directly under the profile */}
+        <div className="pt-0.5">
+          <LogOutRow onLogOut={handleLogOutClick} />
         </div>
+      </div>
 
-        {/* Logout Confirmation Modal */}
-        <LogoutModal
-          isOpen={showLogOutModal}
-          onClose={() => setShowLogOutModal(false)}
-          onConfirm={handleConfirmLogOut}
-        />
-      </aside>
+      {/* Logout Confirmation Modal */}
+      <LogoutModal
+        isOpen={showLogOutModal}
+        onClose={() => setShowLogOutModal(false)}
+        onConfirm={handleConfirmLogOut}
+      />
 
-      {/* SAKSHAM AI Complete Screen Assistant Modal (Renders alongside Sidebar, keeping Sidebar visible) */}
+      {/* SAKSHAM AI Complete Screen Assistant Modal */}
       <SakshamAIChatModal
         isOpen={isAIChatOpen}
         onClose={() => setIsAIChatOpen(false)}
       />
-    </>
+    </aside>
   );
 }
 

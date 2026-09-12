@@ -150,6 +150,14 @@ export function StateInsightsBar({
         )}
       </div>
 
+      {/* Non-Pilot State Summary Banner */}
+      {!isUP && profile?.headline && (
+        <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3 text-xs">
+          <h4 className="font-bold text-slate-900">{profile.headline}</h4>
+          <p className="text-slate-500 mt-0.5 leading-relaxed">{profile.description}</p>
+        </div>
+      )}
+
       {/* ── CARD 1: State Economic Pulse (Direct 4 Statements, No Intro Lines) ── */}
       <div className="rounded-2xl border border-emerald-100/90 bg-[#F4FBF7] p-4 sm:p-5 relative overflow-hidden shadow-2xs">
         

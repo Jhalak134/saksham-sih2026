@@ -77,20 +77,5 @@ describe('IndiaMap (All India National Opportunities Map)', () => {
     expect(zoomOut).toBeInTheDocument();
     expect(resetZoom).toBeInTheDocument();
   });
-
-  it('renders selected state opportunity profile box at bottom-right corner and allows closing', async () => {
-    const user = userEvent.setup();
-    const onSelect = vi.fn();
-    render(<IndiaMap selectedState="Rajasthan" onStateSelect={onSelect} />);
-
-    expect(screen.getByText(/Surging clean energy & traditional handicraft exports/i)).toBeInTheDocument();
-    expect(screen.getByText(/Solar micro-grids, desert spice processing/i)).toBeInTheDocument();
-
-    const closeBtn = screen.getByRole('button', { name: 'Close Rajasthan overview' });
-    expect(closeBtn).toBeInTheDocument();
-    await user.click(closeBtn);
-    expect(onSelect).toHaveBeenCalledWith(null);
-  });
 });
-
 

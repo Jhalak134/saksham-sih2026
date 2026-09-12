@@ -32,9 +32,6 @@ export function IndiaMap({
   // Zoom for All-India SVG - default 1.03x
   const [svgZoomLevel, setSvgZoomLevel] = useState<number>(1.03);
 
-  // Selected state opportunity profile for bottom-right corner overview
-  const selectedProfile = selectedState ? getStateOpportunityProfile(selectedState) : null;
-
   // Click handler for states on the national map
   const handleStateClick = (state: MapLocation) => {
     if (selectedState && selectedState.toLowerCase() === state.name.toLowerCase()) {
@@ -213,58 +210,9 @@ export function IndiaMap({
             </g>
           </svg>
 
-          {/* Selected State Opportunity Box at Right Bottom Corner (Zero size impact on map) */}
-          {selectedState && selectedProfile?.headline && (
-            <div className="absolute bottom-3 right-3 z-20 max-w-[270px] sm:max-w-[320px] rounded-xl border border-slate-200/90 bg-white/95 p-3 shadow-md backdrop-blur-md animate-in fade-in duration-150">
-              <div className="flex items-center justify-between gap-1.5 mb-1.5">
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="text-xs font-bold text-slate-900 truncate">
-                    {selectedState}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1 shrink-0">
-                  <span
-                    className={cn(
-                      'rounded-md px-1.5 py-0.5 text-[9.5px] font-bold border',
-                      selectedProfile.opportunityLevel === 'High' && 'bg-emerald-50 text-emerald-800 border-emerald-200',
-                      selectedProfile.opportunityLevel === 'Medium' && 'bg-green-50 text-green-800 border-green-200',
-                      selectedProfile.opportunityLevel === 'Emerging' && 'bg-emerald-50 text-emerald-700 border-emerald-100',
-                      selectedProfile.opportunityLevel === 'Lower' && 'bg-slate-100 text-slate-700 border-slate-200'
-                    )}
-                  >
-                    {selectedProfile.opportunityLevel} Opportunity
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onStateSelect(null);
-                      if (onDistrictSelect) onDistrictSelect(null);
-                    }}
-                    aria-label={`Close ${selectedState} overview`}
-                    className="flex h-4 w-4 items-center justify-center rounded text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
-                  >
-                    <X size={12} strokeWidth={2.5} />
-                  </button>
-                </div>
-              </div>
-              <h5 className="text-xs font-bold text-slate-900 leading-snug">
-                {selectedProfile.headline}
-              </h5>
-              <p className="mt-1 text-[11px] text-slate-600 leading-relaxed line-clamp-3">
-                {selectedProfile.description}
-              </p>
-            </div>
-          )}
-
           {/* Hover Tooltip for India States */}
-          {hoveredState && hoveredState.name.toLowerCase() !== selectedState?.toLowerCase() && (
-            <div
-              className={cn(
-                'pointer-events-none absolute z-30 flex flex-col rounded-xl border border-slate-200 bg-white/95 px-3.5 py-2 shadow-md backdrop-blur-md animate-in fade-in duration-150',
-                selectedState ? 'bottom-3 left-3' : 'bottom-3 right-3'
-              )}
-            >
+          {hoveredState && (
+            <div className="pointer-events-none absolute bottom-3 right-3 z-30 flex flex-col rounded-xl border border-slate-200 bg-white/95 px-3.5 py-2 shadow-md backdrop-blur-md animate-in fade-in duration-150">
               <div className="flex items-center gap-1.5">
                 <span
                   className={cn(
