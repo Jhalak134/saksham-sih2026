@@ -5,6 +5,7 @@ import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import { useAssessmentFlow } from '@/hooks/useAssessmentFlow';
 import { ASSESSMENT_STEPS } from '@/lib/assessment-session';
 import { StepIndicator } from '@/components/assessment/StepIndicator';
@@ -66,6 +67,7 @@ function NewAssessmentContent(): React.JSX.Element {
   const paramDistrict = searchParams ? searchParams.get('district') ?? '' : '';
   const paramState = searchParams ? searchParams.get('state') ?? '' : '';
   const paramLoc = searchParams ? searchParams.get('location') ?? '' : '';
+  const paramCategory = searchParams ? searchParams.get('category') ?? '' : '';
 
   let initialLocationId = '';
   let initialLocationDisplay = '';
@@ -87,8 +89,16 @@ function NewAssessmentContent(): React.JSX.Element {
   );
   const { currentStep, stepIndex, session, next, back, updateSession, isComplete } = flow;
   const suggestedCategory = inferCategory(session.idea);
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+
+  // Auto-select category if provided via query params or inferred from idea
+  React.useEffect(() => {
+    if (paramCategory && !session.category) {
+      updateSession({ category: paramCategory });
+    }
+  }, [paramCategory, session.category, updateSession]);
 
   const hasHydratedLocationRef = React.useRef(false);
 
@@ -128,13 +138,29 @@ function NewAssessmentContent(): React.JSX.Element {
     setIsSubmitting(true);
     setSubmitError(null);
     try {
-      const locationValue = session.locationDisplay || session.locationId;
+      let parsedVillageId: number | undefined = undefined;
+      if (session.locationId) {
+        if (/^\d+$/.test(session.locationId)) {
+          parsedVillageId = Number(session.locationId);
+        } else if (session.locationId.startsWith('loc_v_')) {
+          const idNum = parseInt(session.locationId.replace('loc_v_', ''), 10);
+          if (Number.isFinite(idNum)) {
+            parsedVillageId = idNum;
+          }
+        }
+      }
+
+      const chosenCategory = session.category || suggestedCategory || paramCategory || 'Dairy';
+      const locationValue = session.locationDisplay || session.locationId || 'Bera';
+
       const res = await createAssessment({
         location: locationValue,
-        category: session.category,
+        village_id: parsedVillageId,
+        category: chosenCategory,
         capital: session.capital,
         idea: session.idea.trim() || undefined,
         language: 'en',
+        phone_or_email: user?.phone_or_email ?? undefined,
       });
       router.push(`/assessment/completed?id=${res.id}`);
     } catch (err: unknown) {

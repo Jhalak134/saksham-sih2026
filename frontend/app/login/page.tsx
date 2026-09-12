@@ -1,12 +1,26 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, useContext } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Script from 'next/script';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Smartphone, Lock, Eye, EyeOff, ArrowRight, User, MapPin, CheckCircle2, AlertCircle } from 'lucide-react';
-import { requestUserLocation, type UserLocationResult } from '@/lib/geolocation';
+import {
+  Smartphone,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  User,
+  MapPin,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react';
+import { useAuth, AuthProvider, AuthContext } from '@/lib/auth-context';
+import { setAuthUser } from '@/lib/auth';
+import { setStorageItem } from '@/lib/storage';
+import { STORAGE_KEYS } from '@/lib/constants';
+import { requestUserLocation } from '@/lib/geolocation';
 
 const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
@@ -43,8 +57,10 @@ declare global {
 function LoginFormContent(): React.JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { login, signup } = useAuth();
 
   const initialMode = searchParams.get('mode') || searchParams.get('tab');
+  const destination = searchParams.get('redirect') || '/discover';
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>(
     initialMode === 'signup' ? 'signup' : 'login'
   );
@@ -55,6 +71,7 @@ function LoginFormContent(): React.JSX.Element {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [googleNotice, setGoogleNotice] = useState<string | null>(null);
   const [isShaking, setIsShaking] = useState(false);
 
   // Post-signup location permission modal state
@@ -145,6 +162,17 @@ function LoginFormContent(): React.JSX.Element {
       console.warn('Backend sync note:', syncErr);
     }
 
+    setAuthUser({
+      email: userProfile.email,
+      name: userProfile.name,
+      picture: userProfile.picture,
+      authProvider: 'google',
+      token: userProfile.token,
+    });
+    if (userProfile.token) {
+      setStorageItem(STORAGE_KEYS.authToken, userProfile.token);
+    }
+
     if (typeof window !== 'undefined') {
       localStorage.setItem(
         'saksham_user',
@@ -171,7 +199,7 @@ function LoginFormContent(): React.JSX.Element {
     if (activeTab === 'signup' || isNewUser || !hasSavedLocation) {
       setShowLocationModal(true);
     } else {
-      router.push('/discover');
+      router.push(destination);
     }
   };
 
@@ -214,14 +242,14 @@ function LoginFormContent(): React.JSX.Element {
       }
     }
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setGoogleNotice(null);
 
     const cleanAccount = mobileNumber.trim();
     if (!cleanAccount) {
-      triggerError('Please enter your mobile number');
+      triggerError('Please enter your mobile number or email');
       return;
     }
 
@@ -245,7 +273,12 @@ function LoginFormContent(): React.JSX.Element {
       return;
     }
 
-    setLoading(true);
+    setAuthUser({
+      phone: cleanAccount,
+      name: name.trim() || 'Entrepreneur',
+      authProvider: 'phone',
+    });
+    setStorageItem(STORAGE_KEYS.authToken, 'session-token-' + Date.now());
 
     if (typeof window !== 'undefined') {
       localStorage.setItem(
@@ -258,87 +291,38 @@ function LoginFormContent(): React.JSX.Element {
       );
     }
 
-    setTimeout(() => {
-      setLoading(false);
-      if (activeTab === 'signup') {
-        // Show post-signup location permission modal popup!
-        setShowLocationModal(true);
+    setLoading(true);
+    try {
+      if (activeTab === 'login') {
+        await login(cleanAccount);
+        router.push(destination);
       } else {
-        router.push('/discover');
+        await signup({
+          phone_or_email: cleanAccount,
+          preferred_language: 'en',
+        });
+        setShowLocationModal(true);
       }
-    }, 450);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : 'Authentication failed. Please check your details.';
+      triggerError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
     setError(null);
-    setLoading(true);
-
-    // 1. If Google OAuth2 Token Client is ready, open popup
-    if (typeof window !== 'undefined' && window.google?.accounts?.oauth2) {
-      try {
-        const tokenClient = window.google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: 'email profile openid',
-          callback: async (tokenResponse) => {
-            if (tokenResponse.error) {
-              setLoading(false);
-              triggerError('Google sign-in was cancelled or encountered an error.');
-              return;
-            }
-            if (tokenResponse.access_token) {
-              try {
-                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-                });
-                const profile = await res.json();
-                await onGoogleSuccess({
-                  email: profile.email,
-                  name: profile.name,
-                  picture: profile.picture,
-                  google_id: profile.sub,
-                  token: tokenResponse.access_token,
-                });
-              } catch {
-                setLoading(false);
-                triggerError('Failed to fetch profile from Google.');
-              }
-            } else {
-              setLoading(false);
-            }
-          },
-          error_callback: () => {
-            setLoading(false);
-            triggerError('Google sign-in popup was closed.');
-          },
-        });
-
-        tokenClient.requestAccessToken({ prompt: 'select_account' });
-        return;
-      } catch (err) {
-        console.warn('Google TokenClient note:', err);
-      }
+    if (activeTab === 'signup') {
+      setShowLocationModal(true);
+      return;
     }
-
-    // 2. Fallback to Google One Tap prompt if available
-    if (typeof window !== 'undefined' && window.google?.accounts?.id) {
-      try {
-        window.google.accounts.id.prompt();
-        setTimeout(() => setLoading(false), 2000);
-        return;
-      } catch (e) {
-        console.warn('Google prompt fallback note:', e);
-      }
-    }
-
-    // 3. Fallback for test / offline environments (matches vitest mocks)
-    setTimeout(() => {
-      setLoading(false);
-      if (activeTab === 'signup') {
-        setShowLocationModal(true);
-      } else {
-        router.push('/discover');
-      }
-    }, 450);
+    setGoogleNotice(
+      'Google Sign-In is not configured in this pilot environment. Please sign in with your mobile number or email, or continue as guest.'
+    );
   };
 
   const handleAllowLocation = async () => {
@@ -374,13 +358,13 @@ function LoginFormContent(): React.JSX.Element {
     } finally {
       setIsDetectingLocation(false);
       setShowLocationModal(false);
-      router.push('/discover');
+      router.push(destination);
     }
   };
 
   const handleSkipLocation = () => {
     setShowLocationModal(false);
-    router.push('/discover');
+    router.push(destination);
   };
 
   return (
@@ -488,6 +472,7 @@ function LoginFormContent(): React.JSX.Element {
               onClick={() => {
                 setActiveTab('login');
                 setError(null);
+                setGoogleNotice(null);
               }}
               className={`flex-1 text-center pb-2 text-base sm:text-[17px] font-semibold transition-colors cursor-pointer ${
                 activeTab === 'login'
@@ -505,6 +490,7 @@ function LoginFormContent(): React.JSX.Element {
               onClick={() => {
                 setActiveTab('signup');
                 setError(null);
+                setGoogleNotice(null);
               }}
               className={`flex-1 text-center pb-2 text-base sm:text-[17px] font-semibold transition-colors cursor-pointer ${
                 activeTab === 'signup'
@@ -667,6 +653,24 @@ function LoginFormContent(): React.JSX.Element {
             </svg>
             <span>Continue with Google</span>
           </button>
+
+          {/* Honest Google Notice Banner */}
+          {googleNotice && (
+            <div className="mt-3 rounded-xl bg-amber-50 border border-amber-200 p-3 text-xs text-amber-800 flex items-start gap-2 animate-in fade-in duration-200">
+              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <span>{googleNotice}</span>
+            </div>
+          )}
+
+          {/* Continue as Guest Link */}
+          <div className="mt-5 text-center">
+            <Link
+              href="/discover"
+              className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-[#167844] transition-colors"
+            >
+              Continue as guest →
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -757,6 +761,18 @@ function LoginFormContent(): React.JSX.Element {
   );
 }
 
+function LoginFormWrapper(): React.JSX.Element {
+  const existingCtx = useContext(AuthContext);
+  if (existingCtx) {
+    return <LoginFormContent />;
+  }
+  return (
+    <AuthProvider>
+      <LoginFormContent />
+    </AuthProvider>
+  );
+}
+
 export default function LoginPage(): React.JSX.Element {
   return (
     <Suspense
@@ -766,7 +782,7 @@ export default function LoginPage(): React.JSX.Element {
         </div>
       }
     >
-      <LoginFormContent />
+      <LoginFormWrapper />
     </Suspense>
   );
 }

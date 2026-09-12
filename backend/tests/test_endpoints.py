@@ -23,6 +23,39 @@ def test_locations():
     assert len(resp.json()) > 0
 
 
+def test_locations_search_by_name():
+    resp = client.get("/api/v1/locations?q=Kamar")
+    assert resp.status_code == 200
+    items = resp.json()
+    assert len(items) >= 1
+    assert items[0]["name"] == "Kamar"
+    assert items[0]["id"] == 123579
+    assert items[0]["population"] == 7031
+
+
+def test_locations_search_by_code():
+    resp = client.get("/api/v1/locations?q=123579")
+    assert resp.status_code == 200
+    items = resp.json()
+    assert len(items) >= 1
+    assert items[0]["name"] == "Kamar"
+    assert items[0]["id"] == 123579
+
+
+def test_locations_search_partial():
+    resp = client.get("/api/v1/locations?q=Kam")
+    assert resp.status_code == 200
+    items = resp.json()
+    assert len(items) >= 1
+    assert any(v["name"] == "Kamar" for v in items)
+
+
+def test_locations_search_no_match():
+    resp = client.get("/api/v1/locations?q=FakeVillageXYZ")
+    assert resp.status_code == 200
+    assert resp.json() == []
+
+
 def test_resolve_location():
     resp = client.post("/api/v1/locations/resolve", json={"query": "Kamar"})
     assert resp.status_code == 200

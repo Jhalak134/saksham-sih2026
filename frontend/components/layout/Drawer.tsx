@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import {
   SIDEBAR_PRIMARY_ITEMS,
   SIDEBAR_SECONDARY_ITEMS,
@@ -30,6 +31,8 @@ import {
   type LanguageCode,
 } from '@/lib/constants';
 import { IconButton } from '@/components/ui/IconButton';
+import { LogoutModal } from '@/components/ui/LogoutModal';
+import { getAuthUser, clearAuthUser, type AuthUser } from '@/lib/auth';
 
 // ─── Icon registry ────────────────────────────────────────────────────────────
 
@@ -134,7 +137,15 @@ function DrawerLanguageRow({
 export function Drawer(): React.JSX.Element {
   const { drawerOpen, closeDrawer, compareCount, language, setLanguage } =
     useShell();
+  const { logout } = useAuth();
   const pathname = usePathname();
+
+  const [showLogOutModal, setShowLogOutModal] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+
+  useEffect(() => {
+    setUser(getAuthUser());
+  }, []);
 
   // Close drawer when route changes (navigation completed).
   useEffect(() => {
@@ -156,10 +167,32 @@ export function Drawer(): React.JSX.Element {
     return pathname.startsWith(href);
   }
 
-  function handleLogOut(): void {
+  function handleLogOutClick(): void {
+    setShowLogOutModal(true);
+  }
+
+  function handleConfirmLogOut(): void {
+    setShowLogOutModal(false);
+    logout();
     closeDrawer();
+    clearAuthUser();
+    import('@/lib/storage').then(({ removeStorageItem }) => {
+      removeStorageItem('auth_token');
+    });
     window.location.href = '/';
   }
+
+  const displayName = user?.name || (user?.phone ? `+91 ${user.phone}` : 'Rural Entrepreneur');
+  const displaySub = user?.email || (user?.phone ? 'Verified Profile' : 'My Profile');
+  const userInitials = user?.name
+    ? user.name
+        .split(' ')
+        .filter(Boolean)
+        .map((n) => n[0])
+        .join('')
+        .slice(0, 2)
+        .toUpperCase()
+    : 'RE';
 
   return (
     <div className="md:hidden" aria-hidden={!drawerOpen}>
@@ -226,29 +259,45 @@ export function Drawer(): React.JSX.Element {
             ))}
             <DrawerLanguageRow language={language} onChange={setLanguage} />
           </div>
-
-          {/* Log out */}
-          <div className="py-1">
-            <button
-              onClick={handleLogOut}
-              className="flex w-full items-center gap-3 px-4 py-3 text-sm font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-dark)] min-h-[48px]"
-            >
-              <LogOut size={18} strokeWidth={1.75} aria-hidden="true" />
-              <span>Log out</span>
-            </button>
-          </div>
         </nav>
 
-        {/* Footer */}
-        <div className="border-t border-[var(--color-border)] px-4 py-3">
-          <p className="text-[11px] font-medium text-[var(--color-text-dark)]">
-            SAKSHAM v1.0.0
-          </p>
-          <p className="text-[10px] text-[var(--color-text-muted)]">
-            Built for rural entrepreneurs.
-          </p>
+        {/* Profile Card & Logout (Bottom of Drawer) */}
+        <div className="border-t border-[var(--color-border)] p-3 bg-slate-50/70 space-y-2">
+          <Link
+            href="/profile"
+            onClick={closeDrawer}
+            className="flex items-center gap-2.5 min-w-0 rounded-md p-1 hover:bg-white transition-colors"
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-xs font-bold shadow-xs">
+              {userInitials}
+            </div>
+            <div className="min-w-0 flex-1 text-left">
+              <p className="truncate text-xs font-semibold text-slate-800">
+                {displayName}
+              </p>
+              <p className="truncate text-[10px] text-slate-500">
+                {displaySub}
+              </p>
+            </div>
+          </Link>
+
+          {/* Log out positioned under the profile */}
+          <button
+            onClick={handleLogOutClick}
+            className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-[var(--color-text-muted)] rounded-md transition-colors hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-text-dark)]"
+          >
+            <LogOut size={18} strokeWidth={1.75} aria-hidden="true" />
+            <span>Log out</span>
+          </button>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      <LogoutModal
+        isOpen={showLogOutModal}
+        onClose={() => setShowLogOutModal(false)}
+        onConfirm={handleConfirmLogOut}
+      />
     </div>
   );
 }

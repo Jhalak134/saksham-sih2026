@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -21,6 +21,44 @@ vi.mock('next/navigation', () => ({
     replace: mockReplace,
   }),
   useSearchParams: () => mockSearchParams,
+}));
+
+vi.mock('@/lib/api-client', () => ({
+  getInsights: vi.fn().mockResolvedValue({
+    location: 'Uttar Pradesh',
+    categories: [
+      { name: 'Dairy', trend: 34, sparkline: [12, 18, 22, 28, 34], seasonality: 'All-season' },
+      { name: 'Food Processing', trend: 28, sparkline: [10, 14, 20, 24, 28], seasonality: 'Harvest cyclical' },
+      { name: 'Textiles', trend: 21, sparkline: [8, 12, 15, 18, 21], seasonality: 'Festival peak' },
+      { name: 'Agriculture', trend: 18, sparkline: [14, 15, 16, 17, 18], seasonality: 'Rabi/Kharif' },
+      { name: 'Retail', trend: 15, sparkline: [10, 11, 13, 14, 15], seasonality: 'Stable daily' },
+      { name: 'Logistics', trend: 24, sparkline: [10, 12, 16, 20, 24], seasonality: 'All-season' },
+    ],
+  }),
+  getSchemes: vi.fn().mockResolvedValue([
+    {
+      id: 1,
+      name: 'Micro Finance Scheme',
+      interest_rate: 6.5,
+      tenure_months: 36,
+      moratorium_months: 3,
+      max_loan_amount: 90000,
+      max_project_cost: 100000,
+      margin_requirement: '10% own promoter contribution',
+    },
+    {
+      id: 2,
+      name: 'Term Loan Scheme',
+      interest_rate: 8.0,
+      tenure_months: 84,
+      moratorium_months: 6,
+      max_loan_amount: 900000,
+      max_project_cost: 1000000,
+      margin_requirement: '10% own promoter contribution',
+    },
+  ]),
+  getAssessmentHistory: vi.fn().mockResolvedValue([]),
+  getAssessmentById: vi.fn(),
 }));
 
 describe('CompareHeader', () => {
@@ -109,6 +147,37 @@ describe('CompareCard', () => {
     await user.click(button);
     expect(onSelect).toHaveBeenCalledOnce();
   });
+
+  it('handles flat trend points (range === 0 fallback), single point sparkline, and default scheme max_loan_amount fallback', () => {
+    const dairyData = getCategoryComparison('Dairy');
+    const flatTrendData = {
+      ...dairyData,
+      sparkline: [5, 5],
+      monthlyTrends: [5, 5],
+    };
+    const { rerender } = render(
+      <CompareCard
+        data={flatTrendData}
+        capital={100000}
+        matchedScheme={{
+          id: 10,
+          name: 'Special Grant Scheme',
+          interest_rate: 5.0,
+          tenure_months: 24,
+          moratorium_months: 2,
+        }}
+      />
+    );
+    expect(screen.getByText('Special Grant Scheme')).toBeInTheDocument();
+    expect(screen.getByText(/Up to ₹1,00,000/)).toBeInTheDocument();
+
+    // Test single point sparkline (< 2 points)
+    const singlePointData = {
+      ...dairyData,
+      sparkline: [5],
+    };
+    rerender(<CompareCard data={singlePointData} capital={100000} />);
+  });
 });
 
 describe('TrendComparisonChart', () => {
@@ -173,6 +242,36 @@ describe('TrendComparisonChart', () => {
     fireEvent.mouseLeave(hoverGroups[0]);
     expect(screen.queryByText('Jan 2026')).not.toBeInTheDocument();
   });
+
+  it('handles empty series and series with fewer points gracefully', () => {
+    const { container, rerender } = render(
+      <TrendComparisonChart
+        category1="Category A"
+        category2="Category B"
+        series1={[]}
+        series2={[]}
+      />
+    );
+    expect(screen.getByText('Category A')).toBeInTheDocument();
+    expect(screen.getByText('Category B')).toBeInTheDocument();
+
+    // Rerender with 1 point each to test tooltip and hover
+    rerender(
+      <TrendComparisonChart
+        category1="Category A"
+        category2="Category B"
+        series1={[10]}
+        series2={[20]}
+      />
+    );
+    const hoverGroups = container.querySelectorAll('g.cursor-pointer');
+    expect(hoverGroups.length).toBeGreaterThan(0);
+    // Hover month at index 5 (where series value is undefined)
+    fireEvent.mouseEnter(hoverGroups[5]);
+    expect(screen.getByText('Category A: 0')).toBeInTheDocument();
+    expect(screen.getByText('Category B: 0')).toBeInTheDocument();
+    fireEvent.mouseLeave(hoverGroups[5]);
+  });
 });
 
 describe('CompareNextSteps', () => {
@@ -189,7 +288,7 @@ describe('CompareNextSteps', () => {
 });
 
 describe('CompareScreen', () => {
-  it('renders default Dairy vs Food Processing comparison', () => {
+  it('renders default Dairy vs Food Processing comparison', async () => {
     mockSearchParams = new URLSearchParams();
     render(
       <ShellProvider>
@@ -198,11 +297,13 @@ describe('CompareScreen', () => {
     );
 
     expect(screen.getByText('Dairy vs Food Processing')).toBeInTheDocument();
-    expect(screen.getByText('Start Dairy Assessment')).toBeInTheDocument();
-    expect(screen.getByText('Start Food Processing Assessment')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Start Dairy Assessment')).toBeInTheDocument();
+      expect(screen.getByText('Start Food Processing Assessment')).toBeInTheDocument();
+    });
   });
 
-  it('reads categories from search params if provided', () => {
+  it('reads categories from search params if provided', async () => {
     mockSearchParams = new URLSearchParams('c=Textiles&c=Agriculture');
     render(
       <ShellProvider>
@@ -211,11 +312,13 @@ describe('CompareScreen', () => {
     );
 
     expect(screen.getByText('Textiles vs Agriculture')).toBeInTheDocument();
-    expect(screen.getByText('Start Textiles Assessment')).toBeInTheDocument();
-    expect(screen.getByText('Start Agriculture Assessment')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Start Textiles Assessment')).toBeInTheDocument();
+      expect(screen.getByText('Start Agriculture Assessment')).toBeInTheDocument();
+    });
   });
 
-  it('handles single category param with automatic second category', () => {
+  it('handles single category param with automatic second category', async () => {
     mockSearchParams = new URLSearchParams('c=Retail');
     render(
       <ShellProvider>
@@ -224,6 +327,9 @@ describe('CompareScreen', () => {
     );
 
     expect(screen.getByText('Retail vs Dairy')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Start Retail Assessment')).toBeInTheDocument();
+    });
   });
 
   it('allows clearing comparison, picking two categories, and resetting to default', async () => {
@@ -234,6 +340,10 @@ describe('CompareScreen', () => {
         <CompareScreen />
       </ShellProvider>
     );
+
+    await waitFor(() => {
+      expect(screen.getByText('Start Dairy Assessment')).toBeInTheDocument();
+    });
 
     const clearBtn = screen.getByText('Clear comparison');
     await user.click(clearBtn);
@@ -256,5 +366,45 @@ describe('CompareScreen', () => {
     const resetBtn = screen.getByText('Reset to Dairy vs Food Processing');
     await user.click(resetBtn);
     expect(screen.getByText('Dairy vs Food Processing')).toBeInTheDocument();
+  });
+
+  it('handles CompareCard chevron navigation and clicking already selected category in picker', async () => {
+    const user = userEvent.setup();
+    mockSearchParams = new URLSearchParams();
+    render(
+      <ShellProvider>
+        <CompareScreen />
+      </ShellProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Start Dairy Assessment')).toBeInTheDocument();
+    });
+
+    // Test search input in mobile bar
+    const searchInput = screen.getByLabelText('Ask SAKSHAM a question');
+    await user.type(searchInput, 'Which business has lower capital?');
+    expect((searchInput as HTMLInputElement).value).toBe('Which business has lower capital?');
+
+    // Test navigation on both CompareCards
+    const dairyChevron = screen.getByLabelText('View details for Dairy');
+    await user.click(dairyChevron);
+    expect(mockPush).toHaveBeenCalledWith('/new-assessment?category=Dairy');
+
+    const foodChevron = screen.getByLabelText('View details for Food Processing');
+    await user.click(foodChevron);
+    expect(mockPush).toHaveBeenCalledWith('/new-assessment?category=Food%20Processing');
+
+    // Clear comparison
+    const clearBtn = screen.getByText('Clear comparison');
+    await user.click(clearBtn);
+
+    // Select Textiles
+    await user.click(screen.getByText('+ Textiles'));
+    expect(screen.getByText(/1 selected \(Textiles\)/)).toBeInTheDocument();
+
+    // Click Textiles again (already selected)
+    await user.click(screen.getByText('✓ Textiles'));
+    expect(screen.getByText(/1 selected \(Textiles\)/)).toBeInTheDocument();
   });
 });

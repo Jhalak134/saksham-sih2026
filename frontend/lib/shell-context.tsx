@@ -18,6 +18,7 @@ import {
 import { getStorageItem, setStorageItem, removeStorageItem } from './storage';
 import { INITIAL_SAVED_CATEGORIES } from '@/components/saved/saved-data';
 import type { CategoryRow } from './discover-types';
+import { AuthProvider, AuthContext } from './auth-context';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -169,6 +170,7 @@ function useShellState(): ShellContextValue {
     removeStorageItem(STORAGE_KEYS.capital);
     removeStorageItem(STORAGE_KEYS.savedCategories);
     removeStorageItem(STORAGE_KEYS.emailNotifications);
+    removeStorageItem(STORAGE_KEYS.authToken);
     setHomeLocationState(DEFAULT_HOME_LOCATION);
     setBrowsingLocation(DEFAULT_HOME_LOCATION);
     setCapitalState(DEFAULT_CAPITAL);
@@ -208,8 +210,18 @@ export function ShellProvider({
   children: React.ReactNode;
 }): React.JSX.Element {
   const value = useShellState();
+  const existingAuth = useContext(AuthContext);
+
+  if (existingAuth !== null) {
+    return (
+      <ShellContext.Provider value={value}>{children}</ShellContext.Provider>
+    );
+  }
+
   return (
-    <ShellContext.Provider value={value}>{children}</ShellContext.Provider>
+    <AuthProvider>
+      <ShellContext.Provider value={value}>{children}</ShellContext.Provider>
+    </AuthProvider>
   );
 }
 

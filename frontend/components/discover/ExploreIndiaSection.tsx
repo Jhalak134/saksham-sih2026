@@ -24,6 +24,7 @@ import {
   RotateCcw,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 interface ExploreIndiaSectionProps {
   readonly selectedState: string | null;
@@ -292,7 +293,12 @@ export function ExploreIndiaSection({
                 {currentProfile.topMovers.map((mover) => (
                   <div key={mover.title} className="flex flex-col">
                     <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
-                      +{mover.percent}%
+                      <AnimatedCounter
+                        key={`${currentProfile.name}-${mover.title}`}
+                        value={mover.percent}
+                        prefix="+"
+                        suffix="%"
+                      />
                     </span>
                     <span className="text-[11px] font-medium text-slate-800 line-clamp-1 leading-tight mt-0.5">
                       {mover.title}
@@ -330,7 +336,12 @@ export function ExploreIndiaSection({
                 <div className="rounded-lg bg-emerald-50/60 p-2.5 border border-emerald-100">
                   <span className="text-[10.5px] font-medium text-emerald-800">Feasible Locations</span>
                   <p className="text-sm font-bold text-emerald-950 mt-0.5">
-                    {currentProfile.feasibleUnitsCount}+ near you
+                    <AnimatedCounter
+                      key={`${currentProfile.name}-feasible`}
+                      value={currentProfile.feasibleUnitsCount}
+                      suffix="+"
+                    />{' '}
+                    near you
                   </p>
                 </div>
                 <div className="rounded-lg bg-slate-50 p-2.5 border border-slate-100">

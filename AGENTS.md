@@ -792,5 +792,243 @@ Stop after this stage is verified.
   - LOC per file: All files < 500 lines.
   - Deterministic calculations: 100% preserved with zero AI modifications.
 
+==================================================
+# SAKSHAM — TASK 4 CURRENT STATE & HANDOFF
+==================================================
+
+### Task 4 — Complete Assessment Persistence + History Mapping
+
+- **Status**: COMPLETED and VERIFIED.
+- **Audit Deficiencies Fixed**:
+  - **P1-D (Assessment Persistence)**:
+    - Extended `Assessment` model (`backend/app/db/models.py`) with 15 missing analytical, financial, feasibility, and AI explanation fields:
+      `rating`, `competitor_count`, `business_idea`, `interest_rate`, `tenure_months`, `moratorium_months`, `monthly_emi`, `total_repayment`, `total_interest`, `estimated_monthly_revenue`, `estimated_monthly_profit`, `repayment_burden_ratio`, `repayment_burden_category`, `feasibility_breakdown` (JSON), `ai_insights` (JSON).
+    - Updated `save_assessment` query (`backend/app/db/queries.py`) to atomically persist all financial metrics, feasibility scores, breakdown details, and AI advisory outputs.
+    - Updated `POST /api/v1/assess` (`backend/app/routers/assess.py`) to persist all assessment values into the database.
+    - Unified serialization helper `_build_assessment_response` used by both `POST /api/v1/assess` and `GET /api/v1/assess/{id}`, guaranteeing 100% field equivalence across creation, browser reload, and backend restarts.
+    - Added full backward compatibility for legacy assessment rows where new columns are `NULL`.
+  - **P2 (Assessment History Mapping)**:
+    - Fixed `GET /api/v1/assess/history` where `category_name` was incorrectly returning `scheme.name`. It now returns `assessment.category.name` with fallback to `"General"`.
+- **Exact Files Changed**:
+  - `backend/app/db/models.py` (added relationships and 15 persistence columns)
+  - `backend/app/db/queries.py` (updated `save_assessment` parameter list and persistence logic)
+  - `backend/app/routers/assess.py` (wired full persistence, created modular response builders, fixed history mapping)
+  - `backend/tests/test_assessment_persistence.py` (comprehensive 5-test persistence suite)
+- **Quality & Architectural Metrics**:
+  - Cyclomatic Complexity: Max 14 (`_build_financial_dict`), Max 8 (`create_assessment`, `_build_assessment_response`), Max 6 (`_resolve_assessment_village`, `_resolve_assessment_category`, `_build_village_dict`), Max 5 (`_build_feasibility_dict`, `get_history`). All < 22.
+  - Maintainability Index: Grade A across all modified files (`assess.py` = 45.27, `queries.py` = 54.17, `models.py` = 100.0).
+  - Lines of Code: All files < 300 lines (`assess.py` = 298, `queries.py` = 281, `models.py` = 170).
+- **Verification & Test Results**:
+  - Python tests: **234/234 passed** (48 backend tests + 186 AI tests).
+  - Frontend tests: **351/351 passed** (35 test suites, 0 regressions).
+  - Live E2E round-trip: Verified identical fields on `POST /api/v1/assess` vs `GET /api/v1/assess/{id}`, survived backend restart with 0 diffs.
+
+==================================================
+# SAKSHAM — TASK 5 CURRENT STATE & HANDOFF
+==================================================
+
+### Task 5 — Connect Frontend Location Search + Global AI Search
+
+- **Status**: COMPLETED and FULLY VERIFIED.
+- **Audit Deficiencies Fixed**:
+  - **P1-E (Frontend Assessment Location Search)**:
+    - Wired `StepLocation.tsx` to live Census village endpoint via `searchLocations(q)` in `frontend/lib/api-client.ts` calling `GET /api/v1/locations?q=<query>`.
+    - Integrated race-condition-safe, debounced `useLocationSearch(300)` hook with active request cancellation token.
+    - Added comprehensive result rendering displaying village name, block name, district, state, Census ID, and pilot area badge.
+    - Handled duplicate village names across blocks (e.g. Nabipur in Chhata vs Mat) by rendering block and Census ID clearly in the suggestion list.
+    - Updated `NewAssessmentPage` (`frontend/app/(shell)/new-assessment/page.tsx`) to pass canonical `village_id` and formatted location string to `createAssessment`.
+    - Updated `_resolve_assessment_village` in backend (`backend/app/routers/assess.py`) to prioritize `village_id` over ambiguous location strings.
+    - Enforced zero silent fallback: errors and empty states are surfaced explicitly to the user without masking backend failures with fake data.
+  - **P1-F / Global Search (Header Search → Backend AI Advisory Gateway)**:
+    - Connected global search bar in `Header.tsx` to `POST /api/v1/ai/query` on backend (:8000), routing to AI microservice (:8001).
+    - Added `queryAI` API client method in `frontend/lib/api-client.ts`.
+    - Built accessible `GlobalAISearchModal` (`frontend/components/layout/GlobalAISearchModal.tsx`) providing:
+      - Grounding status badge (`🟢 Grounded Evidence` vs `🟡 Partially Grounded` vs `⚪ No Knowledge-Base Match` vs `⚙️ Rule-based Advisory`).
+      - Full advisory explanation / summary text.
+      - Advisory highlights (key points list with checkmarks).
+      - Retrieved Provenance & Citations with template warning badges (`⚠️ Template / Model Estimate`), historical badges (`ℹ️ Mathura Profile (2011 Historical)`), page numbers, chunk IDs, and italicized excerpts.
+      - Advisory scope & limitations container.
+      - Policy warnings container.
+      - Error handling with interactive retry button.
+    - Preserved active application language (`en`, `hi`, `hinglish`) without hardcoded translation hacks.
+  - **Code Quality & Refactoring**:
+    - Extracted `mapBackendResponseToDetailedReport` into dedicated `frontend/lib/report-adapter.ts` (214 LOC) to keep `api-client.ts` at 308 LOC, strictly obeying `LOC < 500`.
+- **Exact Files Changed**:
+  - `frontend/lib/api-types.ts` (added `VillageLocation`, `AIQueryRequest`, `AIQueryResponse`, `village_id`)
+  - `frontend/lib/api-client.ts` (added `searchLocations`, `formatVillageLocation`, `queryAI`, re-exported adapter)
+  - `frontend/lib/report-adapter.ts` (new helper module for DetailedReport mapping)
+  - `frontend/hooks/useLocationSearch.ts` (wired live API search with debounce and cancellation)
+  - `frontend/components/assessment/StepLocation.tsx` (wired live location search, loading, error, and duplicates display)
+  - `frontend/app/(shell)/new-assessment/page.tsx` (passed `village_id` and location string to assessment creation)
+  - `frontend/components/layout/Header.tsx` (wired functional search submission and modal)
+  - `frontend/components/layout/GlobalAISearchModal.tsx` (new grounded AI advisory modal)
+  - `backend/app/routers/assess.py` (prioritized `village_id` in `_resolve_assessment_village`)
+  - `frontend/tests/StepLocation.test.tsx` (expanded to 15 tests covering live location search and duplicates)
+  - `frontend/tests/api-client.test.ts` (expanded to 18 tests covering `searchLocations`, formatting, and `queryAI`)
+  - `frontend/tests/HeaderAISearch.test.tsx` (new test suite with 5 tests covering global AI search)
+- **Quality Metrics**:
+  - TypeScript types: **0 `any`**, **0 unhandled `unknown`**.
+  - Lines of Code: All modified files < 450 LOC (`StepLocation.tsx` = 314, `GlobalAISearchModal.tsx` = 317, `Header.tsx` = 239, `api-client.ts` = 308, `report-adapter.ts` = 214, `api-types.ts` = 200, `new-assessment/page.tsx` = 234, `useLocationSearch.ts` = 67).
+  - Python Cyclomatic Complexity: Max 14 (`_build_financial_dict`), Max 8 (`create_assessment`), Max 6 (`_resolve_assessment_village`). All < 22.
+  - Python Maintainability Index: Grade A (`assess.py` = 45.27).
+- **Verification & Test Results**:
+  - Frontend test suite: **36/36 test files passed, 365/365 tests passed (100%)**.
+  - Next.js production build: **Passed with 0 errors**.
+  - Python test suite: **234/234 passed** (48 backend tests + 186 AI tests).
+  - Live E2E round-trip: Assessment created with Bera (ID 123912), Dairy, ₹100,000 -> persisted Assessment #20 -> `GET /api/v1/assess/20` returns 100% matching payload (`diff -u` exit code 0).
+  - Live Global AI search queries tested on port 8000:
+    - Query 1 ("What dairy business opportunities are relevant around Bera?"): HTTP 200, Grounded Evidence, 5 citations.
+    - Query 2 ("PMFME dairy scheme"): HTTP 200, No Knowledge-Base Match, 0 citations, limitations noted.
+    - Query 3 ("Bera me dairy shuru karne ke liye kitna loan milega?"): HTTP 200, Hindi language query successfully processed.
+
+==================================================
+# SAKSHAM — TASK 6 CURRENT STATE & HANDOFF
+==================================================
+
+### Task 6 — Connect Schemes + Location Insights to Real Backend Data
+
+- **Status**: COMPLETED and VERIFIED.
+- **Audit Deficiencies Fixed**:
+  - **Schemes Integration**:
+    - Replaced static scheme lists with live data from `GET /api/v1/schemes` (`listSchemes()`).
+    - Connected interactive EMI calculator to `POST /api/v1/schemes/calculate-emi` (`calculateSchemeEMI(...)`).
+    - Connected margin matcher to `POST /api/v1/schemes/match` (`matchSchemeForCost(...)`).
+    - Modularized `SchemesTab.tsx` by extracting `SchemeMarginMatcher.tsx` and `SchemeEmiCalculator.tsx` to maintain LOC < 250 across all files.
+  - **Location Insights Integration**:
+    - Wired `MarketTab.tsx` to fetch real regional demand indicators and category trends via `getInsights(location)` calling `GET /api/v1/insights/{location}`.
+    - Preserved honest labeling: marked growth percentages as `Observed Regional Indicator` with Census 2011 demographic baseline.
+  - **Zero Silent Fallback**:
+    - Surfaced clear error banners with interactive retry buttons on backend failure instead of quietly displaying fabricated static data.
+- **Exact Files Changed**:
+  - `frontend/components/dashboard/SchemesTab.tsx` (connected live schemes + interactive tools)
+  - `frontend/components/dashboard/SchemeMarginMatcher.tsx` (new modular component)
+  - `frontend/components/dashboard/SchemeEmiCalculator.tsx` (new modular component)
+  - `frontend/components/dashboard/MarketTab.tsx` (connected live regional insights)
+  - `frontend/lib/api-client.ts` (added schemes and insights client methods)
+  - `frontend/tests/schemes-integration.test.tsx` (10 tests)
+  - `frontend/tests/insights-integration.test.tsx` (10 tests)
+- **Verification & Test Results**:
+  - Frontend test suites: 38/38 passed (385/385 tests).
+  - Python test suite: 234/234 passed.
+
+==================================================
+# SAKSHAM — TASK 7 CURRENT STATE & HANDOFF
+==================================================
+
+### Task 7 — Connect Discover to Real Backend Data
+
+- **Status**: COMPLETED and FULLY VERIFIED.
+- **Audit Deficiencies Fixed**:
+  - **Discover State Opportunities & Pilot Insights Bar** (`frontend/components/discover/StateInsightsBar.tsx`):
+    - Replaced hardcoded opportunity metrics with live backend data from `GET /api/v1/insights/{location}` and `GET /api/v1/schemes`.
+    - Shows top regional growth categories with verified `+{trend}%` badges and seasonality indicators.
+    - Shows official concessional credit schemes (`Micro Finance Scheme`, `Term Loan Scheme`, plus PMFME reference).
+    - Displays `874 micro locations` with explicit `Census 2011 Baseline (Mathura)` label.
+    - Strict Data Honesty: Provenance notice explicitly clarifies demographic figures are Census 2011 baseline and category growth percentages are regional sample indicators.
+    - Zero Silent Mock Fallback: Network/backend errors display an explicit error alert with a functional "Retry" button (`RefreshCw`).
+    - Non-Pilot States: Non-UP states display a static reference profile with a prominent "Coming Soon" badge without calling the backend.
+  - **Discover Categories & Market Insights** (`frontend/components/discover/ArticleCategorySection.tsx`):
+    - Added `selectedDistrict?: string | null` prop to coordinate with district-level map drilldown.
+    - Replaced static trend percentages with live trends from `getInsights(targetLocation)`.
+    - All 8 business categories in the 4x2 grid update their trend pills (e.g. Dairy `+34%`, Food Processing `+28%`, Logistics `+24%`, Textiles `+21%`) with a `Verified Indicators` header badge.
+    - Category Detail View (View A) displays:
+      - Live growth trend (`+{trend}% YoY in {stateName}`) with `Live Regional Indicator` badge.
+      - Official government credit schemes mapped to the category.
+      - Honest provenance labels: Target capital benchmark labeled `(Reference Benchmark Range)` and profit margin labeled `(Model Estimate)`.
+    - Zero Silent Mock Fallback: Backend error surfaces an error alert with an interactive "Retry" button.
+  - **Discover Screen Layout & Coordination** (`frontend/components/screens/Discover.tsx`):
+    - Coordinates 3-level map drilldown (`India Map` -> `UP Districts Map` -> `Mathura District MapLibre OSM GeoJSON`) with `ArticleCategorySection` and `StateInsightsBar`.
+    - Preserves all map visual styling, SVG paths, MapLibre OSM tiles, and layout integrity.
+- **Exact Files Changed**:
+  - `frontend/components/discover/StateInsightsBar.tsx` (290 LOC, LOC < 500)
+  - `frontend/components/discover/ArticleCategorySection.tsx` (377 LOC, LOC < 500)
+  - `frontend/components/screens/Discover.tsx` (107 LOC, LOC < 500)
+  - `frontend/tests/discover-integration.test.tsx` (440 LOC, 13 comprehensive tests)
+- **Quality & Architectural Metrics**:
+  - TypeScript: **0 `any`**, **0 unhandled `unknown`**, `tsc --noEmit` passed with 0 errors.
+  - Lines of Code: All modified files < 400 lines (StateInsightsBar: 290, ArticleCategorySection: 377, Discover: 107).
+  - Test Coverage on modified components:
+    - `ArticleCategorySection.tsx`: 95.4% statements, 90.32% branches, 95% functions, 97.53% lines.
+    - `StateInsightsBar.tsx`: 96.36% statements, 91.78% branches, 92.3% functions, 98.07% lines.
+    - `Discover.tsx`: 95.83% statements, 85.71% branches, 80% functions, 95.83% lines.
+  - No frontend financial, feasibility, or opportunity calculations invented.
+- **Verification & Test Results**:
+  - Frontend test suite: **39/39 test files passed, 398/398 tests passed (100%)**.
+  - Python test suite: **234/234 passed** (48 backend tests + 186 AI tests).
+  - Next.js production build: **Passed with 0 errors** (`npm run build`).
+  - Assessment Regression: Verified `POST /api/v1/assess` and `GET /api/v1/assess/{id}` with Bera, Dairy, ₹10,000 margin capital -> Fit Score 73.2, Micro Finance Scheme, EMI ₹2,985.64, 100% field equivalence.
+- **Next Task**:
+  ```
+  NEXT TASK: TASK 8 — COMPARE FEATURE (COMPLETED)
+  ```
+
+==================================================
+# SAKSHAM — TASK 8 CURRENT STATE & HANDOFF
+==================================================
+
+### Task 8 — Compare Feature: Architecture Audit + Live Data Integration
+
+- **Status**: COMPLETED and FULLY VERIFIED.
+- **Architecture Audit & Decision**:
+  - Audited all frontend Compare components, backend routers (`assess.py`, `schemes.py`, `insights.py`), database models, and deterministic engines.
+  - **Decision: Existing APIs are completely sufficient.** No new backend comparison endpoint was required.
+  - Persistence and query endpoints (`GET /api/v1/assess/{id}`, `GET /api/v1/assess/history`, `GET /api/v1/schemes`, `GET /api/v1/insights/{location}`) already provide all necessary fields (fit score, rating, margin, project cost, loan amount, monthly EMI, total interest, profit, repayment burden, 4-pillar feasibility breakdown, OSM competitor count, AI grounding status).
+  - Side-by-side comparison uses `Promise.all([getAssessmentById(id1), getAssessmentById(id2)])` without duplicating backend financial or feasibility calculations on the client.
+- **Implementation Completed**:
+  - **Mode A: Opportunities Comparison** (`frontend/components/compare/CompareCard.tsx`, `TrendComparisonChart.tsx`):
+    - Fetches live regional insights and category demand trends via `getInsights('Uttar Pradesh')`.
+    - Fetches official concessional credit schemes via `getSchemes()`.
+    - Live trend growth indicators with explicit `Observed Regional Indicator` labeling and sparklines.
+    - Official government credit scheme terms (`{scheme.name} • {interest_rate}% p.a. • Up to ₹{max_loan_amount}`).
+    - Dynamic budget fit evaluated against official 10% promoter contribution rule.
+    - Typical setup cost labeled with data honesty notice `(Reference Benchmark Range)`.
+    - Interactive 12-month trend comparison chart with smooth SVG cubic Bezier paths, area gradients, and interactive hover tooltip.
+  - **Mode B: Past Assessments Comparison** (`frontend/components/compare/CompareAssessmentView.tsx`, `CompareAssessmentCard.tsx`):
+    - Reads assessment IDs from URL search params (`?a=id1&a=id2`) or defaults to latest 2 from history.
+    - Slot 0 and Slot 1 dropdown selectors allow switching assessments dynamically.
+    - Displays authoritative persisted metrics verbatim:
+      - Census 2011 baseline village demographics (Name, Block, District).
+      - Feasibility fit score, rating badge (`Highly Feasible`, `Feasible`, `Moderate`, `Low Potential`), and confidence.
+      - Exact financial structure: Promoter margin, project cost, concessional loan, monthly EMI, profit, and repayment burden.
+      - Feasibility breakdown (Market Opportunity, Competition, Capital Fit, Infrastructure).
+      - OSM mapped competitor count.
+      - AI advisory grounding status (`🟢 Grounded Evidence` vs `⚪ Rule-based`).
+    - Provenance and mathematical integrity notice.
+  - **Compare Screen Coordination & State Management** (`frontend/components/compare/CompareScreen.tsx`):
+    - Mode switcher tabs: `Opportunities` vs `Past Assessments (count)`.
+    - Category picker when comparison is cleared, supporting single or multi-selection with reset to default.
+    - Synchronizes sidebar badge with compare count.
+    - Mobile quick search and capital link.
+    - **Zero Silent Mock Fallback**: Backend errors display clear alert banners with interactive "Retry" buttons.
+- **Exact Files Changed**:
+  - `frontend/lib/api-types.ts` (added `max_loan_amount`, `margin_requirement` to `SchemeData`)
+  - `frontend/components/compare/CompareAssessmentCard.tsx` (240 LOC, new modular component)
+  - `frontend/components/compare/CompareAssessmentView.tsx` (83 LOC, new modular component)
+  - `frontend/components/compare/CompareCard.tsx` (257 LOC, updated with live schemes & sparklines)
+  - `frontend/components/compare/CompareHeader.tsx` (106 LOC, updated with mode switcher)
+  - `frontend/components/compare/CompareNextSteps.tsx` (71 LOC)
+  - `frontend/components/compare/CompareScreen.tsx` (460 LOC, coordinates Mode A & B)
+  - `frontend/components/compare/TrendComparisonChart.tsx` (311 LOC, smooth SVG area curves)
+  - `frontend/tests/CompareComponents.test.tsx` (17 tests)
+  - `frontend/tests/compare-integration.test.tsx` (26 tests)
+- **Quality & Architectural Metrics**:
+  - TypeScript: **0 `any`**, **0 unhandled `unknown`**, `tsc --noEmit` passed with 0 errors.
+  - Lines of Code: All modified files < 500 lines.
+  - Cyclomatic Complexity: Max 7 across all functions (limit < 22).
+  - Test Coverage on all Compare components (`frontend/components/compare/**`):
+    - **Statements**: **100%** (100% on every single file)
+    - **Branches**: **100%** (100% on every single file)
+    - **Functions**: **100%** (100% on every single file)
+    - **Lines**: **100%** (100% on every single file)
+  - Mathematical integrity: Zero frontend recalculation of financial, feasibility, or opportunity scores.
+- **Verification & Test Results**:
+  - Frontend test suite: **40/40 test files passed, 427/427 tests passed (100%)**.
+  - Python test suite: **234/234 passed** (48 backend tests + 186 AI tests).
+  - Next.js production build: **Passed with 0 errors** (`npm run build`).
+  - Assessment Regression: Verified `POST /api/v1/assess` and `GET /api/v1/assess/{id}` with Bera, Dairy, ₹10,000 margin capital -> Fit Score 73.2, Micro Finance Scheme, EMI ₹2,985.64, 100% field equivalence.
+- **Next Task**:
+  ```
+  NEXT TASK: TASK 10 — HALLUCINATION TESTS & GROUNDING VERIFICATION
+  ```
 
 
