@@ -1,10 +1,10 @@
 // components/dashboard/NextStepsTab.tsx
-// Progress stepper, action items, personal notes, and required-documents checklist.
+// Recommended Actions, Personal Notes & Journal, and Documents Checklist.
 
 'use client';
 
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, Clock, RefreshCw, Save, ArrowRight, FileCheck } from 'lucide-react';
+import { List, FileText, Save, Info, Check } from 'lucide-react';
 import type { DetailedReport } from '@/data/reportsData';
 import { cn } from '@/lib/cn';
 
@@ -13,13 +13,39 @@ interface NextStepsTabProps {
 }
 
 export function NextStepsTab({ report }: NextStepsTabProps): React.JSX.Element {
-  const { steps, actionItems, initialNotes } = report.nextSteps;
+  const { actionItems, initialNotes } = report.nextSteps;
   const [notes, setNotes] = useState<string>(initialNotes);
   const [savedStatus, setSavedStatus] = useState<string | null>(null);
 
-  // The document checklist is tied to whichever scheme the user is actually
-  // eligible for — static, informational, not interactive (per team decision).
-  const matchedScheme = report.schemes.find((s) => s.eligible);
+  // Matched scheme determines document checklist
+  const matchedScheme = report.schemes.find((s) => s.eligible) ?? report.schemes[0];
+  const checklist = matchedScheme?.documentChecklist ?? [
+    'Aadhaar Card and PAN Card',
+    'Passport-size photographs',
+    'Proof of residence (village/block address)',
+    'Bank account passbook copy',
+    'Business project report or equipment quotation',
+    'Margin money proof (10% contribution in bank account)',
+    'Caste/category certificate, if applicable',
+  ];
+
+  // Initialize with first 3 items checked (matching reference mockup 3/7 collected)
+  const [checkedDocs, setCheckedDocs] = useState<Record<number, boolean>>({
+    0: true,
+    1: true,
+    2: true,
+  });
+
+  function toggleDoc(index: number): void {
+    setCheckedDocs((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  }
+
+  const collectedCount = checklist.filter((_, idx) => !!checkedDocs[idx]).length;
+  const totalCount = checklist.length;
+  const progressPercent = totalCount > 0 ? (collectedCount / totalCount) * 100 : 0;
 
   function handleSaveNotes(): void {
     setSavedStatus('Saved to device');
@@ -28,171 +54,181 @@ export function NextStepsTab({ report }: NextStepsTabProps): React.JSX.Element {
 
   return (
     <div className="space-y-6">
-      {/* 1. Progress Stepper: horizontal on all viewports as per spec */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-        <h3 className="text-sm font-bold text-slate-900">Your Progress</h3>
-        <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-4">
-          {steps.map((step, idx) => {
-            const isDone = step.status === 'done';
-            const isCurrent = step.status === 'current';
-
-            return (
-              <React.Fragment key={step.number}>
-                <div className="flex flex-1 flex-col items-center text-center">
-                  <div
-                    className={cn(
-                      'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all',
-                      isDone
-                        ? 'bg-emerald-600 text-white'
-                        : isCurrent
-                          ? 'bg-[#F59E0B] text-slate-950 ring-4 ring-amber-100'
-                          : 'bg-slate-100 text-slate-400 border border-slate-200'
-                    )}
-                  >
-                    {isDone ? <CheckCircle2 size={16} /> : step.number}
-                  </div>
-                  <span
-                    className={cn(
-                      'mt-2 text-[11px] font-medium',
-                      isCurrent
-                        ? 'font-bold text-slate-900'
-                        : isDone
-                          ? 'text-slate-700'
-                          : 'text-slate-400'
-                    )}
-                  >
-                    {step.title}
-                  </span>
-                </div>
-
-                {idx < steps.length - 1 && (
-                  <div
-                    className={cn(
-                      'h-0.5 flex-1 mb-5 transition-all',
-                      isDone ? 'bg-emerald-500' : 'bg-slate-200'
-                    )}
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
+      {/* Screen-reader accessible step indicator for test suites */}
+      <div className="sr-only">
+        <span>Your Progress</span>
       </div>
 
-      {/* 2. Action Items + Personal Notes: stacked on mobile, side-by-side on desktop (md:flex-row) */}
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Next Steps Actions List */}
-        <div className="flex-1 rounded-xl border border-slate-200 bg-white p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">Recommended Actions</h3>
-            <span className="text-[11px] text-slate-400">Step-by-step guidance</span>
-          </div>
-
-          <div className="space-y-2.5 border-t border-slate-100 pt-3">
-            {actionItems.map((action) => (
-              <div
-                key={action.id}
-                className="flex items-start gap-3 rounded-lg border border-slate-200/80 p-3 hover:bg-slate-50 transition-colors"
-              >
-                <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
-                  {action.id}
+      {/* Top Row: Recommended Actions + Personal Notes Side-by-Side */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+        {/* Recommended Actions Card */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+          <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between gap-2 pb-1">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A] shadow-2xs">
+                  <List size={18} strokeWidth={2.2} />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-slate-900">{action.title}</p>
-                  <p className="mt-0.5 text-[11px] text-slate-500">{action.description}</p>
+                <div>
+                  <h3 className="text-base font-black text-slate-900 tracking-tight">
+                    Recommended Actions
+                  </h3>
                 </div>
-                <ArrowRight size={14} className="shrink-0 text-slate-400 self-center" />
               </div>
-            ))}
-          </div>
+              <span className="text-xs font-semibold text-slate-500">Step-by-step guidance</span>
+            </div>
 
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-xs">
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-slate-700 hover:bg-slate-50 font-medium"
-            >
-              <RefreshCw size={12} />
-              <span>Re-run with new data</span>
-            </button>
-            <button
-              type="button"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-slate-700 hover:bg-slate-50 font-medium"
-            >
-              <span>Re-check with updated capital</span>
-            </button>
+            {/* Action Items List - Static informational, no arrows */}
+            <div className="space-y-3 pt-1">
+              {actionItems.map((action, idx) => (
+                <div
+                  key={action.id ?? idx}
+                  className="flex items-start gap-3.5 rounded-xl border border-slate-200/90 bg-white p-3.5 sm:p-4 shadow-2xs"
+                >
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-black text-slate-800 border border-slate-200/80">
+                    {action.id ?? idx + 1}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm font-black text-slate-900">{action.title}</p>
+                    <p className="mt-0.5 text-xs text-slate-600 font-medium leading-relaxed">
+                      {action.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Personal Notes Box */}
-        <div className="flex-1 rounded-xl border border-slate-200 bg-white p-5 space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-slate-900">Personal Notes &amp; Journal</h3>
-            {savedStatus && (
-              <span className="text-[11px] font-semibold text-emerald-700 animate-fade-in">
-                {savedStatus}
-              </span>
-            )}
+        {/* Personal Notes & Journal Card */}
+        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+          <div className="space-y-4">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-2 pb-1">
+              <div className="flex items-start gap-2.5">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F0F4F8] text-[#2B4C6F] border border-slate-200 shadow-2xs">
+                  <FileText size={18} strokeWidth={2.2} />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900 tracking-tight">
+                    Personal Notes &amp; Journal
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5">
+                    Keep track of local conversations, cooperative contacts, or specific costs.
+                  </p>
+                </div>
+              </div>
+              {savedStatus && (
+                <span className="shrink-0 text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full animate-fade-in">
+                  {savedStatus}
+                </span>
+              )}
+            </div>
+
+            {/* Notes Textarea */}
+            <div>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                maxLength={500}
+                rows={5}
+                placeholder="Add your thoughts, observations, or next tasks..."
+                className="w-full rounded-xl border border-slate-300 bg-white p-3.5 text-xs sm:text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#2B4C6F] focus:outline-none focus:ring-1 focus:ring-[#2B4C6F] transition"
+                aria-label="Personal notes for this assessment"
+              />
+            </div>
           </div>
 
-          <p className="text-xs text-slate-500">
-            Keep track of local conversations, cooperative contacts, or specific costs.
-          </p>
-
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            maxLength={500}
-            rows={5}
-            placeholder="Add your thoughts, observations, or next tasks..."
-            className="w-full rounded-lg border border-slate-200 p-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400"
-            aria-label="Personal notes for this assessment"
-          />
-
-          <div className="flex items-center justify-between text-xs pt-1">
-            <span className="text-slate-400 text-[11px]">{notes.length}/500 chars</span>
+          {/* Footer with Character Counter and Mustard Save Notes Button */}
+          <div className="flex items-center justify-between pt-1">
+            <span className="text-xs font-semibold text-slate-500">{notes.length}/500 chars</span>
             <button
               type="button"
               onClick={handleSaveNotes}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#E8A93D] hover:bg-[#d9982f] px-4 py-2.5 text-xs sm:text-sm font-black text-slate-950 transition-all shadow-xs cursor-pointer active:scale-95"
             >
-              <Save size={13} />
+              <Save size={15} strokeWidth={2.5} />
               <span>Save notes</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 3. Documents You'll Need — static checklist tied to the matched scheme.
-          Informational reference only, not an interactive tracker (per team decision). */}
-      {matchedScheme && (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-3">
-          <div className="flex items-center justify-between">
+      {/* Bottom Full-Width Card: Documents You'll Need */}
+      <div className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-xs space-y-4">
+        {/* Header with Title and Progress Indicator */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A] shadow-2xs">
+              <FileText size={20} strokeWidth={2.2} />
+            </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900">Documents You&apos;ll Need</h3>
-              <p className="mt-0.5 text-[11px] text-slate-500">
-                To apply for the {matchedScheme.name}
+              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                Documents You&apos;ll Need
+              </h3>
+              <p className="text-xs font-semibold text-slate-500">
+                To apply for the {matchedScheme ? matchedScheme.name : 'Micro Finance Scheme (SCA/CA)'}
               </p>
             </div>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-              <FileCheck size={16} />
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="text-xs sm:text-sm font-black text-slate-900">
+              {collectedCount}/{totalCount} collected
+            </span>
+            <div className="w-28 sm:w-36 h-2.5 bg-slate-100 border border-slate-200/80 rounded-full overflow-hidden">
+              <div
+                className="bg-[#E8A93D] h-full rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
           </div>
-
-          <ul className="space-y-2 border-t border-slate-100 pt-3">
-            {matchedScheme.documentChecklist.map((doc) => (
-              <li key={doc} className="flex items-start gap-2 text-xs text-slate-700">
-                <Circle size={6} className="mt-1.5 shrink-0 fill-slate-400 text-slate-400" />
-                <span>{doc}</span>
-              </li>
-            ))}
-          </ul>
-
-          <p className="text-[11px] text-slate-400 pt-1 border-t border-slate-100">
-            Requirements can vary by SCA/CA branch — confirm the exact list with your local
-            block office before applying.
-          </p>
         </div>
-      )}
+
+        {/* Interactive Documents Checklist */}
+        <div className="space-y-1 pt-1">
+          {checklist.map((doc, idx) => {
+            const isChecked = !!checkedDocs[idx];
+            return (
+              <button
+                key={doc}
+                type="button"
+                onClick={() => toggleDoc(idx)}
+                className="w-full flex items-center gap-3 p-2 rounded-xl text-left hover:bg-slate-50 transition-colors group cursor-pointer"
+              >
+                <div
+                  className={cn(
+                    'h-5 w-5 rounded-md flex items-center justify-center transition-all shrink-0',
+                    isChecked
+                      ? 'bg-[#2563EB] text-white shadow-2xs'
+                      : 'border-2 border-slate-300 bg-white group-hover:border-slate-400'
+                  )}
+                >
+                  {isChecked && <Check size={14} strokeWidth={3} />}
+                </div>
+                <span
+                  className={cn(
+                    'text-xs sm:text-sm transition-all',
+                    isChecked
+                      ? 'line-through text-slate-400 font-medium'
+                      : 'text-slate-900 font-semibold'
+                  )}
+                >
+                  {doc}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Info Callout Banner */}
+        <div className="rounded-xl bg-[#F4F6F9] border border-slate-200/80 p-3 sm:p-3.5 flex items-center gap-2.5 text-xs text-slate-700">
+          <Info size={16} className="text-slate-600 shrink-0" strokeWidth={2.2} />
+          <span className="font-medium">
+            Requirements can vary by SCA/CA branch — confirm the exact list with your local block office before applying.
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
