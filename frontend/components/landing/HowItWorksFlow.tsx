@@ -28,26 +28,13 @@ const FLOW_STEPS: readonly FlowStep[] = [
     marginTopClass: 'mt-0',
     arrow: (
       <svg
-        className="hidden lg:block absolute top-[4rem] -right-[5rem] w-[100px] h-[40px] text-blue-500 z-10 pointer-events-none"
-        viewBox="0 0 100 40"
+        className="hidden lg:block absolute top-[4rem] -right-[4rem] xl:-right-[5rem] w-[80px] xl:w-[100px] h-[60px] text-blue-500 pointer-events-none drop-shadow-sm"
+        viewBox="0 0 100 60"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M0 5 Q 50 -10, 95 30"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <path
-          d="M80 32 L 95 30 L 90 15"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
+        <path d="M0 20 Q 50 -10, 95 45" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+        <path d="M80 45 L 95 45 L 90 30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
     ),
   },
@@ -59,29 +46,16 @@ const FLOW_STEPS: readonly FlowStep[] = [
     image: '/images/how-it-works/step2.png',
     alt: 'Assessment created screen showing the analysis checklist complete',
     colorClass: 'text-rose-400',
-    marginTopClass: 'lg:mt-[5rem]',
+    marginTopClass: 'lg:mt-16 xl:mt-24',
     arrow: (
       <svg
-        className="hidden lg:block absolute top-[4rem] -right-[5rem] w-[100px] h-[40px] text-rose-400 z-10 pointer-events-none"
-        viewBox="0 0 100 40"
+        className="hidden lg:block absolute top-[4rem] -right-[4rem] xl:-right-[5rem] w-[80px] xl:w-[100px] h-[60px] text-rose-400 pointer-events-none drop-shadow-sm"
+        viewBox="0 0 100 60"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M0 5 Q 50 -10, 95 30"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          fill="none"
-        />
-        <path
-          d="M80 32 L 95 30 L 90 15"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          fill="none"
-        />
+        <path d="M0 20 Q 50 -10, 95 45" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+        <path d="M80 45 L 95 45 L 90 30" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </svg>
     ),
   },
@@ -93,7 +67,7 @@ const FLOW_STEPS: readonly FlowStep[] = [
     image: '/images/how-it-works/step3.png',
     alt: 'Dashboard showing fit score, breakdown, and final recommendation',
     colorClass: 'text-emerald-400',
-    marginTopClass: 'lg:mt-[10rem]',
+    marginTopClass: 'lg:mt-32 xl:mt-48',
   },
 ] as const;
 
@@ -113,11 +87,12 @@ export function HowItWorksFlow(): React.JSX.Element {
         </div>
 
         {/* Staggered Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-8 pb-10">
-          {FLOW_STEPS.map((step) => (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12 xl:gap-16 pb-10 items-start">
+          {FLOW_STEPS.map((step, i) => (
             <div 
               key={step.id} 
-              className={`relative flex flex-col bg-white rounded-[2rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 ${step.marginTopClass} z-20`}
+              className={`relative flex flex-col bg-white rounded-[2rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 ${step.marginTopClass}`}
+              style={{ zIndex: 30 - i }}
             >
               {/* Colored Step Number */}
               <div className={`text-4xl sm:text-5xl font-semibold mb-6 ${step.colorClass}`}>
