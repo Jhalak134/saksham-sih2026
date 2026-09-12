@@ -20,6 +20,9 @@ import { cn } from '@/lib/cn';
 import { getStateOpportunityProfile } from '@/data/stateOpportunitiesData';
 import { getInsights, getSchemes } from '@/lib/api-client';
 import type { InsightsResponse, OfficialScheme } from '@/lib/api-types';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
+
 
 interface StateInsightsBarProps {
   readonly selectedState: string | null;
@@ -36,6 +39,8 @@ export function StateInsightsBar({
 }: StateInsightsBarProps): React.JSX.Element {
   const router = useRouter();
   const [comingSoonMessage, setComingSoonMessage] = useState<string | null>(null);
+  const [isAIChatOpen, setIsAIChatOpen] = useState<boolean>(false);
+
 
   // Live backend data states
   const [liveInsights, setLiveInsights] = useState<InsightsResponse | null>(null);
@@ -160,7 +165,12 @@ export function StateInsightsBar({
             {profile.topMovers.map((mover) => (
               <div key={mover.title} className="flex flex-col">
                 <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
-                  +{mover.percent}%
+                  <AnimatedCounter
+                    key={`${activeStateName}-${mover.title}`}
+                    value={mover.percent}
+                    prefix="+"
+                    suffix="%"
+                  />
                 </span>
                 <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
                   {mover.title}
@@ -213,21 +223,33 @@ export function StateInsightsBar({
               </span>
             </div>
             <div className="grid grid-cols-3 gap-2">
-              {liveInsights.categories.slice(0, 3).map((mover) => (
-                <div key={mover.name} className="flex flex-col">
-                  <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
-                    +{mover.trend}%
-                  </span>
-                  <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
-                    {mover.name}
-                  </span>
-                  {mover.seasonality && (
-                    <span className="text-[9.5px] text-slate-400 line-clamp-1">
-                      {mover.seasonality}
+              {liveInsights.categories.slice(0, 3).map((mover) => {
+                const numericTrend =
+                  typeof mover.trend === 'number'
+                    ? mover.trend
+                    : parseFloat(String(mover.trend)) || 0;
+
+                return (
+                  <div key={mover.name} className="flex flex-col">
+                    <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
+                      <AnimatedCounter
+                        key={`${activeStateName}-${mover.name}`}
+                        value={numericTrend}
+                        prefix={numericTrend >= 0 ? '+' : ''}
+                        suffix="%"
+                      />
                     </span>
-                  )}
-                </div>
-              ))}
+                    <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
+                      {mover.name}
+                    </span>
+                    {mover.seasonality && (
+                      <span className="text-[9.5px] text-slate-400 line-clamp-1">
+                        {mover.seasonality}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ) : (
@@ -283,7 +305,16 @@ export function StateInsightsBar({
                     <span className="truncate font-medium">{scheme.name}</span>
                   </div>
                   <span className="text-[10.5px] font-bold text-emerald-700 shrink-0 ml-2">
-                    {scheme.interest_rate}% p.a.
+                    <AnimatedCounter
+                      key={`scheme-${scheme.id}`}
+                      value={
+                        typeof scheme.interest_rate === 'number'
+                          ? scheme.interest_rate
+                          : parseFloat(String(scheme.interest_rate)) || 7
+                      }
+                      decimals={1}
+                      suffix="% p.a."
+                    />
                   </span>
                 </div>
               ))}
@@ -310,8 +341,25 @@ export function StateInsightsBar({
             <span className="text-[10.5px] font-medium text-emerald-800">
               {isUP ? 'Census Village Clusters' : 'Feasible Clusters'}
             </span>
-            <p className="text-sm font-bold text-emerald-950 mt-0.5">
-              {isUP ? '874 micro locations' : `${profile.feasibleUnitsCount}+ micro locations`}
+            <p className="text-sm font-bold text-emerald-950 mt-0.5 flex items-center">
+              {isUP ? (
+                <>
+                  <AnimatedCounter
+                    key="up-census-clusters"
+                    value={874}
+                  />{' '}
+                  <span className="ml-1">micro locations</span>
+                </>
+              ) : (
+                <>
+                  <AnimatedCounter
+                    key={`${activeStateName}-clusters`}
+                    value={profile.feasibleUnitsCount}
+                    suffix="+"
+                  />{' '}
+                  <span className="ml-1">micro locations</span>
+                </>
+              )}
             </p>
             {isUP && (
               <span className="text-[9.5px] text-emerald-700/80 block mt-0.5">
@@ -358,8 +406,8 @@ export function StateInsightsBar({
         )}
       </div>
 
-      {/* Start Assessment CTA */}
-      <div className="mt-4 pt-3 border-t border-slate-100">
+      {/* Start Assessment CTA & AI Assistance */}
+      <div className="mt-4 pt-3 border-t border-slate-100 space-y-2.5">
         <button
           type="button"
           onClick={handleStartAssessment}
@@ -376,7 +424,26 @@ export function StateInsightsBar({
           </span>
           <ArrowRight size={15} strokeWidth={2.2} />
         </button>
+
+        <button
+          type="button"
+          onClick={() => setIsAIChatOpen(true)}
+          aria-label="Open AI Assistance Chatbot"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-300/80 bg-gradient-to-r from-amber-500 via-[#FBAC05] to-emerald-600 px-4 py-2.5 text-xs md:text-sm font-bold text-white shadow-xs hover:shadow-md hover:brightness-105 active:scale-[0.99] transition-all cursor-pointer"
+        >
+          <Sparkles size={16} className="text-amber-100 animate-pulse" />
+          <span>AI Assistance</span>
+          <span className="rounded-full bg-black/20 px-2 py-0.5 text-[10px] font-semibold text-white/95">
+            Chat Assistant
+          </span>
+        </button>
       </div>
+
+      {/* SAKSHAM AI Complete Screen Assistant Modal */}
+      <SakshamAIChatModal
+        isOpen={isAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+      />
     </div>
   );
 }

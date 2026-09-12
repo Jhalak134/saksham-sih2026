@@ -6,6 +6,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Search,
   X,
@@ -278,6 +279,8 @@ function SearchBar(): React.JSX.Element {
 export function Header(): React.JSX.Element {
   const { openDrawer } = useShell();
   const { user, isAuthenticated } = useAuth();
+  const pathname = usePathname();
+  const isDiscoverPage = pathname === '/discover';
 
   return (
     <header
@@ -296,16 +299,25 @@ export function Header(): React.JSX.Element {
 
         <Link
           href="/discover"
-          className="text-sm font-bold tracking-tight text-slate-900 hover:text-emerald-700 transition-colors"
+          className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+          aria-label="SAKSHAM Discover"
         >
-          SAKSHAM
+          <img
+            src="/icon.svg"
+            alt=""
+            className="h-7 w-7 object-contain"
+          />
+          <span className="text-base font-bold tracking-tight text-[#00284D]">
+            SAKSH<span className="text-[#FBAC05]">AM</span>
+          </span>
         </Link>
       </div>
 
-      {/* Center: Search & AI Chatbot Bar */}
+      {/* Center: Search & AI Chatbot Bar (Hidden on /discover per user request) */}
       <div className="flex flex-1 items-center justify-center px-2 md:px-6">
-        <SearchBar />
+        {!isDiscoverPage && <SearchBar />}
       </div>
+
 
       {/* Right: Auth indicator & Home link */}
       <div className="flex items-center gap-2">

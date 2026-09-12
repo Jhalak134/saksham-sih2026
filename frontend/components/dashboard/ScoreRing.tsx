@@ -4,6 +4,7 @@
 'use client';
 
 import React from 'react';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 
 interface ScoreRingProps {
   readonly score: number;
@@ -56,7 +57,9 @@ export function ScoreRing({
       </svg>
       {/* Centered label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-2xl font-bold tracking-tight text-slate-900">{clamped}</span>
+        <span className="text-2xl font-bold tracking-tight text-slate-900">
+          <AnimatedCounter value={clamped} />
+        </span>
         <span className="text-[10px] font-medium text-slate-400">/ 100</span>
       </div>
     </div>

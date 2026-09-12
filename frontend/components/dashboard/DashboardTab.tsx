@@ -6,6 +6,7 @@
 import React from 'react';
 import { CheckCircle2, AlertCircle, ArrowRight, ShieldCheck, BookOpen, FileText } from 'lucide-react';
 import { ScoreRing } from '@/components/dashboard/ScoreRing';
+import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import type { DetailedReport } from '@/data/reportsData';
 import { cn } from '@/lib/cn';
 
@@ -31,11 +32,14 @@ function BreakdownBar({ label, value }: BreakdownBarProps): React.JSX.Element {
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
         <span className="text-slate-600">{label}</span>
-        <span className="font-semibold text-slate-800">{value}/10</span>
+        <span className="font-semibold text-slate-800 flex items-center">
+          <AnimatedCounter value={value} decimals={1} />
+          <span>/10</span>
+        </span>
       </div>
       <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
         <div
-          className={cn('h-full rounded-full transition-all duration-500', barColor)}
+          className={cn('h-full rounded-full transition-all duration-700', barColor)}
           style={{ width: `${Math.min(100, Math.max(0, (value / 10) * 100))}%` }}
         />
       </div>

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { StateArticles } from '@/components/discover/StateArticles';
@@ -161,5 +161,139 @@ describe('StateArticles Component', () => {
 
     // Confirm img element exists in the component
     expect(screen.getAllByRole('img').length).toBeGreaterThan(0);
+  });
+
+  it('automatically advances to next slide after 3 seconds', async () => {
+    vi.useFakeTimers();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockArticles),
+        })
+      )
+    );
+
+    render(
+      <ShellProvider>
+        <StateArticles selectedState="Uttar Pradesh" />
+      </ShellProvider>
+    );
+
+    // Initial state: first article displayed
+    await vi.waitFor(() => {
+      expect(
+        screen.getByText('UP MSME Sector Receives ₹1000 Crore Boost for Rural Artisans')
+      ).toBeInTheDocument();
+    });
+
+    // Advance clock by 3000ms
+    vi.advanceTimersByTime(3000);
+
+    // Second article should now be visible
+    await vi.waitFor(() => {
+      expect(
+        screen.getByText('New Dairy Subsidies Announced for Small Scale Farmers in India')
+      ).toBeInTheDocument();
+    });
+
+    // Advance another 3000ms: loops back to first article
+    vi.advanceTimersByTime(3000);
+
+    await vi.waitFor(() => {
+      expect(
+        screen.getByText('UP MSME Sector Receives ₹1000 Crore Boost for Rural Artisans')
+      ).toBeInTheDocument();
+    });
+
+    vi.useRealTimers();
+  });
+
+  it('allows pausing and resuming auto slide via toggle button', async () => {
+    vi.useFakeTimers();
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockArticles),
+        })
+      )
+    );
+
+    render(
+      <ShellProvider>
+        <StateArticles selectedState="Gujarat" />
+      </ShellProvider>
+    );
+
+    await vi.waitFor(() => {
+      expect(
+        screen.getByText('UP MSME Sector Receives ₹1000 Crore Boost for Rural Artisans')
+      ).toBeInTheDocument();
+    });
+
+    // Click pause button
+    const pauseBtn = screen.getByRole('button', { name: /Pause auto slide/i });
+    fireEvent.click(pauseBtn);
+
+    // Advance by 6 seconds (2 cycles) - should remain paused on first article
+    vi.advanceTimersByTime(6000);
+
+    expect(
+      screen.getByText('UP MSME Sector Receives ₹1000 Crore Boost for Rural Artisans')
+    ).toBeInTheDocument();
+
+    // Click resume button
+    const playBtn = screen.getByRole('button', { name: /Resume auto slide/i });
+    fireEvent.click(playBtn);
+
+    // Advance by 3 seconds - should advance to second article
+    vi.advanceTimersByTime(3000);
+
+    await vi.waitFor(() => {
+      expect(
+        screen.getByText('New Dairy Subsidies Announced for Small Scale Farmers in India')
+      ).toBeInTheDocument();
+    });
+
+    vi.useRealTimers();
+  });
+
+  it('allows clicking indicator dots to jump directly to a slide', async () => {
+    vi.useRealTimers();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockArticles),
+        })
+      )
+    );
+
+    render(
+      <ShellProvider>
+        <StateArticles selectedState="Rajasthan" />
+      </ShellProvider>
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('UP MSME Sector Receives ₹1000 Crore Boost for Rural Artisans')
+      ).toBeInTheDocument();
+    });
+
+    // Click slide dot 2
+    const dot2 = screen.getByRole('button', { name: /Go to slide 2/i });
+    fireEvent.click(dot2);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('New Dairy Subsidies Announced for Small Scale Farmers in India')
+      ).toBeInTheDocument();
+    });
   });
 });

@@ -3,9 +3,11 @@
 
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
+import { render as rtlRender, screen, fireEvent, waitFor, within, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ShellProvider } from '@/lib/shell-context';
+
+const render = (ui: React.ReactElement) => rtlRender(<ShellProvider>{ui}</ShellProvider>);
 import { StateInsightsBar } from '@/components/discover/StateInsightsBar';
 import { ArticleCategorySection } from '@/components/discover/ArticleCategorySection';
 import { DiscoverScreen } from '@/components/screens/Discover';
@@ -120,13 +122,14 @@ describe('Discover Live Backend Integration (Task 7)', () => {
       expect(screen.getByText('Observed Regional Indicator')).toBeInTheDocument();
 
       expect(screen.getByText('Micro Finance Scheme')).toBeInTheDocument();
-      expect(screen.getByText('6.5% p.a.')).toBeInTheDocument();
+      expect(screen.getByText(/6\.5% p\.a\./)).toBeInTheDocument();
       expect(screen.getByText('Term Loan Scheme')).toBeInTheDocument();
-      expect(screen.getByText('8% p.a.')).toBeInTheDocument();
+      expect(screen.getByText(/8(\.0)?% p\.a\./)).toBeInTheDocument();
       expect(screen.getByText('PMFME Scheme')).toBeInTheDocument();
 
       expect(screen.getAllByText(/Census 2011 Baseline/i).length).toBeGreaterThan(0);
-      expect(screen.getByText(/874 micro locations/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/874/).length).toBeGreaterThan(0);
+      expect(screen.getByText(/micro locations/i)).toBeInTheDocument();
     });
 
     it('navigates with district parameter when selectedDistrict is provided for UP', async () => {
