@@ -415,3 +415,11 @@ class TestProviderFactory:
 
         p2 = GeminiProvider(api_key="gemini-test")
         assert p2("sys", "user") == "ok_gemini"
+
+    def test_load_runtime_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        import ai.providers.factory as f
+
+        assert f.load_runtime_env() is True
+
+        monkeypatch.setattr("dotenv.find_dotenv", lambda: "")
+        assert f.load_runtime_env() is False

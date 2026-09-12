@@ -39,16 +39,16 @@ class GeminiProvider(BaseLLMProvider):
     ) -> None:
         self.api_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", "")
         self.base_url = (base_url or os.getenv("GEMINI_BASE_URL") or "https://generativelanguage.googleapis.com/v1beta").rstrip("/")
-        self.model = model or os.getenv("GEMINI_MODEL") or "gemini-1.5-flash"
+        self.model = model or os.getenv("GEMINI_MODEL") or "gemini-3.6-flash"
 
-        raw_timeout = timeout if timeout is not None else float(os.getenv("LLM_REQUEST_TIMEOUT", "10.0"))
+        raw_timeout = timeout if timeout is not None else float(os.getenv("LLM_REQUEST_TIMEOUT", "30.0"))
         self.timeout = max(1.0, min(raw_timeout, 60.0))
 
         raw_retries = max_retries if max_retries is not None else int(os.getenv("LLM_MAX_RETRIES", "2"))
         self.max_retries = max(0, min(raw_retries, 3))
 
-        raw_tokens = max_tokens if max_tokens is not None else int(os.getenv("LLM_MAX_TOKENS", "1024"))
-        self.max_tokens = max(128, min(raw_tokens, 4096))
+        raw_tokens = max_tokens if max_tokens is not None else int(os.getenv("LLM_MAX_TOKENS", "4096"))
+        self.max_tokens = max(128, min(raw_tokens, 8192))
 
         self.temperature = max(0.0, min(temperature, 1.0))
         self._injected_client = client
