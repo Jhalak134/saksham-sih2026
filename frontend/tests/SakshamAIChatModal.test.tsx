@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
+import { SakshamAIChatModal, parseAIMessageBlocks } from '@/components/chat/SakshamAIChatModal';
 import { ShellProvider } from '@/lib/shell-context';
 
 const mockPush = vi.fn();
@@ -18,6 +18,7 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 describe('SakshamAIChatModal Component', () => {
   beforeEach(() => {
+    localStorage.clear();
     mockPush.mockClear();
     vi.clearAllMocks();
     vi.stubGlobal(
@@ -237,5 +238,94 @@ describe('SakshamAIChatModal Component', () => {
 
     expect(localStorage.getItem('saksham_gemini_api_key')).toBe('AIzaSyTestGeminiKey123');
   });
+
+  it('renders markdown tables, headers, and dividers properly in assistant messages', async () => {
+    const user = userEvent.setup();
+    const markdownReply = `
+### Quick Comparison Overview
+Here is the breakdown of schemes:
+
+| Feature | PMFME | PMEGP |
+| --- | --- | --- |
+| Max Loan | ₹10 Lakhs | ₹50 Lakhs |
+| Subsidy | 35% | 15% - 35% |
+
+---
+**Key Insight:** Choose PMFME for agro-processing.
+`;
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ available: true, answer: markdownReply }),
+      })
+    );
+
+    render(
+      <ShellProvider>
+        <SakshamAIChatModal isOpen={true} onClose={vi.fn()} />
+      </ShellProvider>
+    );
+
+    const input = screen.getByRole('textbox', { name: /Ask SAKSHAM AI a question/i });
+    await user.type(input, 'Compare PMFME and PMEGP');
+    const sendBtn = screen.getByRole('button', { name: /Send query/i });
+    await user.click(sendBtn);
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /Quick Comparison Overview/i })).toBeInTheDocument();
+    });
+
+    // Check table elements
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /PMFME/i })).toBeInTheDocument();
+    expect(screen.getByRole('columnheader', { name: /PMEGP/i })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /₹10 Lakhs/i })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /₹50 Lakhs/i })).toBeInTheDocument();
+  });
 });
+
+describe('parseAIMessageBlocks parser', () => {
+  it('correctly parses headers, tables, dividers, insights, and lists', () => {
+    const raw = `
+### Summary Header
+Introductory text paragraph.
+
+| Column 1 | Column 2 |
+| --- | --- |
+| Val A | Val B |
+| Val C | Val D |
+
+---
+**Key Insight:** This is an important strategic insight.
+
+* First bullet point
+* Second bullet point
+
+1. Step one
+2. Step two
+`;
+
+    const blocks = parseAIMessageBlocks(raw);
+
+    expect(blocks).toEqual([
+      { type: 'heading', level: 3, text: 'Summary Header' },
+      { type: 'paragraph', text: 'Introductory text paragraph.' },
+      {
+        type: 'table',
+        headers: ['Column 1', 'Column 2'],
+        rows: [
+          ['Val A', 'Val B'],
+          ['Val C', 'Val D'],
+        ],
+      },
+      { type: 'divider' },
+      { type: 'insight', text: 'This is an important strategic insight.' },
+      { type: 'list', items: ['First bullet point', 'Second bullet point'], isOrdered: false },
+      { type: 'list', items: ['Step one', 'Step two'], isOrdered: true },
+    ]);
+  });
+});
+
 
