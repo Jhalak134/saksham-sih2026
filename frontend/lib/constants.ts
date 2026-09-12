@@ -27,6 +27,7 @@ export const STORAGE_KEYS = {
   capital: 'saksham_capital',
   savedCategories: 'saksham_saved_categories',
   emailNotifications: 'saksham_email_notifications',
+  authUser: 'saksham_auth_user',
   authToken: 'auth_token',
 } as const;
 

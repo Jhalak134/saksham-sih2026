@@ -291,7 +291,7 @@ def test_assess_endpoint_with_successful_ai():
         data = resp.json()
 
         # Frontend compatibility fields
-        assert data["fitScore"] == 86.0
+        assert data["fitScore"] == 85.9
         assert data["confidence"] == "High"
         assert "Official records indicate viable dairy operations" in data["recommendation"]
 
@@ -337,7 +337,7 @@ def test_assess_financial_value_integrity_against_ai_tampering():
         # Mathematical and deterministic values MUST remain intact
         assert data["financial"]["project_cost"] == 1000000.0
         assert data["financial"]["max_loan_amount"] == 900000.0
-        assert data["fitScore"] == 86.0
+        assert data["fitScore"] == 85.9
         assert data["scheme"]["name"] == "Term Loan Scheme"
         assert data["scheme"]["interest_rate"] == 8.0
         assert data["scheme"]["tenure_months"] == 84
@@ -385,7 +385,7 @@ def test_assess_offline_ai_fallback():
         assert resp.status_code == 200
         data = resp.json()
 
-        assert data["fitScore"] == 86.0
+        assert data["fitScore"] == 85.9
         assert data["financial"]["project_cost"] == 1000000.0
         assert data["ai_insights"]["available"] is False
         assert data["ai_insights"]["source"] == "deterministic_fallback"

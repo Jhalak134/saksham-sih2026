@@ -6,7 +6,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, MapPin, Bookmark, Sparkles, Loader2 } from 'lucide-react';
-import { MOCK_REPORTS, type ReportSummary, type AssessmentStatus } from '@/data/reportsData';
+import { MOCK_REPORTS, type AssessmentStatus, type ReportSummary, type ConfidenceLevel } from '@/data/reportsData';
+
 import { fetchMyReports } from '@/lib/api-client';
 import { getStorageItem } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/lib/constants';
@@ -85,14 +86,14 @@ export function MyReportsScreen(): React.JSX.Element {
               title: r.category ? `${r.category} Unit` : 'Rural Enterprise',
               category: r.category || 'General',
               location: r.location || 'Local Catchment',
-              status: (r.status === 'Completed' || r.status === 'In Progress' || r.status === 'Saved')
+              status: ((r.status === 'Completed' || r.status === 'In Progress' || r.status === 'Saved')
                 ? r.status
-                : 'Completed',
+                : 'Completed') as AssessmentStatus,
               date: r.date || 'Recent',
               estimatedProfit: r.estimatedProfit ?? 25000,
               breakEvenMonths: 8,
               fitScore: r.fitScore ?? 75,
-              confidence: (r.fitScore ?? 75) >= 75 ? 'High' : (r.fitScore ?? 75) >= 50 ? 'Medium' : 'Low',
+              confidence: ((r.fitScore ?? 75) >= 75 ? 'High' : (r.fitScore ?? 75) >= 50 ? 'Medium' : 'Low') as ConfidenceLevel,
               iconType: resolveCategoryIcon(r.category || ''),
             }));
             setReports(mapped);

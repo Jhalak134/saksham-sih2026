@@ -3,7 +3,10 @@
 // Connects Next.js Frontend to FastAPI Main Backend (:8000).
 // Invariant: Backend calculates deterministically; AI explains; Frontend displays.
 
-const API_BASE = (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) || 'http://localhost:8000';
+const API_BASE =
+  (typeof process !== 'undefined' && (process.env?.NEXT_PUBLIC_API_URL || process.env?.NEXT_PUBLIC_BACKEND_URL)) ||
+  'http://localhost:8000';
+
 
 export interface UserResponse {
   id: number;
@@ -86,11 +89,11 @@ import type { DetailedReport, ConfidenceLevel, SchemeInfo } from '@/data/reports
 // ─── Backend Schema Interfaces (Re-exported from ./api-types) ────────────────
 export type * from './api-types';
 import type {
-  AssessmentRequest,
-  BackendAssessmentResponse,
-  AssessmentHistoryItem,
-  InsightsResponse,
-  AssessmentResponse,
+  AssessmentRequest, BackendAssessmentResponse, AssessmentHistoryItem,
+  InsightsResponse, AssessmentResponse, VillageLocation,
+  AIQueryRequest, AIQueryResponse, OfficialScheme,
+  EMICalculationRequest, EMICalculationResponse, SchemeMatchRequest, SchemeMatchResponse,
+  UserProfile, UserProfileInput,
 } from './api-types';
 
 // ─── Base URL Resolution ──────────────────────────────────────────────────────
@@ -104,6 +107,18 @@ export function getBackendBaseUrl(): string {
     return process.env.NEXT_PUBLIC_BACKEND_URL.replace(/\/+$/, '');
   }
   return 'http://localhost:8000';
+}
+
+async function extractErrorDetail(res: Response, fallback: string): Promise<string> {
+  try {
+    const errorJson = (await res.json()) as { detail?: string };
+    if (errorJson && errorJson.detail) {
+      return errorJson.detail;
+    }
+  } catch {
+    // Fallback
+  }
+  return fallback;
 }
 
 // ─── Client Cache & Persistence ───────────────────────────────────────────────
@@ -147,9 +162,7 @@ export function getCachedAssessment(id: string | number): BackendAssessmentRespo
 // ─── Core API Methods ─────────────────────────────────────────────────────────
 
 /**
- * Submits assessment parameters to the main backend orchestrator.
- * Executes location resolution, deterministic financial structuring,
- * multi-criteria feasibility scoring, and grounded AI advisory generation.
+ * Creates a new business assessment on the main backend (POST /api/v1/assess).
  */
 export async function createAssessment(
   payload: AssessmentRequest
@@ -159,6 +172,7 @@ export async function createAssessment(
 
   const body: Record<string, any> = {
     location: payload.location.trim(),
+    village_id: payload.village_id,
     category: payload.category.trim(),
     capital: Number(payload.capital),
     idea: payload.idea ? payload.idea.trim() : 'Rural micro-enterprise unit',
@@ -183,15 +197,7 @@ export async function createAssessment(
   });
 
   if (!res.ok) {
-    let detail = `Assessment creation failed with status ${res.status}`;
-    try {
-      const errorJson = (await res.json()) as { detail?: string };
-      if (errorJson && errorJson.detail) {
-        detail = errorJson.detail;
-      }
-    } catch {
-      // Fall back to default detail
-    }
+    const detail = await extractErrorDetail(res, `Assessment creation failed with status ${res.status}`);
     throw new Error(detail);
   }
 
@@ -222,15 +228,7 @@ export async function getAssessmentById(
   });
 
   if (!res.ok) {
-    let detail = `Failed to load assessment #${id} (HTTP ${res.status})`;
-    try {
-      const errorJson = (await res.json()) as { detail?: string };
-      if (errorJson && errorJson.detail) {
-        detail = errorJson.detail;
-      }
-    } catch {
-      // Fall back to default detail
-    }
+    const detail = await extractErrorDetail(res, `Failed to load assessment #${id} (HTTP ${res.status})`);
     throw new Error(detail);
   }
 
@@ -263,6 +261,208 @@ export async function getAssessmentHistory(
   return (await res.json()) as AssessmentHistoryItem[];
 }
 
+/**
+ * Searches Census villages in the active pilot district via GET /api/v1/locations?q=<query>.
+ */
+export async function searchLocations(
+  query: string,
+  limit: number = 50
+): Promise<VillageLocation[]> {
+  const cleanQ = query.trim();
+  if (!cleanQ) return [];
+
+  const baseUrl = getBackendBaseUrl();
+  const url = `${baseUrl}/api/v1/locations?q=${encodeURIComponent(cleanQ)}&limit=${limit}`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Location search failed (HTTP ${res.status})`);
+  }
+
+  return (await res.json()) as VillageLocation[];
+}
+
+/**
+ * Formats a VillageLocation into a readable label with village name, block, and district.
+ */
+export function formatVillageLocation(v: VillageLocation): string {
+  const blockPart = v.block_name ? `${v.block_name} Block · ` : '';
+  return `${v.name}, ${blockPart}${v.district_name}`;
+}
+
+/**
+ * Sends natural-language query to Main Backend AI Advisory Gateway (POST /api/v1/ai/query).
+ * Routes to decoupled AI microservice, returning grounded policy guidance and citations.
+ */
+export async function queryAI(
+  request: AIQueryRequest
+): Promise<AIQueryResponse> {
+  const cleanQ = request.query.trim();
+  if (!cleanQ) {
+    throw new Error('Query cannot be empty');
+  }
+
+  const baseUrl = getBackendBaseUrl();
+  const url = `${baseUrl}/api/v1/ai/query`;
+
+  const body = {
+    query: cleanQ,
+    language: request.language || 'en',
+    top_k: request.top_k ?? 5,
+    calculations: request.calculations || null,
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const detail = await extractErrorDetail(res, `AI advisory query failed (HTTP ${res.status})`);
+    throw new Error(detail);
+  }
+
+  return (await res.json()) as AIQueryResponse;
+}
+
+// ─── Government Schemes & EMI Calculators ───────────────────────────────────
+
+/**
+ * Retrieves all active official concessional credit schemes from backend (GET /api/v1/schemes).
+ */
+export async function getSchemes(): Promise<OfficialScheme[]> {
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/schemes`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch official credit schemes (HTTP ${res.status})`);
+  }
+
+  return (await res.json()) as OfficialScheme[];
+}
+
+/**
+ * Retrieves a single official scheme by its ID (GET /api/v1/schemes/{id}).
+ */
+export async function getSchemeById(id: number): Promise<OfficialScheme> {
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/schemes/${id}`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch scheme ${id} (HTTP ${res.status})`);
+  }
+
+  return (await res.json()) as OfficialScheme;
+}
+
+/**
+ * Deterministic scheme matching via backend (POST /api/v1/schemes/match).
+ * Selects Micro Finance vs Term Loan scheme based on 10% available margin.
+ */
+export async function matchScheme(
+  request: SchemeMatchRequest
+): Promise<SchemeMatchResponse> {
+  if (request.available_margin <= 0) {
+    throw new Error('Available margin must be greater than 0');
+  }
+
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/schemes/match`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      available_margin: request.available_margin,
+      category: request.category || 'Dairy',
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await extractErrorDetail(res, `Scheme matching failed (HTTP ${res.status})`);
+    throw new Error(detail);
+  }
+
+  return (await res.json()) as SchemeMatchResponse;
+}
+
+/**
+ * Calculates reducing-balance EMI via backend financial engine (POST /api/v1/schemes/calculate-emi).
+ * Enforces zero frontend financial math.
+ */
+export async function calculateSchemeEmi(
+  request: EMICalculationRequest
+): Promise<EMICalculationResponse> {
+  if (request.loan_amount <= 0) {
+    throw new Error('Loan amount must be greater than 0');
+  }
+
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/schemes/calculate-emi`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      loan_amount: request.loan_amount,
+      interest_rate: request.interest_rate,
+      tenure_months: request.tenure_months,
+      moratorium_months: request.moratorium_months,
+    }),
+  });
+
+  if (!res.ok) {
+    const detail = await extractErrorDetail(res, `EMI calculation failed (HTTP ${res.status})`);
+    throw new Error(detail);
+  }
+
+  return (await res.json()) as EMICalculationResponse;
+}
+
+/**
+ * Retrieves hyper-local business category demand trends from backend (GET /api/v1/insights/{location}).
+ * Throws on failure to allow explicit error states without silent mock fallback.
+ */
+export async function getInsights(location: string): Promise<InsightsResponse> {
+  const cleanLoc = location.trim();
+  if (!cleanLoc) {
+    throw new Error('Location query cannot be empty');
+  }
+
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/insights/${encodeURIComponent(cleanLoc)}`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch insights for "${cleanLoc}" (HTTP ${res.status})`);
+  }
+
+  return (await res.json()) as InsightsResponse;
+}
+
 // ─── Legacy & Backwards-Compatibility Stubs ───────────────────────────────────
 
 export async function fetchAssessment(
@@ -287,227 +487,74 @@ export async function fetchAssessment(
 }
 
 export async function fetchInsights(location: string): Promise<InsightsResponse> {
-  const baseUrl = getBackendBaseUrl();
   try {
-    const res = await fetch(`${baseUrl}/api/v1/insights/${encodeURIComponent(location)}`);
-    if (res.ok) {
-      return (await res.json()) as InsightsResponse;
-    }
+    return await getInsights(location);
   } catch {
-    // Graceful offline fallback
+    return {
+      location: location.trim(),
+      categories: [],
+    };
   }
-  return {
-    location,
-    categories: [],
-  };
+}
+
+// ─── Authentication & User Profile ──────────────────────────────────────────
+
+/**
+ * Retrieves a user profile by phone number or email (GET /api/v1/auth/profile/{identifier}).
+ */
+export async function getUserProfile(identifier: string): Promise<UserProfile> {
+  const clean = identifier.trim();
+  if (!clean) {
+    throw new Error('Identifier cannot be empty');
+  }
+
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/auth/profile/${encodeURIComponent(clean)}`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (res.status === 404) {
+    throw new Error('Account not found. Please check your mobile number or sign up.');
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch user profile (HTTP ${res.status})`);
+  }
+
+  return (await res.json()) as UserProfile;
+}
+
+/**
+ * Creates or updates a user profile on the backend (POST /api/v1/auth/profile).
+ */
+export async function saveUserProfile(profile: UserProfileInput): Promise<UserProfile> {
+  const clean = profile.phone_or_email.trim();
+  if (!clean) {
+    throw new Error('Phone or email cannot be empty');
+  }
+
+  const baseUrl = getBackendBaseUrl();
+  const res = await fetch(`${baseUrl}/api/v1/auth/profile`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      ...profile,
+      phone_or_email: clean,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to save user profile (HTTP ${res.status})`);
+  }
+
+  return (await res.json()) as UserProfile;
 }
 
 // ─── Response Adapter ─────────────────────────────────────────────────────────
 
-/**
- * Adapts the raw backend assessment response into the UI's DetailedReport model.
- * Invariant: All financial numbers and fit scores are preserved exactly from the backend.
- * Feasibility breakdown is scaled from backend 0..100 to UI 0..10 scale.
- */
-export function mapBackendResponseToDetailedReport(
-  backend: BackendAssessmentResponse
-): DetailedReport {
-  // Normalize breakdown 0..100 -> 0..10
-  const breakdownSource = backend.feasibility?.breakdown;
-  const breakdown = {
-    marketOpportunity: Math.round(((breakdownSource?.market_opportunity ?? 75) / 10) * 10) / 10,
-    competition: Math.round(((breakdownSource?.competition ?? 70) / 10) * 10) / 10,
-    capitalFit: Math.round(((breakdownSource?.capital_fit ?? 80) / 10) * 10) / 10,
-    supplyRisk: Math.round(((breakdownSource?.infrastructure ?? 65) / 10) * 10) / 10,
-  };
-
-  const fitScore = Math.round(backend.fit_score ?? backend.fitScore ?? 75);
-  const confidence = (backend.confidence_level ?? backend.confidence ?? 'Medium') as ConfidenceLevel;
-  const villageName = backend.village?.name || 'Local Area';
-  const blockName = backend.village?.block_name || 'Mathura';
-  const locationLabel = `${villageName}, ${blockName}`;
-
-  // Deterministic financial numbers from backend (supporting full POST and raw GET structures)
-  const fin = backend.financial;
-  const projectCost = Number(fin?.project_cost ?? backend.project_cost ?? 1000000);
-  const maxLoan = Number(fin?.max_loan_amount ?? backend.max_loan_amount ?? 900000);
-  const recommendedSize = Number(fin?.recommended_project_size ?? backend.recommended_project_size ?? 350000);
-  const availableMargin = Number(fin?.available_margin ?? backend.capital_input ?? 100000);
-  const monthlyEmi = Number(fin?.monthly_emi ?? 14945);
-  const tenureMonths = Number(fin?.tenure_months ?? backend.scheme?.tenure_months ?? 84);
-  const tenureYears = Math.max(1, Math.round(tenureMonths / 12));
-  const bankLoanShare = Math.max(0, recommendedSize - availableMargin);
-
-  const ownContributionPercent =
-    recommendedSize > 0 ? Math.round((availableMargin / recommendedSize) * 100) : 10;
-  const bankFinancePercent =
-    recommendedSize > 0 ? Math.round((bankLoanShare / recommendedSize) * 100) : 90;
-  const loanSharePercent =
-    projectCost > 0 ? Math.round((maxLoan / projectCost) * 100) : 90;
-
-  // AI Insights mapping
-  const ai = backend.ai_insights;
-  const verdictText =
-    ai?.recommendation ||
-    backend.recommendation ||
-    `${backend.rating ?? 'Viable'} project opportunity in ${locationLabel}.`;
-
-  const supportingFactors = ai?.key_points && ai.key_points.length > 0
-    ? ai.key_points
-    : [
-        `High market viability for ${backend.category?.name || 'enterprise'} in ${villageName}`,
-        `Statutory loan eligibility up to ₹${maxLoan.toLocaleString('en-IN')}`,
-        `Concessional financing routed under ${fin?.scheme_name || 'Priority Scheme'}`,
-      ];
-
-  const pointsToConsider = [
-    ...(ai?.warnings ?? []),
-    ...(ai?.limitations ?? []),
-  ];
-
-  const matchedScheme: SchemeInfo = {
-    id: String(backend.scheme?.id ?? 2),
-    name: backend.scheme?.name ?? fin?.scheme_name ?? 'Term Loan Scheme',
-    category: backend.category?.name ?? 'Enterprise Credit',
-    maxProjectCost: `₹${projectCost.toLocaleString('en-IN')}`,
-    maxLoan: `₹${maxLoan.toLocaleString('en-IN')}`,
-    interestRate: `${backend.scheme?.interest_rate ?? fin?.interest_rate ?? 8.0}% p.a.`,
-    tenure: `${tenureYears} Years (${tenureMonths} Months)`,
-    moratorium: `${backend.scheme?.moratorium_months ?? fin?.moratorium_months ?? 6} Months`,
-    eligible: true,
-    reasoning: `Matched for project cost ₹${projectCost.toLocaleString('en-IN')} with margin requirement of 10%.`,
-    highlight: 'Recommended Scheme',
-    documentChecklist: [
-      'Aadhaar Card & Proof of Identity',
-      'Village Residence Certificate (Gram Panchayat)',
-      'Basic Bank Account Statement (6 months)',
-      'Proposed Unit Machinery / Equipment Quotations',
-    ],
-  };
-
-  const revenueEst = fin?.estimated_monthly_revenue ?? 85000;
-  const profitEst = fin?.estimated_monthly_profit ?? 19000;
-  const expenseEst = Math.max(1000, revenueEst - profitEst);
-
-  return {
-    id: String(backend.id),
-    title: `${backend.category?.name || 'Rural Enterprise'} Unit`,
-    category: backend.category?.name || 'General',
-    location: locationLabel,
-    status: 'Completed',
-    date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-    fitScore,
-    viabilityLabel: backend.rating || 'Viable',
-    viabilityDescription: `Assessed across market demand, local competition, capital adequacy, and infrastructure for ${villageName}.`,
-    confidence,
-    breakdown,
-    recommendation: {
-      verdict: verdictText,
-      recommendedProjectCost: recommendedSize,
-      supportingFactors,
-      pointsToConsider,
-    },
-    keyInsights: [
-      `Estimated monthly operating revenue: ₹${revenueEst.toLocaleString('en-IN')}`,
-      `Monthly repayment (EMI): ₹${monthlyEmi.toLocaleString('en-IN')}`,
-      `Repayment burden category: ${fin?.repayment_burden_category || 'Assessed'}`,
-    ],
-    market: {
-      snapshot: {
-        totalDemand: 'Strong Catchment Demand',
-        marketSize: `₹${((revenueEst * 12) / 100000).toFixed(1)} Lakhs / year`,
-        growthTrend: 'Active rural commerce demand',
-      },
-      localSummary: {
-        estimatedHouseholds: backend.village?.households || 1200,
-        mappedCompetitors: backend.competitor_count || 0,
-        nearbyMarkets: 2,
-        marketOpportunity: `${backend.village?.population || 6000} catchment population`,
-      },
-      segments: [
-        { name: 'Village Households & Daily Consumers', percent: 60 },
-        { name: 'Local Retailers & Small Vendors', percent: 25 },
-        { name: 'Neighboring Village Catchments', percent: 15 },
-      ],
-      risks: (backend.feasibility?.risks || []).map((r) => ({
-        title: `${r.category}: ${r.risk}`,
-        level: (r.severity === 'High' ? 'High' : r.severity === 'Medium' ? 'Medium' : 'Low') as 'Low' | 'Medium' | 'High',
-        description: r.mitigation,
-      })),
-    },
-    financials: {
-      maxEligibility: {
-        projectCost,
-        schemeName: fin?.scheme_name || 'Term Loan Scheme',
-        maxLoanAmount: maxLoan,
-        loanSharePercent,
-      },
-      suitability: {
-        suggestedProjectSize: recommendedSize,
-        ownContribution: availableMargin,
-        ownContributionPercent,
-        bankFinance: bankLoanShare,
-        bankFinancePercent,
-        estimatedMonthlyRepayment: monthlyEmi,
-        tenureYears,
-      },
-      breakEvenMonths: 8,
-      breakEvenNote: `Expected break-even around month 8 with projected monthly profit of ₹${profitEst.toLocaleString('en-IN')}.`,
-      monthlyProjections: [
-        { month: 1, revenue: Math.round(revenueEst * 0.6), expenses: expenseEst },
-        { month: 3, revenue: Math.round(revenueEst * 0.8), expenses: expenseEst },
-        { month: 6, revenue: revenueEst, expenses: expenseEst },
-        { month: 12, revenue: Math.round(revenueEst * 1.15), expenses: Math.round(expenseEst * 1.05) },
-      ],
-    },
-    schemes: [matchedScheme],
-    nextSteps: {
-      currentStep: 1,
-      steps: [
-        { number: 1, title: 'Review Assessment', status: 'done' },
-        { number: 2, title: 'Prepare Quotations', status: 'current' },
-        { number: 3, title: 'Bank Pre-Approval', status: 'upcoming' },
-        { number: 4, title: 'Disbursement', status: 'upcoming' },
-      ],
-      actionItems: [
-        { id: 1, title: `Submit application for ${fin?.scheme_name || 'Concessional Scheme'}`, description: 'Connect with designated district nodal bank.' },
-        { id: 2, title: 'Obtain vendor equipment quotations', description: 'Collect three formal proforma invoices for machinery setup.' },
-        { id: 3, title: 'Maintain margin equity buffer', description: `Keep ₹${availableMargin.toLocaleString('en-IN')} available in savings account.` },
-      ],
-      initialNotes: '',
-    },
-    aiInsights: ai
-      ? {
-          explanation: ai.explanation,
-          recommendation: ai.recommendation,
-          key_points: ai.key_points || [],
-          keyPoints: ai.key_points || [],
-          citations: (ai.citations || []).map((c) => ({
-            source: c.source,
-            title: c.title,
-            page_start: c.page_start,
-            pageStart: c.page_start,
-            page_end: c.page_end,
-            pageEnd: c.page_end,
-            chunk_id: c.chunk_id,
-            chunkId: c.chunk_id,
-            text: c.text || c.excerpt || '',
-            excerpt: c.excerpt || c.text || '',
-            is_template_data: c.is_template_data,
-            document_id: c.document_id,
-          })),
-          limitations: ai.limitations || [],
-          warnings: ai.warnings || [],
-          grounding_status: ai.grounding_status,
-          groundingStatus: ai.grounding_status,
-          retrieval_status: ai.retrieval_status,
-          retrievalStatus: ai.retrieval_status,
-          evidence_available: ai.evidence_available,
-          evidenceAvailable: ai.evidence_available,
-          source: ai.source,
-        }
-      : undefined,
-    repaymentBurdenCategory: fin?.repayment_burden_category,
-    isLiveBackend: true,
-  };
-}
+export { mapBackendResponseToDetailedReport } from './report-adapter';

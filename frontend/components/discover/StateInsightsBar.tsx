@@ -1,10 +1,10 @@
 // components/discover/StateInsightsBar.tsx
 // Dynamic Info Bar at the right side of the IndiaMap, updating per selected State/District/Village.
-// Powered by authentic Census 2011 demographics and Invest India ODOP (One District One Product) data.
+// Connected to backend GET /api/v1/insights/{location} and GET /api/v1/schemes.
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   MapPin,
@@ -13,15 +13,13 @@ import {
   ShieldCheck,
   AlertCircle,
   CheckCircle2,
-  Users,
-  GraduationCap,
-  PackageCheck,
-  Award,
+  RefreshCw,
+  Info,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { getStateOpportunityProfile } from '@/data/stateOpportunitiesData';
-import { formatPopulationIndian } from '@/data/stateCensusODOPData';
-import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
+import { getInsights, getSchemes } from '@/lib/api-client';
+import type { InsightsResponse, OfficialScheme } from '@/lib/api-types';
 
 interface StateInsightsBarProps {
   readonly selectedState: string | null;
@@ -39,30 +37,80 @@ export function StateInsightsBar({
   const router = useRouter();
   const [comingSoonMessage, setComingSoonMessage] = useState<string | null>(null);
 
+  // Live backend data states
+  const [liveInsights, setLiveInsights] = useState<InsightsResponse | null>(null);
+  const [liveSchemes, setLiveSchemes] = useState<OfficialScheme[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   const activeStateName = selectedState ?? 'Uttar Pradesh';
   const profile = getStateOpportunityProfile(activeStateName);
 
   // Check if active region is Uttar Pradesh (Active Pilot)
   const isUP =
     activeStateName.toLowerCase().includes('uttar pradesh') ||
-    activeStateName.toLowerCase() === 'up';
+    activeStateName.toLowerCase() === 'up' ||
+    Boolean(selectedDistrict && selectedDistrict.toLowerCase().includes('mathura'));
+
+  const targetLocation = selectedDistrict || activeStateName || 'Uttar Pradesh';
+
+  const loadLiveData = useCallback(async (isMounted: () => boolean) => {
+    if (!isUP) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const [insightsRes, schemesRes] = await Promise.all([
+        getInsights(targetLocation),
+        getSchemes(),
+      ]);
+      if (isMounted()) {
+        setLiveInsights(insightsRes);
+        setLiveSchemes(schemesRes);
+        setError(null);
+      }
+    } catch (err: unknown) {
+      if (isMounted()) {
+        const msg = err instanceof Error ? err.message : 'Unable to connect to SAKSHAM backend services';
+        setError(msg);
+        setLiveInsights(null);
+        setLiveSchemes(null);
+      }
+    } finally {
+      if (isMounted()) {
+        setLoading(false);
+      }
+    }
+  }, [isUP, targetLocation]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (isUP) {
+      loadLiveData(() => mounted);
+    } else {
+      setLiveInsights(null);
+      setLiveSchemes(null);
+      setError(null);
+      setLoading(false);
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [isUP, loadLiveData]);
 
   const handleStartAssessment = () => {
     if (isUP) {
       setComingSoonMessage(null);
-      router.push(`/new-assessment?state=${encodeURIComponent(activeStateName)}`);
+      const districtParam = selectedDistrict ? `&district=${encodeURIComponent(selectedDistrict)}` : '';
+      router.push(`/new-assessment?state=${encodeURIComponent(activeStateName)}${districtParam}`);
     } else {
       setComingSoonMessage(
         `Sorry, assessments are currently active only in Uttar Pradesh (Pilot Region). Expansion to ${activeStateName} is coming soon!`
       );
-      // Auto clear after 4.5 seconds
       setTimeout(() => {
         setComingSoonMessage(null);
       }, 4500);
     }
   };
-
-  const popFormatted = formatPopulationIndian(profile.census?.population);
 
   return (
     <div className="flex h-full min-h-[460px] md:min-h-[520px] flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 md:p-6 shadow-xs">
@@ -75,10 +123,10 @@ export function StateInsightsBar({
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 leading-tight">
-                {activeStateName}
+                {selectedDistrict ? `${selectedDistrict}, ${activeStateName}` : activeStateName}
               </h3>
               <p className="text-[11px] text-slate-500">
-                State Opportunities & Pilot Insights
+                {selectedDistrict ? 'District Level Focus' : 'State Opportunities & Pilot Insights'}
               </p>
             </div>
           </div>
@@ -106,149 +154,194 @@ export function StateInsightsBar({
           </p>
         </div>
 
-        {/* 3 Top Movers Trend Stats with Animated Numeric Counters */}
-        <div className="my-3.5 grid grid-cols-3 gap-2 border-y border-slate-100 py-3">
-          {profile.topMovers.map((mover) => (
-            <div key={mover.title} className="flex flex-col">
-              <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
-                <AnimatedCounter
-                  key={`${activeStateName}-${mover.title}`}
-                  value={mover.percent}
-                  prefix="+"
-                  suffix="%"
-                />
-              </span>
-              <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
-                {mover.title}
-              </span>
-              {mover.subtitle && (
-                <span className="text-[9.5px] text-slate-400 line-clamp-1">
-                  {mover.subtitle}
+        {/* 3 Top Movers Trend Stats */}
+        {!isUP ? (
+          <div className="my-4 grid grid-cols-3 gap-2 border-y border-slate-100 py-3.5">
+            {profile.topMovers.map((mover) => (
+              <div key={mover.title} className="flex flex-col">
+                <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
+                  +{mover.percent}%
                 </span>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Real Census 2011 & ODOP Highlights Strip */}
-        <div className="mb-3.5 rounded-xl bg-slate-50/80 p-2.5 border border-slate-200/80 space-y-2">
-          <div className="flex items-center justify-between text-[10.5px] font-bold text-slate-700">
-            <span className="flex items-center gap-1 text-slate-800">
-              <Users size={12} className="text-emerald-600" />
-              <span>Census Demographics</span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-medium">Official 2011 Data</span>
-          </div>
-
-          <div className="grid grid-cols-3 gap-1.5 text-center">
-            <div className="rounded-lg bg-white px-1.5 py-1 shadow-2xs border border-slate-100">
-              <span className="text-[9.5px] text-slate-400 block leading-tight">Population</span>
-              <span className="text-xs font-bold text-slate-900">
-                {popFormatted.unit ? (
-                  <AnimatedCounter
-                    key={`${activeStateName}-pop`}
-                    value={popFormatted.value}
-                    decimals={popFormatted.unit === 'Cr' ? 2 : 1}
-                    suffix={` ${popFormatted.unit}`}
-                  />
-                ) : (
-                  popFormatted.full
-                )}
-              </span>
-            </div>
-
-            <div className="rounded-lg bg-white px-1.5 py-1 shadow-2xs border border-slate-100">
-              <span className="text-[9.5px] text-slate-400 block leading-tight">Literacy</span>
-              <span className="text-xs font-bold text-slate-900">
-                {profile.census?.literacy_percent ? (
-                  <AnimatedCounter
-                    key={`${activeStateName}-lit`}
-                    value={profile.census.literacy_percent}
-                    decimals={1}
-                    suffix="%"
-                  />
-                ) : (
-                  'N/A'
-                )}
-              </span>
-            </div>
-
-            <div className="rounded-lg bg-white px-1.5 py-1 shadow-2xs border border-slate-100">
-              <span className="text-[9.5px] text-slate-400 block leading-tight">Density</span>
-              <span className="text-xs font-bold text-slate-900">
-                {profile.census?.density_per_km2 ? (
-                  <AnimatedCounter
-                    key={`${activeStateName}-density`}
-                    value={profile.census.density_per_km2}
-                    suffix="/km²"
-                  />
-                ) : (
-                  'N/A'
-                )}
-              </span>
-            </div>
-          </div>
-
-          {/* Invest India ODOP Product Tag */}
-          {profile.odop && (
-            <div className="flex items-center justify-between gap-1 pt-1 border-t border-slate-200/50 text-[10.5px]">
-              <span className="flex items-center gap-1 font-semibold text-slate-700 truncate">
-                <PackageCheck size={11} className="text-emerald-600 shrink-0" />
-                <span>ODOP ({profile.odop.leading_odop_sector}):</span>
-                <span className="text-slate-900 font-bold truncate">
-                  {profile.odop.flagship_example_district_product}
+                <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
+                  {mover.title}
                 </span>
-              </span>
-              <span className="shrink-0 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-sm border border-emerald-200">
-                <AnimatedCounter
-                  key={`${activeStateName}-odop-count`}
-                  value={profile.odop.districts_captured_in_odop_list}
-                  suffix=" Dists"
-                />
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Key Active Schemes & Subsidies */}
-        <div className="space-y-1.5">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
-            <ShieldCheck size={14} className="text-emerald-600" />
-            <span>Active Schemes & Subsidies</span>
-          </div>
-          <div className="space-y-1">
-            {profile.activeSchemes.slice(0, 3).map((scheme) => (
-              <div
-                key={scheme}
-                className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 text-[11.5px] text-slate-700 border border-slate-100/90"
-              >
-                <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
-                <span className="truncate">{scheme}</span>
+                {mover.subtitle && (
+                  <span className="text-[9.5px] text-slate-400 line-clamp-1">
+                    {mover.subtitle}
+                  </span>
+                )}
               </div>
             ))}
           </div>
-        </div>
+        ) : loading ? (
+          <div className="my-4 grid grid-cols-3 gap-2 border-y border-slate-100 py-3.5 animate-pulse">
+            <div className="space-y-1.5">
+              <div className="h-5 w-12 bg-slate-200 rounded" />
+              <div className="h-3 w-16 bg-slate-200 rounded" />
+            </div>
+            <div className="space-y-1.5">
+              <div className="h-5 w-12 bg-slate-200 rounded" />
+              <div className="h-3 w-16 bg-slate-200 rounded" />
+            </div>
+            <div className="space-y-1.5">
+              <div className="h-5 w-12 bg-slate-200 rounded" />
+              <div className="h-3 w-16 bg-slate-200 rounded" />
+            </div>
+          </div>
+        ) : error ? (
+          <div role="alert" className="my-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 space-y-2">
+            <div className="flex items-center gap-1.5 font-bold">
+              <AlertCircle size={14} className="text-red-600 shrink-0" />
+              <span>Unable to load live pilot data</span>
+            </div>
+            <p className="text-[11px] text-red-700 leading-snug">{error}</p>
+            <button
+              type="button"
+              onClick={() => loadLiveData(() => true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-red-300 bg-white px-2.5 py-1 text-xs font-bold text-red-800 hover:bg-red-50 active:scale-95 transition-all cursor-pointer"
+            >
+              <RefreshCw size={12} />
+              <span>Retry</span>
+            </button>
+          </div>
+        ) : liveInsights && Array.isArray(liveInsights.categories) && liveInsights.categories.length > 0 ? (
+          <div className="my-4 border-y border-slate-100 py-3.5 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-slate-700">Top Growth Categories</span>
+              <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded px-1.5 py-0.5">
+                Observed Regional Indicator
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {liveInsights.categories.slice(0, 3).map((mover) => (
+                <div key={mover.name} className="flex flex-col">
+                  <span className="text-base md:text-lg font-extrabold text-emerald-600 flex items-center">
+                    +{mover.trend}%
+                  </span>
+                  <span className="text-[11px] font-semibold text-slate-800 line-clamp-1 leading-tight mt-0.5">
+                    {mover.name}
+                  </span>
+                  {mover.seasonality && (
+                    <span className="text-[9.5px] text-slate-400 line-clamp-1">
+                      {mover.seasonality}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="my-4 border-y border-slate-100 py-3 text-center text-xs text-slate-500">
+            No category trends recorded for this location yet.
+          </div>
+        )}
 
-        {/* Feasibility & Target Metrics with Counter Animation */}
-        <div className="mt-3.5 grid grid-cols-2 gap-2 text-xs">
+        {/* Key Active Schemes & Subsidies */}
+        {!isUP ? (
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800">
+              <ShieldCheck size={14} className="text-emerald-600" />
+              <span>Active Schemes &amp; Subsidies</span>
+            </div>
+            <div className="space-y-1.5">
+              {profile.activeSchemes.slice(0, 3).map((scheme) => (
+                <div
+                  key={scheme}
+                  className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-1.5 text-[11.5px] text-slate-700 border border-slate-100/90"
+                >
+                  <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
+                  <span className="truncate">{scheme}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : loading ? (
+          <div className="space-y-2 animate-pulse">
+            <div className="h-4 w-36 bg-slate-200 rounded" />
+            <div className="h-8 w-full bg-slate-100 rounded-lg" />
+            <div className="h-8 w-full bg-slate-100 rounded-lg" />
+          </div>
+        ) : error ? null : Array.isArray(liveSchemes) && liveSchemes.length > 0 ? (
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-emerald-600" />
+                <span>Active Schemes &amp; Credit Facilities</span>
+              </div>
+              <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 rounded px-1.5 py-0.5 border border-emerald-200">
+                Official Concessional Credit
+              </span>
+            </div>
+            <div className="space-y-1.5">
+              {liveSchemes.slice(0, 2).map((scheme) => (
+                <div
+                  key={scheme.id}
+                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-1.5 text-[11.5px] text-slate-700 border border-slate-100/90"
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
+                    <span className="truncate font-medium">{scheme.name}</span>
+                  </div>
+                  <span className="text-[10.5px] font-bold text-emerald-700 shrink-0 ml-2">
+                    {scheme.interest_rate}% p.a.
+                  </span>
+                </div>
+              ))}
+              <div className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-1.5 text-[11.5px] text-slate-700 border border-slate-100/90">
+                <div className="flex items-center gap-2 truncate">
+                  <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
+                  <span className="truncate font-medium">PMFME Scheme</span>
+                </div>
+                <span className="text-[10.5px] font-medium text-slate-500 shrink-0 ml-2">
+                  35% Capital Subsidy
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-1 text-xs text-slate-500 py-2">
+            No active concessional schemes available in database.
+          </div>
+        )}
+
+        {/* Feasibility & Target Metrics */}
+        <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
           <div className="rounded-xl bg-emerald-50/60 p-2.5 border border-emerald-100">
-            <span className="text-[10.5px] font-medium text-emerald-800">Feasible Clusters</span>
+            <span className="text-[10.5px] font-medium text-emerald-800">
+              {isUP ? 'Census Village Clusters' : 'Feasible Clusters'}
+            </span>
             <p className="text-sm font-bold text-emerald-950 mt-0.5">
-              <AnimatedCounter
-                key={`${activeStateName}-feasible`}
-                value={profile.feasibleUnitsCount}
-                suffix="+"
-              />{' '}
-              micro locations
+              {isUP ? '874 micro locations' : `${profile.feasibleUnitsCount}+ micro locations`}
             </p>
+            {isUP && (
+              <span className="text-[9.5px] text-emerald-700/80 block mt-0.5">
+                Census 2011 Baseline (Mathura)
+              </span>
+            )}
           </div>
           <div className="rounded-xl bg-slate-50 p-2.5 border border-slate-100">
             <span className="text-[10.5px] font-medium text-slate-500">Target Capital</span>
             <p className="text-sm font-bold text-slate-900 mt-0.5">
-              {profile.recommendedCapital}
+              {availableCapital}
             </p>
+            <span className="text-[9.5px] text-slate-400 block mt-0.5">
+              Promoter Margin Buffer
+            </span>
           </div>
         </div>
+
+        {/* Historical & Provenance Callout (Data Honesty) */}
+        {isUP && (
+          <div className="mt-3 rounded-lg bg-slate-50 p-2.5 border border-slate-200 text-[10.5px] text-slate-600 space-y-1">
+            <p className="font-semibold text-slate-700 flex items-center gap-1">
+              <Info size={13} className="text-slate-500 shrink-0" />
+              <span>Data Provenance &amp; Pilot Notice:</span>
+            </p>
+            <p className="leading-relaxed text-slate-600">
+              Demographics reflect official Census 2011 baseline (874 verified villages). Category trends represent regional baseline indicators from observed economic activity.
+            </p>
+          </div>
+        )}
 
         {/* Coming Soon Notice Alert (Shown when non-UP state is clicked for assessment) */}
         {comingSoonMessage && (
@@ -287,3 +380,4 @@ export function StateInsightsBar({
     </div>
   );
 }
+

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import {
   SIDEBAR_PRIMARY_ITEMS,
   SIDEBAR_SECONDARY_ITEMS,
@@ -136,6 +137,7 @@ function DrawerLanguageRow({
 export function Drawer(): React.JSX.Element {
   const { drawerOpen, closeDrawer, compareCount, language, setLanguage } =
     useShell();
+  const { logout } = useAuth();
   const pathname = usePathname();
 
   const [showLogOutModal, setShowLogOutModal] = useState(false);
@@ -171,6 +173,7 @@ export function Drawer(): React.JSX.Element {
 
   function handleConfirmLogOut(): void {
     setShowLogOutModal(false);
+    logout();
     closeDrawer();
     clearAuthUser();
     import('@/lib/storage').then(({ removeStorageItem }) => {

@@ -15,8 +15,10 @@ import {
   Clock,
   History,
   ArrowRight,
+  User as UserIcon,
 } from 'lucide-react';
 import { useShell } from '@/lib/shell-context';
+import { useAuth } from '@/lib/auth-context';
 import { IconButton } from '@/components/ui/IconButton';
 import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
 import { isQueryValid } from '@/lib/aiKnowledgeBase';
@@ -128,6 +130,7 @@ function SearchBar(): React.JSX.Element {
     <>
       <div ref={containerRef} className="relative flex-1 w-full max-w-2xl">
         <form
+          role="search"
           onSubmit={handleSubmit}
           className={cn(
             'flex w-full items-center gap-2 rounded-xl border bg-white px-3 py-1.5 sm:px-3.5 sm:py-2 transition-all shadow-2xs',
@@ -274,6 +277,7 @@ function SearchBar(): React.JSX.Element {
 
 export function Header(): React.JSX.Element {
   const { openDrawer } = useShell();
+  const { user, isAuthenticated } = useAuth();
 
   return (
     <header
@@ -303,14 +307,36 @@ export function Header(): React.JSX.Element {
         <SearchBar />
       </div>
 
-      {/* Right: Home / Discover link icon */}
-      <Link
-        href="/discover"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-        aria-label="Navigate to Home / Discover"
-      >
-        <Home size={19} strokeWidth={1.75} aria-hidden="true" />
-      </Link>
+      {/* Right: Auth indicator & Home link */}
+      <div className="flex items-center gap-2">
+        {isAuthenticated && user ? (
+          <Link
+            href="/profile"
+            className="flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 transition-colors shadow-2xs"
+            aria-label={`Signed in as ${user.phone_or_email}. View Profile.`}
+          >
+            <UserIcon size={13} className="text-emerald-700 shrink-0" aria-hidden="true" />
+            <span className="max-w-[100px] truncate hidden sm:inline">{user.phone_or_email}</span>
+            <span className="sm:hidden">Account</span>
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
+            aria-label="Sign in or register"
+          >
+            <span>Sign In</span>
+          </Link>
+        )}
+
+        <Link
+          href="/discover"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-700 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+          aria-label="Navigate to Home / Discover"
+        >
+          <Home size={19} strokeWidth={1.75} aria-hidden="true" />
+        </Link>
+      </div>
     </header>
   );
 }

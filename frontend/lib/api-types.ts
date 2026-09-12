@@ -12,6 +12,48 @@ export interface AssessmentRequest {
   phone_or_email?: string;
 }
 
+export interface VillageLocation {
+  id: number;
+  name: string;
+  block_name: string | null;
+  district_name: string;
+  state_name: string;
+  population: number;
+  household_count: number;
+  literacy_rate: number;
+}
+
+export interface AIQueryRequest {
+  query: string;
+  language?: string;
+  top_k?: number;
+  calculations?: Record<string, string | number | boolean | null>;
+}
+
+export interface AIQueryResponse {
+  available: boolean;
+  source: string;
+  summary: string;
+  explanation: string;
+  recommendation: string;
+  key_points: string[];
+  citations: Citation[];
+  limitations: string[];
+  warnings: string[];
+  grounding_status: string;
+  retrieval_status: string;
+  evidence_available: boolean;
+  result_count: number;
+  parsed_query?: Record<string, string | number | boolean | null | string[]>;
+  swot?: {
+    strengths?: string[];
+    weaknesses?: string[];
+    opportunities?: string[];
+    threats?: string[];
+  };
+  error?: string;
+}
+
 export interface VillageData {
   id: number;
   name: string;
@@ -79,6 +121,8 @@ export interface SchemeData {
   tenure_months: number;
   moratorium_months: number;
   max_project_cost?: number;
+  max_loan_amount?: number;
+  margin_requirement?: string;
 }
 
 export interface Citation {
@@ -156,4 +200,69 @@ export interface AssessmentResponse {
   fitScore: number;
   confidence: 'Low' | 'Medium' | 'High';
   recommendation: string;
+}
+
+export interface OfficialScheme {
+  id: number;
+  name: string;
+  max_project_cost: number;
+  max_loan_amount: number;
+  interest_rate: number;
+  tenure_months: number;
+  moratorium_months: number;
+  margin_requirement?: string;
+}
+
+export interface EMICalculationRequest {
+  loan_amount: number;
+  interest_rate: number;
+  tenure_months: number;
+  moratorium_months: number;
+}
+
+export interface EMICalculationResponse {
+  principal: number;
+  monthly_emi: number;
+  total_repayment: number;
+  total_interest: number;
+  repayment_months: number;
+}
+
+export interface SchemeMatchRequest {
+  available_margin: number;
+  category?: string;
+}
+
+export interface SchemeMatchResponse {
+  available_margin: number;
+  project_cost: number;
+  max_loan_amount: number;
+  recommended_project_size: number;
+  scheme_id: number;
+  scheme_name: string;
+  interest_rate: number;
+  tenure_months: number;
+  moratorium_months: number;
+  monthly_emi: number;
+  total_repayment: number;
+  total_interest: number;
+  estimated_monthly_revenue: number;
+  estimated_monthly_profit: number;
+  repayment_burden_ratio: number;
+  repayment_burden_category: string;
+}
+
+export interface UserProfile {
+  id: number;
+  phone_or_email: string;
+  home_location: string | null;
+  default_capital: number | null;
+  preferred_language: string | null;
+}
+
+export interface UserProfileInput {
+  phone_or_email: string;
+  home_location?: string | null;
+  default_capital?: number | null;
+  preferred_language?: string | null;
 }

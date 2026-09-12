@@ -1,8 +1,9 @@
 // components/profile/LogoutCard.tsx
 'use client';
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { LogOut, ChevronRight } from 'lucide-react';
+import { AuthContext } from '@/lib/auth-context';
 import { removeStorageItem } from '@/lib/storage';
 import { STORAGE_KEYS } from '@/lib/constants';
 
@@ -11,11 +12,16 @@ interface LogoutCardProps {
 }
 
 export function LogoutCard({ onLogout }: LogoutCardProps): React.JSX.Element {
+  const auth = useContext(AuthContext);
+  const isAuthenticated = auth?.isAuthenticated ?? false;
+  const user = auth?.user ?? null;
+
   function handleLogout(): void {
     removeStorageItem(STORAGE_KEYS.authToken);
     if (onLogout) {
       onLogout();
     } else {
+      auth?.logout();
       window.location.href = '/';
     }
   }
@@ -36,7 +42,9 @@ export function LogoutCard({ onLogout }: LogoutCardProps): React.JSX.Element {
             Log out
           </p>
           <p className="text-xs sm:text-sm text-slate-500">
-            Return to the landing page.
+            {isAuthenticated && user
+              ? `End session for ${user.phone_or_email}.`
+              : 'End guest session and return to the landing page.'}
           </p>
         </div>
       </div>
