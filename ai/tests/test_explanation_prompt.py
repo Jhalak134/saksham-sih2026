@@ -272,6 +272,10 @@ class TestResponseParsingAndValidation:
             parse_explanation_response({}, "not-a-pack")  # type: ignore
         with pytest.raises(ExplanationValidationError, match="Invalid JSON"):
             parse_explanation_response("not-json", pack)
+        with pytest.raises(ExplanationValidationError, match="Invalid JSON"):
+            parse_explanation_response("some text { not: a : valid: json } trailing text", pack)
+        with pytest.raises(ExplanationValidationError, match="Invalid JSON"):
+            parse_explanation_response("``` unclosed fence without trailing backticks", pack)
         with pytest.raises(ExplanationValidationError, match="Expected str or dict"):
             parse_explanation_response(1234, pack)  # type: ignore
         with pytest.raises(ExplanationValidationError, match="Response root must be a dict"):
