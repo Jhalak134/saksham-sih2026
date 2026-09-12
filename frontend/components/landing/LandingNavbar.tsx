@@ -20,20 +20,6 @@ const NAV_ITEMS: readonly NavItem[] = [
   { label: 'How It Works', href: '/how-it-works' },
 ] as const;
 
-interface NavItem {
-  label: string;
-  href: string;
-  isHome?: boolean;
-}
-
-const NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Home', href: '/', isHome: true },
-  { label: 'About Us', href: '/about' },
-  { label: 'How It Works', href: '/#how-it-works' },
-  { label: 'Feasibility', href: '/#feasibility' },
-  { label: 'Schemes', href: '/#schemes' },
-  { label: 'Discover', href: '/discover' },
-] as const;
 
 export function LandingNavbar(): React.JSX.Element {
   const router = useRouter();
@@ -45,12 +31,6 @@ export function LandingNavbar(): React.JSX.Element {
     }
   };
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    if ((href === '/discover' || href === '/new-assessment') && !isAuthenticated()) {
-      e.preventDefault();
-      router.push(`/login?redirect=${encodeURIComponent(href)}`);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/50 bg-[#FAFAF8]/90 backdrop-blur-md">
