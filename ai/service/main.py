@@ -54,8 +54,7 @@ def get_parser(request: Request) -> QueryParser:
     deps: AIServiceDependencies | None = getattr(request.app.state, "deps", None)
     if deps and deps.parser is not None:
         return deps.parser
-    llm = get_default_llm_callable()
-    return QueryParser(llm_callable=llm)
+    return QueryParser()
 
 
 def get_retriever(request: Request) -> KnowledgeRetriever:
