@@ -37,7 +37,7 @@ export interface ChatMessage {
   readonly warnings?: readonly string[];
   readonly suggested_idea?: string;
   readonly suggested_location?: string;
-  readonly grounding_status?: 'fully_grounded' | 'partially_grounded' | 'domain_knowledge';
+  readonly grounding_status?: 'fully_grounded' | 'partially_grounded' | 'domain_knowledge' | 'invalid_input';
 }
 
 export interface SakshamAIChatModalProps {
@@ -275,9 +275,18 @@ export function SakshamAIChatModal({
                   'rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed shadow-2xs',
                   msg.sender === 'user'
                     ? 'bg-emerald-600 text-white rounded-tr-xs'
+                    : msg.grounding_status === 'invalid_input'
+                    ? 'bg-amber-50/40 text-slate-800 border border-amber-200/90 rounded-tl-xs space-y-2'
                     : 'bg-white text-slate-800 border border-slate-200/90 rounded-tl-xs space-y-2.5'
                 )}
               >
+                {msg.grounding_status === 'invalid_input' && (
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-800 bg-amber-100/70 px-2 py-0.5 rounded-md border border-amber-300/80 w-fit">
+                    <AlertTriangle size={12} className="shrink-0 text-amber-600" />
+                    <span>Input Not Recognized</span>
+                  </div>
+                )}
+
                 {/* Main Text Content */}
                 <div className="whitespace-pre-line">
                   {msg.text}

@@ -174,4 +174,25 @@ describe('SakshamAIChatModal Component', () => {
     expect(screen.queryByText(/PMFME subsidies/i)).not.toBeInTheDocument();
     expect(screen.getByText(/Hello! I am SAKSHAM AI/i)).toBeInTheDocument();
   });
+
+  it('does not respond with enterprise data on invalid or gibberish inputs', async () => {
+    const user = userEvent.setup();
+    render(
+      <ShellProvider>
+        <SakshamAIChatModal isOpen={true} onClose={vi.fn()} />
+      </ShellProvider>
+    );
+
+    const input = screen.getByRole('textbox', { name: /Ask SAKSHAM AI a question/i });
+    await user.type(input, 'asdfghjk{enter}');
+
+    await waitFor(() => {
+      expect(screen.getByText(/Input Not Recognized/i)).toBeInTheDocument();
+    });
+
+    // Verifies it does NOT fabricate Uttar Pradesh census report or dairy plant for gibberish
+    expect(screen.getByText(/I could not understand that query/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Agra Leather Products/i)).not.toBeInTheDocument();
+  });
 });
+
