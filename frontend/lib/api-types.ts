@@ -281,3 +281,40 @@ export interface UserProfileInput {
   default_capital?: number | null;
   preferred_language?: string | null;
 }
+
+export interface CategoryBusinessItem {
+  id: number;
+  name: string;
+  village_name: string;
+  location_precision?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
+
+export interface CategoryDetailsResponse {
+  id: string;
+  numeric_id: number;
+  name: string;
+  slug: string;
+  icon_type: string;
+  is_seasonal: boolean;
+  demand_trend: number;
+  trend_percent: number;
+  demand_summary: string;
+  description: string;
+  capital_bracket: string;
+  profit_margin: string;
+  feasible_locations_count: number;
+  total_businesses: number;
+  sample_businesses: CategoryBusinessItem[];
+  applicable_schemes: Array<{
+    id?: number;
+    name: string;
+    interest_rate?: number;
+    description?: string;
+  }>;
+  raw_materials: string;
+  location: string;
+  district_name: string;
+  state_name: string;
+}
