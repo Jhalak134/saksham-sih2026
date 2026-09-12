@@ -56,7 +56,7 @@ export function IndiaMap({
   };
 
   return (
-    <div className="relative flex h-full min-h-[460px] md:min-h-[520px] w-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-3 md:p-5 shadow-xs overflow-hidden">
+    <div className="relative flex h-full min-h-[460px] md:min-h-[520px] w-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-3 md:p-5 shadow-xs overflow-hidden map-shine-border">
       {/* ── TOP CONSOLIDATED HEADER & BREADCRUMB SURFACE ── */}
       <div className="relative z-20 flex flex-wrap items-center justify-between gap-2 border-b border-slate-100/90 pb-3">
         {/* Navigation Breadcrumb Trail */}

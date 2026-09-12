@@ -70,8 +70,8 @@ export function DiscoverScreen(): React.JSX.Element {
     <div className="min-h-full w-full bg-[#F8FAFC]/60 px-4 py-5 sm:px-6 sm:py-6 md:px-8 md:py-7">
       <div className="w-full space-y-6 md:space-y-8">
         {/* 1. TOP HALF: 3-Level Interactive Map Heatmap (Left) + Dynamic State Info Bar (Right) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          <div className="lg:col-span-7">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div className="lg:col-span-5">
             <IndiaMap
               selectedState={selectedState}
               onStateSelect={handleStateSelect}
@@ -79,7 +79,7 @@ export function DiscoverScreen(): React.JSX.Element {
               onDistrictSelect={handleDistrictSelect}
             />
           </div>
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-7">
             <StateInsightsBar
               selectedState={selectedState}
               selectedDistrict={selectedDistrict}
