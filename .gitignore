@@ -111,3 +111,5 @@ dist/
 build/
 .next/
 __pycache__/
+.vercel/
+**/frontend/.vercel/

@@ -29,6 +29,8 @@ export const STORAGE_KEYS = {
   emailNotifications: 'saksham_email_notifications',
   authUser: 'saksham_auth_user',
   authToken: 'auth_token',
+  language: 'saksham_language',
+  geminiApiKey: 'saksham_gemini_api_key',
 } as const;
 
 // ─── Navigation ─────────────────────────────────────────────────────────────
