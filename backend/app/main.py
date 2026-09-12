@@ -10,21 +10,84 @@ from dotenv import load_dotenv
 
 load_dotenv()  # load backend/.env before anything else
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import text
+from sqlalchemy import text, inspect
+import logging
+
+logger = logging.getLogger("saksham.main")
 
 from backend.app.db.session import engine, get_db
 from backend.app.db import models
 from backend.app.routers import location, schemes, insights, assess, auth, ai
 
 
+def run_database_migrations(target_engine):
+    """Safely adds any missing columns to existing database tables."""
+    try:
+        with target_engine.begin() as conn:
+            inspector = inspect(conn)
+            tables = inspector.get_table_names()
+
+            if "assessments" in tables:
+                existing_cols = {col["name"] for col in inspector.get_columns("assessments")}
+                is_pg = conn.dialect.name == "postgresql"
+                json_type = "JSON" if is_pg else "TEXT"
+
+                col_definitions = [
+                    ("capital_input", "FLOAT"),
+                    ("fit_score", "FLOAT"),
+                    ("confidence_level", "VARCHAR"),
+                    ("rating", "VARCHAR"),
+                    ("competitor_count", "INTEGER DEFAULT 0"),
+                    ("business_idea", "VARCHAR"),
+                    ("project_cost", "FLOAT"),
+                    ("max_loan_amount", "FLOAT"),
+                    ("recommended_project_size", "FLOAT"),
+                    ("scheme_id", "INTEGER"),
+                    ("interest_rate", "FLOAT"),
+                    ("tenure_months", "INTEGER"),
+                    ("moratorium_months", "INTEGER"),
+                    ("monthly_emi", "FLOAT"),
+                    ("total_repayment", "FLOAT"),
+                    ("total_interest", "FLOAT"),
+                    ("estimated_monthly_revenue", "FLOAT"),
+                    ("estimated_monthly_profit", "FLOAT"),
+                    ("repayment_burden_ratio", "FLOAT"),
+                    ("repayment_burden_category", "VARCHAR"),
+                    ("feasibility_breakdown", json_type),
+                    ("ai_insights", json_type),
+                    ("status", "VARCHAR DEFAULT 'Completed'"),
+                    ("updated_at", "TIMESTAMP"),
+                ]
+                for col_name, col_type in col_definitions:
+                    if col_name not in existing_cols:
+                        try:
+                            if is_pg:
+                                conn.execute(text(f"ALTER TABLE assessments ADD COLUMN IF NOT EXISTS {col_name} {col_type}"))
+                            else:
+                                conn.execute(text(f"ALTER TABLE assessments ADD COLUMN {col_name} {col_type}"))
+                        except Exception as ex:
+                            logger.warning(f"Could not add column {col_name}: {ex}")
+
+            if "users" in tables:
+                existing_user_cols = {col["name"] for col in inspector.get_columns("users")}
+                if "password_hash" not in existing_user_cols:
+                    try:
+                        conn.execute(text("ALTER TABLE users ADD COLUMN password_hash VARCHAR"))
+                    except Exception:
+                        pass
+    except Exception as e:
+        logger.warning(f"Database migration check encountered an error: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Ensure database schema is created on startup
+    # Ensure database schema is created and upgraded on startup
     models.Base.metadata.create_all(bind=engine)
+    run_database_migrations(engine)
     yield
 
 
@@ -36,6 +99,21 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    origin = request.headers.get("origin", "*")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error occurred", "error": str(exc)},
+        headers={
+            "Access-Control-Allow-Origin": origin if origin else "*",
+            "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Allow-Methods": "*",
+            "Access-Control-Allow-Headers": "*",
+        },
+    )
 
 # ── CORS ──────────────────────────────────────────────────────────────────────
 # Allow the Next.js dev server and production origin.
