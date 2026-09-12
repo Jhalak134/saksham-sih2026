@@ -11,8 +11,10 @@ import os
 import logging
 from typing import Dict, Any, Optional
 try:
+    import numpy as np
     import joblib
 except ImportError:
+    np = None
     joblib = None
 
 from backend.app.ml.preprocessing import features_to_2d_array

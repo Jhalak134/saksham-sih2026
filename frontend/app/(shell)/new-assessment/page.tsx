@@ -211,8 +211,8 @@ function NewAssessmentContent(): React.JSX.Element {
         setLocationDisplay(candidateLoc);
       }
     } else {
-      // Default pilot location: Bera, Mathura
-      setLocationId('loc_07');
+      // Default pilot location: Bera, Mathura (Census ID: 123912)
+      setLocationId('123912');
       setLocationDisplay('Bera, Mathura');
     }
   }, [paramLoc, paramDistrict, paramState, homeLocation]);
@@ -324,6 +324,8 @@ function NewAssessmentContent(): React.JSX.Element {
           if (Number.isFinite(idNum)) {
             parsedVillageId = idNum;
           }
+        } else if (locationId === 'loc_07') {
+          parsedVillageId = 124296;
         }
       }
 
