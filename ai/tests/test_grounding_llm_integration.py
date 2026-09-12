@@ -27,7 +27,9 @@ from ai.prompts.explanation_models import ExplanationValidationError, GroundingS
 from ai.prompts.explanation_prompt import GroundedExplainer, parse_explanation_response
 from ai.prompts.query_parser import QueryParser
 from ai.providers.base import LLMAuthenticationError, LLMNetworkError, LLMProviderError, LLMTimeoutError
+from ai.providers.gemini_provider import GeminiProvider
 from ai.providers.openai_provider import OpenAIProvider
+from ai.retrieval.retriever import KnowledgeRetriever, RetrievalQuery
 from ai.service.main import AIServiceDependencies, create_app
 from ai.tests.conftest import (
     make_dairy_template_item,
@@ -396,3 +398,27 @@ class TestServiceAndParserIntegration:
         assert resp.status_code == 503
         data = resp.json()
         assert data["error_type"] == "llm_provider_error"
+
+    def test_21_live_gemini_pipeline_smoke_test(self) -> None:
+        from dotenv import dotenv_values, find_dotenv
+
+        env_file = find_dotenv()
+        if not env_file:
+            pytest.skip("No root .env found")
+        vals = dotenv_values(env_file)
+        key = vals.get("GEMINI_API_KEY")
+        if not key or not key.strip():
+            pytest.skip("GEMINI_API_KEY not in root .env")
+
+        provider = GeminiProvider(api_key=key.strip(), model="gemini-3.6-flash", max_tokens=4096)
+        retriever = KnowledgeRetriever()
+        q_text = "What is the subsidy percentage under PMFME?"
+        results = retriever.retrieve(RetrievalQuery(query_text=q_text, top_k=3))
+        evidence_pack = create_evidence_pack(q_text, results)
+        explainer = GroundedExplainer(llm_callable=provider, fallback_on_provider_error=False)
+        res = explainer.explain(evidence_pack, language="en")
+
+        assert res.grounding_status == "grounded"
+        assert len(res.citations) > 0
+        assert len(res.evidence_used) > 0
+        assert "35%" in res.answer
