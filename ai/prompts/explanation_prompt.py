@@ -176,13 +176,22 @@ def _extract_response_dict(raw_response: str | dict[str, Any]) -> dict[str, Any]
     """Extract and validate dictionary from raw string or dict response."""
     if isinstance(raw_response, str):
         cleaned = raw_response.strip()
-        if cleaned.startswith("```"):
-            cleaned = re.sub(r"^```(?:json)?\s*", "", cleaned)
-            cleaned = re.sub(r"\s*```$", "", cleaned)
+        if "```" in cleaned:
+            match = re.search(r"```(?:json)?\s*([\s\S]*?)\s*```", cleaned)
+            if match:
+                cleaned = match.group(1).strip()
         try:
             data = json.loads(cleaned)
-        except Exception as err:
-            raise ExplanationValidationError(f"Invalid JSON in LLM response: {err}") from err
+        except Exception:
+            first_brace = cleaned.find("{")
+            last_brace = cleaned.rfind("}")
+            if first_brace != -1 and last_brace > first_brace:
+                try:
+                    data = json.loads(cleaned[first_brace:last_brace + 1])
+                except Exception as err:
+                    raise ExplanationValidationError(f"Invalid JSON in LLM response: {err}") from err
+            else:
+                raise ExplanationValidationError("Invalid JSON in LLM response: no valid JSON object found")
     elif isinstance(raw_response, dict):
         data = raw_response
     else:
@@ -413,8 +422,10 @@ class GroundedExplainer:
     def __init__(
         self,
         llm_callable: Callable[[str, str], str | dict[str, Any]] | None = None,
+        fallback_on_provider_error: bool = True,
     ) -> None:
         self.llm_callable = llm_callable
+        self.fallback_on_provider_error = fallback_on_provider_error
 
     def explain(
         self,
@@ -432,7 +443,16 @@ class GroundedExplainer:
                 language=language,
                 calculations=calculations,
             )
-            raw_response = self.llm_callable(EXPLANATION_SYSTEM_PROMPT, user_prompt)
+            try:
+                raw_response = self.llm_callable(EXPLANATION_SYSTEM_PROMPT, user_prompt)
+            except Exception as exc:
+                if self.fallback_on_provider_error and not isinstance(exc, ExplanationValidationError):
+                    return generate_deterministic_explanation(
+                        pack=evidence_pack,
+                        language=language,
+                        calculations=calculations,
+                    )
+                raise
             return parse_explanation_response(
                 raw_response=raw_response,
                 pack=evidence_pack,
@@ -452,9 +472,13 @@ def explain_evidence(
     llm_callable: Callable[[str, str], str | dict[str, Any]] | None = None,
     language: str = "en",
     calculations: dict[str, Any] | None = None,
+    fallback_on_provider_error: bool = True,
 ) -> ExplanationResult:
     """Convenience functional interface for generating an evidence-grounded explanation."""
-    return GroundedExplainer(llm_callable=llm_callable).explain(
+    return GroundedExplainer(
+        llm_callable=llm_callable,
+        fallback_on_provider_error=fallback_on_provider_error,
+    ).explain(
         evidence_pack=evidence_pack,
         language=language,
         calculations=calculations,
