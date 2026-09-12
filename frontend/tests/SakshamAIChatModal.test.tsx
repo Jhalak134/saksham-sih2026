@@ -194,5 +194,48 @@ describe('SakshamAIChatModal Component', () => {
     expect(screen.getByText(/I could not understand that query/i)).toBeInTheDocument();
     expect(screen.queryByText(/Agra Leather Products/i)).not.toBeInTheDocument();
   });
+
+  it('allows changing assistant language to Hindi and responds in Hindi', async () => {
+    const user = userEvent.setup();
+    render(
+      <ShellProvider>
+        <SakshamAIChatModal isOpen={true} onClose={vi.fn()} />
+      </ShellProvider>
+    );
+
+    // Find and change the language dropdown
+    const langSelect = screen.getByRole('combobox', { name: /Select Assistant Language/i });
+    await user.selectOptions(langSelect, 'hi');
+
+    const input = screen.getByRole('textbox', { name: /Ask SAKSHAM AI a question/i });
+    await user.type(input, '10% margin{enter}');
+
+    await waitFor(() => {
+      expect(screen.getByText(/व्यावसायिक वित्तपोषण/i)).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/10% borrower equity margin/i)).toBeInTheDocument();
+  });
+
+  it('allows user to open Gemini API key configuration dialog and save a key', async () => {
+    const user = userEvent.setup();
+    render(
+      <ShellProvider>
+        <SakshamAIChatModal isOpen={true} onClose={vi.fn()} />
+      </ShellProvider>
+    );
+
+    const keyBtn = screen.getByRole('button', { name: /Configure Gemini API Key/i });
+    await user.click(keyBtn);
+
+    expect(screen.getByRole('heading', { name: /Google Gemini API Key/i })).toBeInTheDocument();
+    const keyInput = screen.getByPlaceholderText('AIzaSy...');
+    await user.type(keyInput, 'AIzaSyTestGeminiKey123');
+
+    const saveBtn = screen.getByRole('button', { name: /Save Key/i });
+    await user.click(saveBtn);
+
+    expect(localStorage.getItem('saksham_gemini_api_key')).toBe('AIzaSyTestGeminiKey123');
+  });
 });
 

@@ -40,6 +40,7 @@ htmlcov/
 .ruff_cache/
 
 # Python Virtual Environments
+.venv
 .venv/
 venv/
 env/
@@ -53,6 +54,9 @@ venv.bak/
 *.db
 ai/vector_store/indices/
 ai/vector_store/chroma/
+*.joblib
+*.pkl
+backend/app/ml/artifacts/
 
 # Large raw datasets
 backend/data_pipeline/raw/*.csv
@@ -111,3 +115,5 @@ dist/
 build/
 .next/
 __pycache__/
+.vercel/
+**/frontend/.vercel/
