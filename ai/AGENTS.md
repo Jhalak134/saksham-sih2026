@@ -2,7 +2,7 @@
 
 ## Completed
 
-The Safe Real LLM Integration (Task 12) is implemented and thoroughly verified:
+The Safe Real LLM Runtime Configuration & Verification (Task 13) is completed and verified:
 * PDF extraction verified (`ai/ingestion/extract_documents.py`)
 * PDF cleaning verified (`ai/ingestion/clean_documents.py`)
 * Curated document metadata verified and schema enhanced (`ai/knowledge_base/document_metadata.py`)
@@ -18,15 +18,16 @@ The Safe Real LLM Integration (Task 12) is implemented and thoroughly verified:
 * Content-Level Quantitative Claim Verifier implemented (`ai/prompts/claim_verifier.py`)
 * AI Service Request & Response Models implemented (`ai/service/models.py`)
 * AI Service Application & Endpoints implemented (`ai/service/main.py`, `ai/service/__init__.py`)
-* Real LLM Provider Abstraction implemented (`ai/providers/`):
+* Real LLM Provider Abstraction verified (`ai/providers/`):
   * `ai/providers/base.py`: Exception hierarchy (`LLMProviderError`, `LLMAuthenticationError`, `LLMTimeoutError`, `LLMRateLimitError`, `LLMNetworkError`, `LLMResponseFormatError`), zero-secret masking (`sanitize_secret`), and abstract `BaseLLMProvider`.
   * `ai/providers/openai_provider.py`: OpenAI-compatible REST adapter supporting OpenAI (`gpt-4o-mini`), Groq, Azure, vLLM, and any OpenAI-compatible API via `OPENAI_API_KEY`, `OPENAI_BASE_URL`, bounded exponential backoff, request timeouts, and structured JSON output.
   * `ai/providers/gemini_provider.py`: Google Gemini REST adapter supporting Gemini 1.5 Flash and Pro via `GEMINI_API_KEY` or `GOOGLE_API_KEY`, header-based authentication (`x-goog-api-key`), bounded retries, and JSON output mode.
   * `ai/providers/factory.py`: Automatic credential discovery (`get_llm_provider`, `get_default_llm_callable`, `create_llm_provider`).
-* Grounded generation pipeline integration:
-  * `GroundedExplainer` integrates `llm_callable` while strictly preserving deterministic fallback on provider network, timeout, or auth failures (`fallback_on_provider_error=True`).
-  * LLM generated output is strictly parsed and grounded through `parse_explanation_response()` and `claim_verifier.py`.
-  * External LLMs CANNOT bypass citation verification, quantitative grounding, template disclaimers, or historical vintages.
+* Live LLM Runtime Verification (Task 13):
+  * Secrets & Credential Audit: Checked `OPENAI_API_KEY`, `GEMINI_API_KEY`, and `GOOGLE_API_KEY`. No API keys configured in environment or `.env` files.
+  * Credential Status: Live LLM credentials are unavailable; runtime smoke test could not be performed.
+  * Safe Runtime Configuration: Verified that with no live credentials, factory returns `None` and AI service gracefully and safely defaults to deterministic generation without exceptions or crashes.
+  * Running Service Health & Query Verification: Verified running AI service (`GET /health` returns `vector_store: ready`, `chunk_count: 179`). Tested `POST /query` live on port 8001; verified exact grounding, citation preservation, template warnings, and zero secret leakage.
 * Full test suite: **315/315 tests passing** (including 30 provider unit tests, 20 LLM grounding integration tests, 30 quantitative claim tests, 13 provenance tests, 36 hallucination tests, and all baseline AI tests).
 * Test suite and codebase structure maintained such that **every single test and production file is strictly under 500 LOC**:
   * `ai/providers/base.py`: 67 LOC
@@ -39,9 +40,9 @@ The Safe Real LLM Integration (Task 12) is implemented and thoroughly verified:
   * `ai/tests/test_providers.py`: 417 LOC
   * `ai/tests/test_grounding_llm_integration.py`: 398 LOC
   * All other AI test files strictly < 500 LOC.
-* **100% statement coverage** (2,037 / 2,037 statements) and **100% branch coverage** (764 / 764 branches) across ALL 22 modules under `ai/`.
+* **100% statement coverage** (2,037 / 2,037 statements) and **100% branch coverage** (764 / 764 branches) across ALL 23 modules under `ai/`.
 * Quality gates verified:
-  * Radon Cyclomatic Complexity: Max 21 (`parse_explanation_response`), Average 4.79 (Grade A). All functions < 22.
+  * Radon Cyclomatic Complexity: Max 21 (`parse_explanation_response`), Average 3.53 (Grade A). All functions < 22.
   * Radon Maintainability Index: Grade A across all files.
   * Radon Halstead Difficulty: Max 7.13 (`gemini_provider.py`, limit < 80).
   * Vulture Dead Code: 0 unused items detected.
@@ -128,11 +129,12 @@ The knowledge base consists of four curated documents with critical metadata dis
 * **Bounded Retries & Request Timeouts**: Network calls are bounded with max 2 retries and exponential backoff, preventing infinite loops. Default request timeout is 10s (bounded 1s..60s).
 * **Deterministic Fallback Invariance**: If an external provider encounters network errors, timeouts, or authentication issues, `GroundedExplainer` automatically and gracefully falls back to the deterministic explanation engine (`fallback_on_provider_error=True`).
 * **Strict Grounding Safety Barrier**: LLM output is strictly passed through `parse_explanation_response()` and `claim_verifier.py`. An external LLM can NEVER bypass citation checks, quantitative claim validation, or template disclaimers.
-* **Credentials Status**: Adapter implemented, live external LLM not smoke-tested because credentials are unavailable in the development environment.
+* **Credentials Status**: Provider adapter verified, live external LLM not smoke-tested with third-party servers because credentials are unavailable in the development environment. Live LLM credentials are unavailable; runtime smoke test could not be performed.
+* **Deterministic Runtime Fallback**: Confirmed live on running AI service at port 8001 that requests seamlessly use deterministic explanations without errors when keys are absent.
 
 ## Unresolved Issues
 
-* **Problem 1**: External LLM credentials are not yet configured in `.env` / environment. When keys are supplied, the provider adapter automatically activates without code changes.
+* **Problem 1**: External LLM credentials (`OPENAI_API_KEY`, `GEMINI_API_KEY`, `GOOGLE_API_KEY`) are not yet configured in `.env` / environment. When keys are supplied, the provider adapter automatically activates without code changes.
 * **Problem 5**: Knowledge base remains 4 documents.
 
 ## Next Task
