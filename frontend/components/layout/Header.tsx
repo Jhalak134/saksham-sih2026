@@ -296,11 +296,20 @@ export function Header(): React.JSX.Element {
 
         <Link
           href="/discover"
-          className="text-sm font-bold tracking-tight text-slate-900 hover:text-emerald-700 transition-colors"
+          className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+          aria-label="SAKSHAM Discover"
         >
-          SAKSHAM
+          <img
+            src="/icon.svg"
+            alt=""
+            className="h-7 w-7 object-contain"
+          />
+          <span className="text-base font-bold tracking-tight text-[#00284D]">
+            SAKSH<span className="text-[#FBAC05]">AM</span>
+          </span>
         </Link>
       </div>
+
 
       {/* Center: Search & AI Chatbot Bar */}
       <div className="flex flex-1 items-center justify-center px-2 md:px-6">

@@ -37,10 +37,13 @@ export function LandingFooter(): React.JSX.Element {
           <div className="flex flex-wrap items-center gap-6 sm:gap-8">
             <Link
               href="/"
-              className="text-sm font-black tracking-tight text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-md"
+              className="flex items-center gap-2 text-sm font-black tracking-tight text-[#00284D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-md"
               aria-label="SAKSHAM Home"
             >
-              SAKSHAM
+              <img src="/icon.svg" alt="" className="h-5 w-5 object-contain" />
+              <span>
+                SAKSH<span className="text-[#FBAC05]">AM</span>
+              </span>
             </Link>
 
             <nav className="flex items-center gap-5 sm:gap-6 font-medium text-slate-600">
