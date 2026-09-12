@@ -137,3 +137,11 @@ def make_valid_response_dict(
         "evidence_used": [chunk_id],
         "grounding_status": status,
     }
+
+
+@pytest.fixture(autouse=True)
+def _isolate_unit_tests_from_live_providers(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Ensure standard unit tests run deterministically without outbound LLM calls."""
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)

@@ -13,6 +13,19 @@ from ai.providers.base import BaseLLMProvider, LLMProviderError
 from ai.providers.gemini_provider import GeminiProvider
 from ai.providers.openai_provider import OpenAIProvider
 
+def load_runtime_env() -> bool:
+    """Discover and load environment variables from project .env if present."""
+    from dotenv import find_dotenv, load_dotenv
+
+    env_path = find_dotenv()
+    if env_path:
+        load_dotenv(env_path)
+        return True
+    return False
+
+
+load_runtime_env()
+
 
 def create_llm_provider(provider_type: str, **kwargs: Any) -> BaseLLMProvider:
     """Create a specific LLM provider instance by type name."""
