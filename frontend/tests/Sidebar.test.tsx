@@ -53,8 +53,8 @@ describe('Sidebar — structure', () => {
     });
   });
 
-  it('renders the Language selector', () => {
-    expect(screen.getByLabelText('Select language')).toBeInTheDocument();
+  it('does not render the Language selector in the sidebar', () => {
+    expect(screen.queryByLabelText('Select language')).not.toBeInTheDocument();
   });
 
   it('renders the Log out button', () => {
