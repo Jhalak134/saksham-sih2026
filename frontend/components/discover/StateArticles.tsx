@@ -142,13 +142,9 @@ export function StateArticles({
           </div>
         </div>
 
-        {/* Slide Controls & Progress Counter */}
+        {/* Slide Controls */}
         {!loading && articles.length > 0 && (
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-bold text-slate-400">
-              {currentIndex + 1} / {articles.length}
-            </span>
-            <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
               <button
                 type="button"
                 onClick={() => setIsPaused((prev) => !prev)}
@@ -180,7 +176,6 @@ export function StateArticles({
                 <ChevronRight size={15} />
               </button>
             </div>
-          </div>
         )}
       </div>
 
