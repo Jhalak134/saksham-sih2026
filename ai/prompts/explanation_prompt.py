@@ -25,6 +25,7 @@ from typing import Any, Callable
 
 from ai.grounding.evidence_models import EvidenceItem
 from ai.grounding.evidence_pack import EvidencePack
+from ai.prompts.claim_verifier import verify_quantitative_grounding
 from ai.prompts.explanation_models import (
     EXPLANATION_JSON_SCHEMA,
     ExplanationCitation,
@@ -43,6 +44,7 @@ __all__ = [
     "build_explanation_user_prompt",
     "parse_explanation_response",
     "generate_deterministic_explanation",
+    "verify_quantitative_grounding",
     "GroundedExplainer",
     "explain_evidence",
 ]
@@ -234,6 +236,8 @@ def parse_explanation_response(
     raw_response: str | dict[str, Any],
     pack: EvidencePack,
     language: str = "en",
+    calculations: dict[str, Any] | None = None,
+    reject_unsupported: bool = True,
 ) -> ExplanationResult:
     """Parse, validate, and verify grounding of LLM response against EvidencePack."""
     if not isinstance(pack, EvidencePack):
@@ -259,6 +263,39 @@ def parse_explanation_response(
     all_warnings = _merge_unique(pack.warnings, data.get("warnings", []))
     all_limitations = _merge_unique(pack.limitations, data.get("limitations", []))
     evidence_used = _validate_evidence_used(data.get("evidence_used", []), valid_chunk_ids)
+
+    # Content-level quantitative grounding verification
+    if pack.evidence_available and status_str == GroundingStatus.GROUNDED.value:
+        cited_cids = {c.chunk_id for c in parsed_cits}
+        target_items = [
+            it for it in pack.evidence_items if it.chunk_id in cited_cids
+        ] or pack.evidence_items
+
+        verification = verify_quantitative_grounding(
+            answer=str(data["answer"]),
+            evidence_items=target_items,
+            calculations=calculations,
+        )
+        if not verification.is_grounded:
+            if reject_unsupported:
+                unsupported_desc = ", ".join(c.raw_text for c in verification.unsupported_claims)
+                raise ExplanationValidationError(
+                    f"Unsupported quantitative claim in answer: '{unsupported_desc}' "
+                    f"is not supported by cited evidence or pre-computed calculations"
+                )
+            status_str = verification.downgraded_status
+            if verification.warning_message is not None:
+                if verification.warning_message not in all_warnings:
+                    all_warnings.append(verification.warning_message)
+    elif status_str == GroundingStatus.UNGROUNDED_FLAGGED.value:
+        verification = verify_quantitative_grounding(
+            answer=str(data["answer"]),
+            evidence_items=pack.evidence_items,
+            calculations=calculations,
+        )
+        if not verification.is_grounded and verification.warning_message is not None:
+            if verification.warning_message not in all_warnings:
+                all_warnings.append(verification.warning_message)
 
     return ExplanationResult(
         answer=str(data["answer"]).strip(),
@@ -400,6 +437,7 @@ class GroundedExplainer:
                 raw_response=raw_response,
                 pack=evidence_pack,
                 language=language,
+                calculations=calculations,
             )
 
         return generate_deterministic_explanation(
