@@ -1,182 +1,93 @@
 // components/layout/Header.tsx
 // Header bar featuring the SAKSHAM AI Search & Chatbot Assistant.
-// Connected deeply with the ai/ knowledge base, Census 2011 demographics, and SIH #91 architecture.
+// Dropdown displays only past sent messages; submitting asks the AI chatbot directly.
 
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Search,
   X,
-  MapPin,
   Sparkles,
-  ShieldCheck,
-  ArrowRight,
   Home,
   Menu,
-  Briefcase,
-  Bot,
+  Clock,
+  History,
+  ArrowRight,
 } from 'lucide-react';
 import { useShell } from '@/lib/shell-context';
 import { IconButton } from '@/components/ui/IconButton';
 import { SakshamAIChatModal } from '@/components/chat/SakshamAIChatModal';
+import { isQueryValid } from '@/lib/aiKnowledgeBase';
 import { cn } from '@/lib/cn';
 
-// ─── Searchable Data Items ───────────────────────────────────────────────────
+const STORAGE_KEY_PAST_MESSAGES = 'saksham_past_sent_queries';
 
-interface SearchSuggestionItem {
-  readonly type: 'idea' | 'location' | 'scheme';
-  readonly title: string;
-  readonly subtitle: string;
-  readonly category?: string;
-}
-
-const SEARCH_SUGGESTIONS: readonly SearchSuggestionItem[] = [
-  // Business Ideas & Categories
-  {
-    type: 'idea',
-    title: 'Dairy & Livestock',
-    subtitle: 'Milk collection, chilling, paneer, curd & sweets',
-    category: 'dairy',
-  },
-  {
-    type: 'idea',
-    title: 'Retail & Kirana Store',
-    subtitle: 'Daily provisions, packaged FMCG & grain retail',
-    category: 'retail',
-  },
-  {
-    type: 'idea',
-    title: 'Textiles & Handloom',
-    subtitle: 'Garments, school uniforms, tailoring & embroidery',
-    category: 'textiles',
-  },
-  {
-    type: 'idea',
-    title: 'Agri Processing',
-    subtitle: 'Mustard oil expeller, mini flour mill & dal mill',
-    category: 'agri',
-  },
-  {
-    type: 'idea',
-    title: 'Food & Beverages',
-    subtitle: 'Bakery rusk, roasted namkeen, snack packaging',
-    category: 'food',
-  },
-  {
-    type: 'idea',
-    title: 'Handicrafts & Pottery',
-    subtitle: 'Terracotta pottery, wooden carving & temple artifacts',
-    category: 'handicrafts',
-  },
-  {
-    type: 'idea',
-    title: 'Solar & Clean Energy',
-    subtitle: 'Solar agricultural pumps, rooftop PV & repair',
-    category: 'solar',
-  },
-  {
-    type: 'idea',
-    title: 'Services & Farm Repairs',
-    subtitle: 'Tractor implement repair, two-wheelers & electricals',
-    category: 'services',
-  },
-
-  // Locations & Clusters
-  {
-    type: 'location',
-    title: 'Mathura, Uttar Pradesh',
-    subtitle: 'Active Pilot Region (Chhata, Kamar, Nandgaon, Barsana)',
-  },
-  {
-    type: 'location',
-    title: 'Chhata, Mathura',
-    subtitle: 'Dairy, grain processing & logistics cluster',
-  },
-  {
-    type: 'location',
-    title: 'Kamar, Mathura',
-    subtitle: 'Commercial hub, kirana & dairy collection',
-  },
-  {
-    type: 'location',
-    title: 'Barsana, Mathura',
-    subtitle: 'Tourism, religious retail & sweets packaging',
-  },
-  {
-    type: 'location',
-    title: 'Uttar Pradesh',
-    subtitle: 'State Pilot Live · 75 ODOP Districts',
-  },
-  {
-    type: 'location',
-    title: 'Maharashtra',
-    subtitle: '36 ODOP Districts · Agri Processing & Retail',
-  },
-  {
-    type: 'location',
-    title: 'Rajasthan',
-    subtitle: '41 ODOP Districts · Solar Energy & Handicrafts',
-  },
-  {
-    type: 'location',
-    title: 'Bihar',
-    subtitle: '38 ODOP Districts · Makhana & Food Processing',
-  },
-  {
-    type: 'location',
-    title: 'Gujarat',
-    subtitle: '33 ODOP Districts · Textiles & Dairy Coops',
-  },
-
-  // Key Schemes & Subsidies
-  {
-    type: 'scheme',
-    title: 'PMFME Scheme',
-    subtitle: '35% capital subsidy up to ₹10 Lakhs for micro units',
-  },
-  {
-    type: 'scheme',
-    title: 'PMEGP Scheme',
-    subtitle: 'Up to 35% margin money subsidy in rural areas',
-  },
-  {
-    type: 'scheme',
-    title: 'PM Mudra Yojana',
-    subtitle: 'Zero collateral credit (Shishu up to ₹50k, Kishore up to ₹5L)',
-  },
-  {
-    type: 'scheme',
-    title: 'UP State Dairy Development Subsidy',
-    subtitle: 'Milch cattle acquisition & rural chilling grants',
-  },
-  {
-    type: 'scheme',
-    title: 'One District One Product (ODOP)',
-    subtitle: 'State credit guarantees & artisan branding support',
-  },
-  {
-    type: 'scheme',
-    title: 'PM Vishwakarma Scheme',
-    subtitle: 'Artisan toolkit grants + 5% concessional credit',
-  },
-];
-
-// ─── Functional Search Bar & AI Chatbot Trigger Component ────────────────────
+// ─── Functional Search Bar & AI Chatbot Component ────────────────────────────
 
 function SearchBar(): React.JSX.Element {
-  const router = useRouter();
-  const { setBrowsingLocation } = useShell();
-
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [isAIChatOpen, setIsAIChatOpen] = useState(false);
   const [chatInitialQuery, setChatInitialQuery] = useState('');
+  const [pastMessages, setPastMessages] = useState<string[]>([]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Load past sent messages from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY_PAST_MESSAGES);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setPastMessages(parsed);
+        }
+      }
+    } catch {
+      // Ignore storage read errors
+    }
+  }, []);
+
+  // Save new message into history
+  const addPastMessage = useCallback((msg: string) => {
+    const clean = msg.trim();
+    if (!clean) return;
+    setPastMessages((prev) => {
+      const filtered = prev.filter((m) => m.toLowerCase() !== clean.toLowerCase());
+      const updated = [clean, ...filtered].slice(0, 10);
+      try {
+        localStorage.setItem(STORAGE_KEY_PAST_MESSAGES, JSON.stringify(updated));
+      } catch {
+        // Ignore storage write errors
+      }
+      return updated;
+    });
+  }, []);
+
+  const clearPastMessages = useCallback(() => {
+    setPastMessages([]);
+    try {
+      localStorage.removeItem(STORAGE_KEY_PAST_MESSAGES);
+    } catch {
+      // Ignore storage errors
+    }
+  }, []);
+
+  const removePastMessage = useCallback((msgToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPastMessages((prev) => {
+      const updated = prev.filter((m) => m !== msgToRemove);
+      try {
+        localStorage.setItem(STORAGE_KEY_PAST_MESSAGES, JSON.stringify(updated));
+      } catch {
+        // Ignore storage errors
+      }
+      return updated;
+    });
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -192,81 +103,20 @@ function SearchBar(): React.JSX.Element {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter suggestions in real-time
-  const trimmed = query.trim().toLowerCase();
-  const filteredSuggestions = trimmed.length === 0
-    ? SEARCH_SUGGESTIONS.slice(0, 7) // Curated quick start items
-    : SEARCH_SUGGESTIONS.filter(
-        (item) =>
-          item.title.toLowerCase().includes(trimmed) ||
-          item.subtitle.toLowerCase().includes(trimmed) ||
-          (item.category && item.category.toLowerCase().includes(trimmed))
-      );
-
-  const handleOpenAIChat = useCallback((customQuery?: string) => {
+  const handleAskAI = useCallback((queryText: string) => {
+    const clean = queryText.trim();
+    if (clean && isQueryValid(clean).isValid) {
+      addPastMessage(clean);
+    }
     setIsOpen(false);
-    setChatInitialQuery(customQuery !== undefined ? customQuery : query);
+    setChatInitialQuery(clean);
     setIsAIChatOpen(true);
-  }, [query]);
-
-  const handleSelect = useCallback(
-    (item: SearchSuggestionItem) => {
-      setIsOpen(false);
-      setQuery('');
-
-      if (item.type === 'idea') {
-        const catParam = item.category ? `&category=${encodeURIComponent(item.category)}` : '';
-        router.push(`/new-assessment?idea=${encodeURIComponent(item.title)}${catParam}`);
-      } else if (item.type === 'location') {
-        setBrowsingLocation(item.title);
-        router.push('/discover');
-      } else if (item.type === 'scheme') {
-        // Schemes can trigger deep AI explanation
-        handleOpenAIChat(`Tell me about ${item.title} subsidy and eligibility guidelines`);
-      }
-    },
-    [router, setBrowsingLocation, handleOpenAIChat]
-  );
+  }, [addPastMessage]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!trimmed) return;
-
-    setIsOpen(false);
-
-    // If query looks like a question or requests explanation/subsidies, launch AI chatbot
-    const isQuestionOrAiIntent =
-      trimmed.endsWith('?') ||
-      trimmed.startsWith('how') ||
-      trimmed.startsWith('what') ||
-      trimmed.startsWith('why') ||
-      trimmed.startsWith('where') ||
-      trimmed.startsWith('tell') ||
-      trimmed.startsWith('explain') ||
-      trimmed.includes('subsidy') ||
-      trimmed.includes('pmfme') ||
-      trimmed.includes('margin') ||
-      trimmed.includes('formula') ||
-      trimmed.includes('scheme') ||
-      trimmed.includes('census');
-
-    if (isQuestionOrAiIntent) {
-      handleOpenAIChat(query);
-      return;
-    }
-
-    // Check if query matches a known location
-    const matchedLoc = SEARCH_SUGGESTIONS.find(
-      (s) => s.type === 'location' && s.title.toLowerCase().includes(trimmed)
-    );
-
-    if (matchedLoc) {
-      setBrowsingLocation(matchedLoc.title);
-      router.push('/discover');
-    } else {
-      // Direct to assessment for the queried business idea
-      router.push(`/new-assessment?idea=${encodeURIComponent(query.trim())}`);
-    }
+    if (!query.trim()) return;
+    handleAskAI(query);
   };
 
   const handleClear = () => {
@@ -329,7 +179,7 @@ function SearchBar(): React.JSX.Element {
           {/* AI Chatbot Launcher Button */}
           <button
             type="button"
-            onClick={() => handleOpenAIChat(query)}
+            onClick={() => handleAskAI(query)}
             aria-label="Ask SAKSHAM AI"
             className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 px-2.5 sm:px-3 py-1 text-[11px] font-bold text-white shadow-2xs transition-all cursor-pointer shrink-0"
           >
@@ -338,132 +188,74 @@ function SearchBar(): React.JSX.Element {
           </button>
         </form>
 
-        {/* Interactive Autocomplete & AI Chatbot Suggestions Dropdown */}
+        {/* Dropdown displaying ONLY Past Sent Messages */}
         {isOpen && (
           <div
             role="listbox"
-            aria-label="Search suggestions"
-            className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-96 overflow-y-auto rounded-2xl border border-slate-200/90 bg-white p-2 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-1"
+            aria-label="Past sent messages"
+            className="absolute left-0 right-0 top-full z-50 mt-1.5 max-h-80 overflow-y-auto rounded-2xl border border-slate-200/90 bg-white p-2 shadow-xl backdrop-blur-md animate-in fade-in slide-in-from-top-1"
           >
-            {/* Ask SAKSHAM AI Conversational Banner */}
-            <div
-              role="option"
-              aria-selected={false}
-              onClick={() => handleOpenAIChat(query)}
-              className="group mb-2 flex items-center justify-between gap-2.5 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-100/60 p-2.5 hover:from-emerald-100 hover:to-teal-100 transition-all cursor-pointer border border-emerald-300/80 shadow-2xs"
-            >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-2xs">
-                  <Bot size={14} />
-                </div>
-                <div className="truncate">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-emerald-950 truncate">
-                      {trimmed.length > 0 ? `Ask AI: "${query.trim()}"` : 'Chat with SAKSHAM AI Assistant'}
-                    </span>
-                    <span className="rounded-md bg-emerald-200/90 px-1.5 py-0.2 text-[9px] font-extrabold uppercase text-emerald-900 tracking-tight">
-                      AI Chatbot
-                    </span>
-                  </div>
-                  <span className="block text-[10.5px] text-emerald-700 truncate">
-                    Deep knowledge from ai/ reports, Census 2011 & 10% loan model
+            {pastMessages.length > 0 ? (
+              <>
+                <div className="flex items-center justify-between px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <History size={12} className="text-slate-500" />
+                    <span>Past Sent Messages</span>
                   </span>
+                  <button
+                    type="button"
+                    onClick={clearPastMessages}
+                    aria-label="Clear all past messages"
+                    className="text-[10.5px] font-medium text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
+                  >
+                    Clear all
+                  </button>
                 </div>
-              </div>
-              <ArrowRight size={13} className="text-emerald-700 group-hover:translate-x-0.5 transition-transform shrink-0" />
-            </div>
 
-            {/* Custom Query Instant Action for Assessment (when query is typed) */}
-            {trimmed.length > 0 && (
-              <div
-                role="option"
-                aria-selected={false}
-                onClick={() => {
-                  setIsOpen(false);
-                  router.push(`/new-assessment?idea=${encodeURIComponent(query.trim())}`);
-                }}
-                className="group mb-1.5 flex items-center justify-between gap-2.5 rounded-xl bg-slate-50 p-2.5 hover:bg-slate-100/80 transition-colors cursor-pointer border border-slate-200/60"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-700 text-white">
-                    <Briefcase size={13} />
-                  </div>
-                  <div className="truncate">
-                    <span className="text-xs font-bold text-slate-900">
-                      Assess &quot;{query.trim()}&quot;
-                    </span>
-                    <span className="block text-[10.5px] text-slate-500 truncate">
-                      Launch 4-factor feasibility evaluation
-                    </span>
-                  </div>
-                </div>
-                <ArrowRight size={13} className="text-slate-600 group-hover:translate-x-0.5 transition-transform shrink-0" />
-              </div>
-            )}
-
-            {/* Section Heading */}
-            <div className="px-2.5 py-1 text-[10.5px] font-bold uppercase tracking-wider text-slate-400">
-              {trimmed.length === 0 ? 'Popular Ideas, Regions & Schemes' : 'Suggestions & Matches'}
-            </div>
-
-            {/* Filtered Suggestion Items */}
-            <div className="space-y-0.5">
-              {filteredSuggestions.map((item) => (
-                <div
-                  key={`${item.type}-${item.title}`}
-                  role="option"
-                  aria-selected={false}
-                  onClick={() => handleSelect(item)}
-                  className="group flex items-center justify-between gap-2.5 rounded-xl px-2.5 py-2 hover:bg-slate-50 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5 min-w-0">
+                <div className="mt-1 space-y-0.5">
+                  {pastMessages.map((msg, index) => (
                     <div
-                      className={cn(
-                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border text-slate-700',
-                        item.type === 'idea' && 'bg-amber-50 border-amber-200 text-amber-800',
-                        item.type === 'location' && 'bg-blue-50 border-blue-200 text-blue-800',
-                        item.type === 'scheme' && 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                      )}
+                      key={`${msg}-${index}`}
+                      role="option"
+                      aria-selected={false}
+                      onClick={() => handleAskAI(msg)}
+                      className="group flex items-center justify-between gap-2.5 rounded-xl px-2.5 py-2 hover:bg-slate-50 transition-colors cursor-pointer"
                     >
-                      {item.type === 'idea' && <Briefcase size={13} />}
-                      {item.type === 'location' && <MapPin size={13} />}
-                      {item.type === 'scheme' && <ShieldCheck size={13} />}
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-bold text-slate-900 truncate">
-                          {item.title}
-                        </span>
-                        <span
-                          className={cn(
-                            'rounded-md px-1.5 py-0.2 text-[9px] font-bold uppercase tracking-tight',
-                            item.type === 'idea' && 'bg-amber-100/70 text-amber-800',
-                            item.type === 'location' && 'bg-blue-100/70 text-blue-800',
-                            item.type === 'scheme' && 'bg-emerald-100/70 text-emerald-800'
-                          )}
-                        >
-                          {item.type}
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 group-hover:bg-emerald-50 group-hover:text-emerald-700 transition-colors">
+                          <Clock size={13} />
+                        </div>
+                        <span className="text-xs font-medium text-slate-800 truncate group-hover:text-emerald-900 transition-colors">
+                          {msg}
                         </span>
                       </div>
-                      <span className="block text-[10.5px] text-slate-500 truncate">
-                        {item.subtitle}
-                      </span>
+
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={(e) => removePastMessage(msg, e)}
+                          aria-label={`Remove "${msg}"`}
+                          className="opacity-0 group-hover:opacity-100 p-1 text-slate-300 hover:text-slate-600 rounded transition-all cursor-pointer"
+                        >
+                          <X size={12} />
+                        </button>
+                        <ArrowRight size={13} className="text-slate-300 group-hover:text-emerald-600 transition-colors shrink-0" />
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="text-slate-300 group-hover:text-slate-600 transition-colors shrink-0">
-                    <ArrowRight size={13} />
-                  </div>
+                  ))}
                 </div>
-              ))}
-
-              {filteredSuggestions.length === 0 && trimmed.length > 0 && (
-                <div className="p-3 text-center text-xs text-slate-500">
-                  <span>No direct matches. Click &quot;Ask AI&quot; or press Enter to consult SAKSHAM AI.</span>
+              </>
+            ) : (
+              <div className="p-4 text-center text-xs text-slate-500">
+                <div className="flex justify-center mb-1 text-slate-400">
+                  <History size={16} />
                 </div>
-              )}
-            </div>
+                <p className="font-medium text-slate-700">No past sent messages</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Type your question and press <kbd className="px-1 py-0.5 rounded bg-slate-100 border border-slate-200 text-[10px] font-mono">Enter</kbd> to ask SAKSHAM AI.
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>

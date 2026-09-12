@@ -715,6 +715,33 @@ export function getStateRealData(stateNameOrCode: string | null | undefined): St
 }
 
 /**
+ * Searches for a matching state by code or name without falling back to UP.
+ * Returns null if the query does not specify a real Indian state/UT.
+ */
+export function findStateByQuery(query: string): StateRealMetrics | null {
+  const clean = query.trim().toLowerCase();
+  if (!clean || clean.length < 2) return null;
+
+  // 1. Direct state code match (e.g. 'up', 'mh', 'rj', 'dl')
+  if (STATE_REAL_DATA[clean]) {
+    return STATE_REAL_DATA[clean];
+  }
+
+  // 2. Exact or included state name match
+  const matchedKey = Object.keys(STATE_REAL_DATA).find((k) => {
+    const item = STATE_REAL_DATA[k];
+    const nameLower = item.state_name.toLowerCase();
+    return nameLower === clean || clean.includes(nameLower);
+  });
+
+  if (matchedKey && STATE_REAL_DATA[matchedKey]) {
+    return STATE_REAL_DATA[matchedKey];
+  }
+
+  return null;
+}
+
+/**
  * Formats large population numbers into readable Indian notation (e.g. 19.98 Cr or 38.05 L).
  */
 export function formatPopulationIndian(pop: number | undefined): { value: number; unit: string; full: string } {
