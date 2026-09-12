@@ -75,6 +75,15 @@
   animation: slide-up-words 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
 }
 
+@keyframes shrinkProgress {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
 /* Clean browser autofill styling */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
