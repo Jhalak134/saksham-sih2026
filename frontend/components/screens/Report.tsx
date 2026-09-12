@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Calendar } from 'lucide-react';
 import { getReportById, type DetailedReport, type AssessmentStatus } from '@/data/reportsData';
-import { getAssessmentById, mapBackendResponseToDetailedReport } from '@/lib/api-client';
+import { getAssessmentById, getCachedAssessment, mapBackendResponseToDetailedReport } from '@/lib/api-client';
 import { DashboardTab } from '@/components/dashboard/DashboardTab';
 import { MarketTab } from '@/components/dashboard/MarketTab';
 import { FinancialsTab } from '@/components/dashboard/FinancialsTab';
@@ -24,6 +24,8 @@ const SUB_TABS: readonly DashboardSubTab[] = [
   'Schemes',
   'Next Steps',
 ];
+
+const STATIC_MOCK_IDS = new Set(['assess_001', 'assess_002', 'assess_003', 'assess_004']);
 
 interface ReportScreenProps {
   readonly reportId?: string;
@@ -50,19 +52,30 @@ function StatusBadge({ status }: { status: AssessmentStatus }): React.JSX.Elemen
 
 export function ReportScreen({ reportId = 'assess_001' }: ReportScreenProps): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<DashboardSubTab>('Dashboard');
-  const isMockId = reportId.startsWith('assess_');
+  const isStaticMock = STATIC_MOCK_IDS.has(reportId);
   const [liveReport, setLiveReport] = useState<DetailedReport | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(!isMockId);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isMockId) {
+    // 1. First check if this assessment is in cache, sessionStorage, or localStorage
+    const cached = getCachedAssessment(reportId);
+    if (cached) {
+      setLiveReport(mapBackendResponseToDetailedReport(cached));
+      setIsLoading(false);
+      setLoadError(null);
+      return;
+    }
+
+    // 2. If it's a known static mock ID and not in local cache, use static mock
+    if (isStaticMock) {
       setLiveReport(null);
       setIsLoading(false);
       setLoadError(null);
       return;
     }
 
+    // 3. Otherwise fetch from backend API
     let isMounted = true;
     setIsLoading(true);
     setLoadError(null);
@@ -84,7 +97,7 @@ export function ReportScreen({ reportId = 'assess_001' }: ReportScreenProps): Re
     return () => {
       isMounted = false;
     };
-  }, [reportId, isMockId]);
+  }, [reportId, isStaticMock]);
 
   if (isLoading) {
     return (
