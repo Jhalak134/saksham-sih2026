@@ -302,7 +302,15 @@ export function SakshamAIChatModal({
   } catch {
     router = null;
   }
-  const { setBrowsingLocation, language, setLanguage } = useShell();
+  let shell: any = null;
+  try {
+    shell = useShell();
+  } catch {
+    shell = null;
+  }
+  const setBrowsingLocation = shell?.setBrowsingLocation ?? (() => {});
+  const language = shell?.language ?? 'en';
+  const setLanguage = shell?.setLanguage ?? (() => {});
 
   const [messages, setMessages] = useState<readonly ChatMessage[]>(() => [buildGreetingMessage(language)]);
   const [inputText, setInputText] = useState('');
