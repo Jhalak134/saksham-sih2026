@@ -79,14 +79,6 @@ def setup_test_database():
             if not db.query(models.Village).filter(models.Village.id == v_data["id"]).first():
                 db.add(models.Village(**v_data))
         db.commit()
-
-        # Seed sample businesses
-        if not db.query(models.Business).first():
-            db.add(models.Business(id=1, village_id=123579, category_id=2, name="Sharma General Store"))
-            db.add(models.Business(id=2, village_id=123579, category_id=2, name="Verma Kirana & Provisions"))
-            db.add(models.Business(id=3, village_id=123580, category_id=4, name="Braj Agro Food Processing"))
-            db.add(models.Business(id=4, village_id=123581, category_id=1, name="Kamar Dairy Cooperative"))
-            db.commit()
     finally:
         db.close()
     yield

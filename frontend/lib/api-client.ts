@@ -1,4 +1,4 @@
-// lib/api-client.ts
+﻿// lib/api-client.ts
 // Canonical SAKSHAM Frontend API Client
 // Connects Next.js Frontend to FastAPI Main Backend (:8000).
 // Invariant: Backend calculates deterministically; AI explains; Frontend displays.
@@ -86,17 +86,17 @@ export async function fetchMyReports(token: string): Promise<MyReportsResponse> 
 
 import type { DetailedReport, ConfidenceLevel, SchemeInfo } from '@/data/reportsData';
 
-// ─── Backend Schema Interfaces (Re-exported from ./api-types) ────────────────
+// â”€â”€â”€ Backend Schema Interfaces (Re-exported from ./api-types) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export type * from './api-types';
 import type {
   AssessmentRequest, BackendAssessmentResponse, AssessmentHistoryItem,
   InsightsResponse, AssessmentResponse, VillageLocation,
   AIQueryRequest, AIQueryResponse, OfficialScheme,
   EMICalculationRequest, EMICalculationResponse, SchemeMatchRequest, SchemeMatchResponse,
-  UserProfile, UserProfileInput, CategoryDetailsResponse,
+  UserProfile, UserProfileInput,
 } from './api-types';
 
-// ─── Base URL Resolution ──────────────────────────────────────────────────────
+// â”€â”€â”€ Base URL Resolution â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 declare const process: {
   env?: Record<string, string | undefined>;
@@ -121,7 +121,7 @@ async function extractErrorDetail(res: Response, fallback: string): Promise<stri
   return fallback;
 }
 
-// ─── Client Cache & Persistence ───────────────────────────────────────────────
+// â”€â”€â”€ Client Cache & Persistence â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const assessmentCache = new Map<string, BackendAssessmentResponse>();
 
@@ -159,7 +159,7 @@ export function getCachedAssessment(id: string | number): BackendAssessmentRespo
   return null;
 }
 
-// ─── Core API Methods ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Core API Methods â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Creates a new business assessment on the main backend (POST /api/v1/assess).
@@ -292,7 +292,7 @@ export async function searchLocations(
  * Formats a VillageLocation into a readable label with village name, block, and district.
  */
 export function formatVillageLocation(v: VillageLocation): string {
-  const blockPart = v.block_name ? `${v.block_name} Block · ` : '';
+  const blockPart = v.block_name ? `${v.block_name} Block Â· ` : '';
   return `${v.name}, ${blockPart}${v.district_name}`;
 }
 
@@ -335,7 +335,7 @@ export async function queryAI(
   return (await res.json()) as AIQueryResponse;
 }
 
-// ─── Government Schemes & EMI Calculators ───────────────────────────────────
+// â”€â”€â”€ Government Schemes & EMI Calculators â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Retrieves all active official concessional credit schemes from backend (GET /api/v1/schemes).
@@ -454,6 +454,7 @@ export async function getInsights(location: string): Promise<InsightsResponse> {
     headers: {
       Accept: 'application/json',
     },
+    cache: 'no-store',
   });
 
   if (!res.ok) {
@@ -463,53 +464,7 @@ export async function getInsights(location: string): Promise<InsightsResponse> {
   return (await res.json()) as InsightsResponse;
 }
 
-/**
- * Retrieves dynamic category details and database businesses (GET /api/categories/{id} or /api/v1/categories/{id}).
- */
-export async function getCategoryDetails(
-  categoryId: string,
-  location?: string
-): Promise<CategoryDetailsResponse> {
-  const cleanId = categoryId.trim();
-  if (!cleanId) {
-    throw new Error('Category ID cannot be empty');
-  }
-
-  const locParam = location ? `?location=${encodeURIComponent(location.trim())}` : '';
-
-  // 1. Try Next.js API route first
-  try {
-    const res = await fetch(`/api/categories/${encodeURIComponent(cleanId)}${locParam}`, {
-      headers: {
-        Accept: 'application/json',
-      },
-    });
-    if (res.ok) {
-      return (await res.json()) as CategoryDetailsResponse;
-    }
-  } catch {
-    // Fall back to direct backend URL
-  }
-
-  // 2. Direct backend call
-  const baseUrl = getBackendBaseUrl();
-  const backendRes = await fetch(
-    `${baseUrl}/api/v1/categories/${encodeURIComponent(cleanId)}${locParam}`,
-    {
-      headers: {
-        Accept: 'application/json',
-      },
-    }
-  );
-
-  if (!backendRes.ok) {
-    throw new Error(`Failed to fetch category details for "${cleanId}" (HTTP ${backendRes.status})`);
-  }
-
-  return (await backendRes.json()) as CategoryDetailsResponse;
-}
-
-// ─── Legacy & Backwards-Compatibility Stubs ───────────────────────────────────
+// â”€â”€â”€ Legacy & Backwards-Compatibility Stubs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export async function fetchAssessment(
   location: string,
@@ -543,7 +498,7 @@ export async function fetchInsights(location: string): Promise<InsightsResponse>
   }
 }
 
-// ─── Authentication & User Profile ──────────────────────────────────────────
+// â”€â”€â”€ Authentication & User Profile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Retrieves a user profile by phone number or email (GET /api/v1/auth/profile/{identifier}).
@@ -601,6 +556,6 @@ export async function saveUserProfile(profile: UserProfileInput): Promise<UserPr
   return (await res.json()) as UserProfile;
 }
 
-// ─── Response Adapter ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Response Adapter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export { mapBackendResponseToDetailedReport } from './report-adapter';
