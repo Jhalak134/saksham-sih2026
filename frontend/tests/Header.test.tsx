@@ -6,10 +6,12 @@ import { Header } from '@/components/layout/Header';
 import { ShellProvider } from '@/lib/shell-context';
 
 const mockPush = vi.fn();
+let mockPathname = '/';
 vi.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
   }),
+  usePathname: () => mockPathname,
 }));
 
 // Mock scrollIntoView
@@ -44,6 +46,18 @@ describe('Header Component (Exclusive AI Chatbot Search Bar & Past Sent Messages
     expect(screen.queryByLabelText(/Current location/i)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/Capital:/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Telangana/i)).not.toBeInTheDocument();
+  });
+
+  it('hides the search bar when on the discover page', () => {
+    mockPathname = '/discover';
+    render(
+      <ShellProvider>
+        <Header />
+      </ShellProvider>
+    );
+
+    expect(screen.queryByRole('combobox', { name: /Ask SAKSHAM a question/i })).not.toBeInTheDocument();
+    mockPathname = '/';
   });
 
   it('shows only past sent messages in the dropdown, with empty state when none exist', async () => {

@@ -189,6 +189,12 @@ function LoginFormContent(): React.JSX.Element {
       }
     }
 
+    try {
+      await login(userProfile.email);
+    } catch {
+      setStorageItem(STORAGE_KEYS.authUser, userProfile.email);
+    }
+
     setLoading(false);
 
     // Prompt for live location if signing up, newly created Google user, or no location saved yet
@@ -237,6 +243,7 @@ function LoginFormContent(): React.JSX.Element {
           auto_select: false,
           cancel_on_tap_outside: true,
         });
+        window.google.accounts.id.prompt();
       } catch (err) {
         console.warn('GSI initialize note:', err);
       }
@@ -316,6 +323,61 @@ function LoginFormContent(): React.JSX.Element {
 
   const handleGoogleAuth = () => {
     setError(null);
+    setGoogleNotice(null);
+
+    // If Google OAuth client is loaded in the browser, trigger Google popup
+    if (typeof window !== 'undefined' && window.google?.accounts?.oauth2) {
+      try {
+        setLoading(true);
+        const tokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'email profile openid',
+          callback: async (tokenResponse) => {
+            if (tokenResponse?.access_token) {
+              try {
+                const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                });
+                const profile = await userInfoRes.json();
+                if (profile?.email) {
+                  await onGoogleSuccess({
+                    email: profile.email,
+                    name: profile.name,
+                    picture: profile.picture,
+                    google_id: profile.sub,
+                    token: tokenResponse.access_token,
+                  });
+                } else {
+                  triggerError('Unable to retrieve Google profile information.');
+                  setLoading(false);
+                }
+              } catch (fetchErr) {
+                console.error('Failed to fetch Google profile info:', fetchErr);
+                triggerError('Failed to fetch Google profile details. Please try again.');
+                setLoading(false);
+              }
+            } else if (tokenResponse?.error) {
+              setLoading(false);
+              triggerError('Google Sign-In was cancelled or encountered an error.');
+            } else {
+              setLoading(false);
+            }
+          },
+          error_callback: (err: unknown) => {
+            setLoading(false);
+            console.error('Google OAuth client error:', err);
+            triggerError('Google Sign-In popup could not be opened.');
+          },
+        });
+        tokenClient.requestAccessToken({ prompt: 'select_account' });
+        return;
+      } catch (oauthErr) {
+        setLoading(false);
+        console.error('Google OAuth initialization error:', oauthErr);
+      }
+    }
+
+    // Fallback for pilot/mock/test environments where window.google is not available
     if (activeTab === 'signup') {
       setShowLocationModal(true);
       return;
@@ -377,15 +439,11 @@ function LoginFormContent(): React.JSX.Element {
       <div className="flex min-h-screen w-full flex-col lg:flex-row items-stretch justify-between bg-[#F9FAF9] font-sans antialiased text-slate-900 selection:bg-emerald-100 selection:text-emerald-900 overflow-x-hidden">
       {/* Mobile Top Header with Logo */}
       <div className="flex lg:hidden items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-30">
-        <Link href="/" className="flex items-center gap-2" aria-label="Saksham Home">
-          <span className="text-xl font-bold text-slate-900 tracking-tight">saksham</span>
-          <svg
-            className="w-4 h-4 text-[#167844] fill-current"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
-          </svg>
+        <Link href="/" className="flex items-center gap-2" aria-label="SAKSHAM Home">
+          <img src="/icon.svg" alt="" className="h-7 w-7 object-contain" />
+          <span className="text-xl font-bold tracking-tight text-[#00284D]">
+            SAKSH<span className="text-[#FBAC05]">AM</span>
+          </span>
         </Link>
         <Link
           href="/"
